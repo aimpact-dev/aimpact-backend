@@ -1,0 +1,57 @@
+version: '3.9'
+services:
+  aimpact-api:
+    container_name: aimpact-api
+    build:
+      dockerfile: ./apps/api/Dockerfile
+      context: .
+      target: production
+    profiles: ['api']
+    networks:
+      - 'aimpact'
+    environment:
+      - DATABASE_URL=postgres://postgres:postgres@postgres:5432/aimpact
+    env_file:
+      - .env
+    ports:
+      - 3000:${PORT:-3000}
+      - 9223:9222
+    depends_on:
+      postgres:
+        condition: service_started
+    volumes:
+      - .:/usr/src/app
+      - ./node_modules:/usr/src/app/node_modules
+  #    command: npm run start:api:dev
+
+  postgres:
+    container_name: aimpact-postgres
+    image: 'postgres:15.2'
+    networks:
+      - 'aimpact'
+    ports:
+      - '2345:5432'
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=aimpact
+    volumes:
+      - db:/var/lib/postgresql/data
+
+  # redis:
+  #   image: redis/redis-stack-server
+  #   restart: always
+  #   environment:
+  #     REDIS_ARGS: --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
+  #   ports:
+  #     - '6379:6379'
+  #   volumes:
+  #     - redis:/data
+
+networks:
+  aimpact:
+    name: aimpact
+volumes:
+  db:
+    driver: local
+  # redis:
+  #   driver: local
