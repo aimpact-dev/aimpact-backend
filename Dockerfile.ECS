@@ -1,0 +1,24 @@
+FROM node:18-alpine AS builder
+WORKDIR /
+COPY package*.json ./
+COPY tsconfig.json ./
+RUN npm install
+COPY ./ ./
+RUN npm run build
+
+FROM node:18-alpine AS final
+
+ARG INCLUDE_FOLDER
+
+WORKDIR /app
+COPY package*.json ./
+
+RUN npm install
+
+COPY --from=builder ./dist/api/ ./api
+COPY --from=builder ./dist/shared-kernel/ ./shared-kernel/
+COPY --from=builder ./node_modules/ ./node_modules/
+COPY --from=builder ./dist/shared-kernel/database/migrations ./migrations/
+
+EXPOSE 80
+CMD ["node", "./api/index"]
