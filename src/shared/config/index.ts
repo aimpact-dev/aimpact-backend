@@ -2,7 +2,7 @@ import { Logger } from '@nestjs/common';
 import { registerAs } from '@nestjs/config';
 import { plainToInstance, Transform } from 'class-transformer';
 import { IsNumber, IsString, validateSync } from 'class-validator';
-import { ClassType } from 'src/shared/types/class.type';
+import { ClassType } from '../../shared/types/class.type';
 
 export const ENV_NAMESPACE_KEYS = {
   API_SERVER: 'api_server',
