@@ -10,13 +10,26 @@ exports.AuthModule = void 0;
 const common_1 = require("@nestjs/common");
 const auth_service_1 = require("./auth.service");
 const auth_controller_1 = require("./auth.controller");
+const passport_1 = require("@nestjs/passport");
+const jwt_1 = require("@nestjs/jwt");
+const user_module_1 = require("../user/user.module");
+const nonce_module_1 = require("../nonce/nonce.module");
+const jwt_config_1 = require("../config/jwt.config");
+const jwt_strategy_1 = require("./jwt.strategy");
 let AuthModule = class AuthModule {
 };
 exports.AuthModule = AuthModule;
 exports.AuthModule = AuthModule = __decorate([
     (0, common_1.Module)({
-        providers: [auth_service_1.AuthService],
-        controllers: [auth_controller_1.AuthController]
+        imports: [
+            passport_1.PassportModule,
+            passport_1.PassportModule.register({ defaultStrategy: 'jwt' }),
+            jwt_1.JwtModule.registerAsync(jwt_config_1.jwtConfig),
+            user_module_1.UserModule,
+            nonce_module_1.NonceModule,
+        ],
+        providers: [auth_service_1.AuthService, jwt_strategy_1.JwtStrategy],
+        controllers: [auth_controller_1.AuthController],
     })
 ], AuthModule);
 //# sourceMappingURL=auth.module.js.map

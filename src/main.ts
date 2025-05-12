@@ -9,13 +9,13 @@ async function bootstrap() {
   await envLoad();
 
   const app = await NestFactory.create(AppModule);
-
   const config = new DocumentBuilder()
     .setTitle('AImpact API docs')
     .setDescription('The AImpact API description')
     .setVersion('1.0')
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('swagger', app, documentFactory);
   // adding global jwt auth guard
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalGuards(new JwtAuthGuard(new Reflector()));

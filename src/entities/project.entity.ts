@@ -8,7 +8,7 @@ import {
 
 @Entity('project')
 export class Project {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn()
   id: number;
 
   @Column({ type: 'varchar' })

@@ -10,7 +10,7 @@ import { Nonce } from './nonce.entity';
 
 @Entity('users')
 export class User {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn()
   id: number;
 
   @Column({ type: 'varchar', unique: true })

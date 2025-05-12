@@ -15,7 +15,7 @@ let Project = class Project {
 };
 exports.Project = Project;
 __decorate([
-    (0, typeorm_1.PrimaryGeneratedColumn)('uuid'),
+    (0, typeorm_1.PrimaryGeneratedColumn)(),
     __metadata("design:type", Number)
 ], Project.prototype, "id", void 0);
 __decorate([

@@ -24,7 +24,7 @@ export class UserService {
     wallet: string,
     signedMessage: string,
   ): Promise<User> {
-    const message = `I agree that I am registered in AImpact as user and allow to store my ${wallet} wallet address.`;
+    const message = `I agree that I am registered in aimpact as user and allow to store my ${wallet} wallet address`;
     const isValid = validateSignedMessage(wallet, message, signedMessage);
     if (!isValid) {
       throw new UnauthorizedException('Invalid signature');

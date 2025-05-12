@@ -17,15 +17,22 @@ const common_1 = require("@nestjs/common");
 const swagger_1 = require("@nestjs/swagger");
 const auth_service_1 = require("./auth.service");
 const signinWallet_dto_1 = require("../dtos/signinWallet.dto");
+const signupWallet_dto_1 = require("../dtos/signupWallet.dto");
+const public_decorator_1 = require("./public.decorator");
 let AuthController = class AuthController {
     constructor(authService) {
         this.authService = authService;
     }
     async loginWithWallet(signin) {
+        return this.authService.loginWithSolanaWallet(signin.walletAddress, signin.signedMessage, signin.nonce);
+    }
+    async signupAndLoginWithSolanaWallet(signupDto) {
+        return this.authService.signupAndLoginWithSolanaWallet(signupDto);
     }
 };
 exports.AuthController = AuthController;
 __decorate([
+    (0, public_decorator_1.Public)(),
     (0, common_1.Post)('loginWithWallet'),
     (0, swagger_1.ApiOperation)({
         summary: 'User login by sign message with his Solana wallet',
@@ -53,6 +60,34 @@ __decorate([
     __metadata("design:paramtypes", [signinWallet_dto_1.SigninWalletDto]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "loginWithWallet", null);
+__decorate([
+    (0, public_decorator_1.Public)(),
+    (0, common_1.Post)('signupWalletAndAuth'),
+    (0, swagger_1.ApiOperation)({
+        summary: 'Register a new user by using Solana wallet and log-in',
+    }),
+    (0, swagger_1.ApiBody)({
+        type: signupWallet_dto_1.SignupWalletDto,
+        description: 'Details for creating a new user by using wallet.',
+    }),
+    (0, swagger_1.ApiResponse)({
+        status: 201,
+        description: 'User successfully created.',
+        schema: {
+            example: {
+                accessToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+            },
+        },
+    }),
+    (0, swagger_1.ApiResponse)({
+        status: 400,
+        description: 'Invalid input data or user creation failed.',
+    }),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [signupWallet_dto_1.SignupWalletDto]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "signupAndLoginWithSolanaWallet", null);
 exports.AuthController = AuthController = __decorate([
     (0, common_1.Controller)('auth'),
     __metadata("design:paramtypes", [auth_service_1.AuthService])
