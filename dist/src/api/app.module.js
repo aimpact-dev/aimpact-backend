@@ -13,6 +13,7 @@ const app_service_1 = require("./app.service");
 const config_1 = require("@nestjs/config");
 const config_2 = require("../shared/config");
 const postgres_shared_module_1 = require("../shared/modules/database/postgres-shared.module");
+const user_module_1 = require("./user/user.module");
 const apiConfig = [config_2.baseEnvConfig];
 let AppModule = class AppModule {
 };
@@ -26,6 +27,7 @@ exports.AppModule = AppModule = __decorate([
                 load: apiConfig,
             }),
             postgres_shared_module_1.PostgresSharedModule,
+            user_module_1.UserModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

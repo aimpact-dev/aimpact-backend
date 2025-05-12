@@ -4,6 +4,8 @@ import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { baseEnvConfig } from 'src/shared/config';
 import { PostgresSharedModule } from 'src/shared/modules/database/postgres-shared.module';
+import { UserModule } from './user/user.module';
+import { NonceModule } from './nonce/nonce.module';
 
 const apiConfig = [baseEnvConfig];
 
@@ -14,8 +16,9 @@ const apiConfig = [baseEnvConfig];
       envFilePath: process.env.ENV_FILE_PATH,
       load: apiConfig,
     }),
-    // Shared modules
     PostgresSharedModule,
+    NonceModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],

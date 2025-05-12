@@ -1,0 +1,9 @@
+export declare class Project {
+    id: number;
+    name: string;
+    description?: string;
+    category?: string;
+    image?: string;
+    createdAt: Date;
+    updatedAt: Date;
+}
