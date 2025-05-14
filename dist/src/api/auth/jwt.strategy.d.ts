@@ -7,9 +7,11 @@ export declare class JwtStrategy extends JwtStrategy_base {
     constructor(configService: ConfigService, usersService: UserService);
     validate(payload: any): Promise<{
         roles: any;
-        id: number;
+        id: string;
         wallet: string;
         nonces: import("../../entities/nonce.entity").Nonce[];
+        createdAt: Date;
+        updatedAt: Date;
     }>;
 }
 export {};

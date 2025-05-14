@@ -8,14 +8,20 @@ import {
 } from 'typeorm';
 import { Nonce } from './nonce.entity';
 
-@Entity('users')
+@Entity('user')
 export class User {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column({ type: 'varchar', unique: true })
   wallet: string;
 
   @OneToMany(() => Nonce, (nonce) => nonce.user)
   nonces: Nonce[];
+
+  @CreateDateColumn({ type: 'timestamp' })
+  createdAt: Date;
+
+  @UpdateDateColumn({ type: 'timestamp' })
+  updatedAt: Date;
 }

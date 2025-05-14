@@ -5,7 +5,7 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { UserModule } from '../user/user.module';
 import { NonceModule } from '../nonce/nonce.module';
-import { jwtConfig } from '../config/jwt.config';
+import { jwtConfig } from './jwt.config';
 import { JwtStrategy } from './jwt.strategy';
 import { JwtAuthGuard } from './jwt-auth.guard';
 

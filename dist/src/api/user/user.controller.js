@@ -21,10 +21,10 @@ let UserController = class UserController {
         this.usersService = usersService;
     }
     async findByIdPublic(id) {
-        return await this.usersService.findById(+id);
+        return await this.usersService.findById(id);
     }
     async findByIdAuth(id) {
-        return await this.usersService.findById(+id);
+        return await this.usersService.findById(id);
     }
 };
 exports.UserController = UserController;

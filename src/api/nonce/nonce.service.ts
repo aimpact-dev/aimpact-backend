@@ -10,7 +10,7 @@ export class NonceService {
     private readonly nonceRepository: Repository<Nonce>,
   ) {}
 
-  async addUsedNonce(userId: number, nonce: number): Promise<Nonce> {
+  async addUsedNonce(userId: string, nonce: number): Promise<Nonce> {
     const userNonce = await this.nonceRepository.findOne({
       where: { nonce, userId },
     });
@@ -28,7 +28,7 @@ export class NonceService {
     });
     return await this.nonceRepository.save(newNonce);
   }
-  async isNonceUsed(userId: number, nonce: number): Promise<boolean> {
+  async isNonceUsed(userId: string, nonce: number): Promise<boolean> {
     const nonceEntity = await this.nonceRepository
       .createQueryBuilder('nonce')
       .where('nonce.userId = :userId', { userId: userId })

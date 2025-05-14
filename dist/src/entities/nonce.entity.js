@@ -42,12 +42,28 @@ __decorate([
 ], Nonce.prototype, "nonce", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
-        description: 'ID of the user',
-        example: 42,
+        description: 'UUID of the user',
+        example: '550e8400-e29b-41d4-a716-446655440000',
     }),
-    (0, typeorm_1.Column)({ type: 'int' }),
-    __metadata("design:type", Number)
+    (0, typeorm_1.Column)({ type: 'uuid' }),
+    __metadata("design:type", String)
 ], Nonce.prototype, "userId", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Date when the nonce was created',
+        example: '2024-01-20T18:00:00Z',
+    }),
+    (0, typeorm_1.CreateDateColumn)({ type: 'timestamp' }),
+    __metadata("design:type", Date)
+], Nonce.prototype, "createdAt", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Date when the nonce was updated',
+        example: '2024-01-20T18:00:00Z',
+    }),
+    (0, typeorm_1.UpdateDateColumn)({ type: 'timestamp' }),
+    __metadata("design:type", Date)
+], Nonce.prototype, "updatedAt", void 0);
 __decorate([
     (0, typeorm_1.ManyToOne)(() => user_entity_1.User, (user) => user.nonces, { onDelete: 'CASCADE' }),
     (0, typeorm_1.JoinColumn)({ name: 'userId' }),

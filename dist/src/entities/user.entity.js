@@ -16,8 +16,8 @@ let User = class User {
 };
 exports.User = User;
 __decorate([
-    (0, typeorm_1.PrimaryGeneratedColumn)(),
-    __metadata("design:type", Number)
+    (0, typeorm_1.PrimaryGeneratedColumn)('uuid'),
+    __metadata("design:type", String)
 ], User.prototype, "id", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: 'varchar', unique: true }),
@@ -27,7 +27,15 @@ __decorate([
     (0, typeorm_1.OneToMany)(() => nonce_entity_1.Nonce, (nonce) => nonce.user),
     __metadata("design:type", Array)
 ], User.prototype, "nonces", void 0);
+__decorate([
+    (0, typeorm_1.CreateDateColumn)({ type: 'timestamp' }),
+    __metadata("design:type", Date)
+], User.prototype, "createdAt", void 0);
+__decorate([
+    (0, typeorm_1.UpdateDateColumn)({ type: 'timestamp' }),
+    __metadata("design:type", Date)
+], User.prototype, "updatedAt", void 0);
 exports.User = User = __decorate([
-    (0, typeorm_1.Entity)('users')
+    (0, typeorm_1.Entity)('user')
 ], User);
 //# sourceMappingURL=user.entity.js.map

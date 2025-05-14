@@ -16,7 +16,7 @@ export class UserService {
     return await this.userRepository.findOne({ where: { wallet } });
   }
 
-  async findById(id: number): Promise<User | null> {
+  async findById(id: string): Promise<User | null> {
     return await this.userRepository.findOne({ where: { id } });
   }
 

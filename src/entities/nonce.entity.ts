@@ -5,8 +5,10 @@ import {
   ManyToOne,
   JoinColumn,
   PrimaryColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
 } from 'typeorm';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import { User } from './user.entity';
 
 @Entity('nonce')
@@ -38,6 +40,20 @@ export class Nonce {
   })
   @Column({ type: 'uuid' })
   userId: string;
+
+  @ApiProperty({
+    description: 'Date when the nonce was created',
+    example: '2024-01-20T18:00:00Z',
+  })
+  @CreateDateColumn({ type: 'timestamp' })
+  createdAt: Date;
+
+  @ApiProperty({
+    description: 'Date when the nonce was updated',
+    example: '2024-01-20T18:00:00Z',
+  })
+  @UpdateDateColumn({ type: 'timestamp' })
+  updatedAt: Date;
 
   @ManyToOne(() => User, (user) => user.nonces, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'userId' })

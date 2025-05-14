@@ -8,11 +8,11 @@ export class UserController {
   @Public()
   @Get('publicTest')
   async findByIdPublic(@Query('id') id: string) {
-    return await this.usersService.findById(+id);
+    return await this.usersService.findById(id);
   }
 
   @Get('privateTest')
   async findByIdAuth(@Query('id') id: string) {
-    return await this.usersService.findById(+id);
+    return await this.usersService.findById(id);
   }
 }

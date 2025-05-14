@@ -14,7 +14,7 @@ const passport_1 = require("@nestjs/passport");
 const jwt_1 = require("@nestjs/jwt");
 const user_module_1 = require("../user/user.module");
 const nonce_module_1 = require("../nonce/nonce.module");
-const jwt_config_1 = require("../config/jwt.config");
+const jwt_config_1 = require("./jwt.config");
 const jwt_strategy_1 = require("./jwt.strategy");
 let AuthModule = class AuthModule {
 };

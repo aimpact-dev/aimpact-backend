@@ -1,6 +1,8 @@
 import { Nonce } from './nonce.entity';
 export declare class User {
-    id: number;
+    id: string;
     wallet: string;
     nonces: Nonce[];
+    createdAt: Date;
+    updatedAt: Date;
 }
