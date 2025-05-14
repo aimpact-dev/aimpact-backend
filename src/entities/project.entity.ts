@@ -2,10 +2,13 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-
+import { ProjectChat } from './project-chat.entity';
+import { ProjectSnapshot } from './project-snapshot.entity';
 @Entity('project')
 export class Project {
   @PrimaryGeneratedColumn('uuid')
@@ -23,9 +26,18 @@ export class Project {
   @Column({ type: 'varchar', nullable: true })
   image?: string;
 
+  @Column({ type: 'uuid' })
+  userId: string;
+
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
 
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
+
+  @OneToOne(() => ProjectChat, (projectChat) => projectChat.projectId)
+  projectChat: ProjectChat;
+
+  @OneToOne(() => ProjectSnapshot, (projectSnapshot) => projectSnapshot.projectId)
+  projectSnapshot: ProjectSnapshot;
 }

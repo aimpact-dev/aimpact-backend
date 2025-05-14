@@ -11,6 +11,7 @@ import { AuthService } from './auth/auth.service';
 import { JwtStrategy } from './auth/jwt.strategy';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { APP_GUARD } from '@nestjs/core';
+import { ProjectModule } from './project/project.module';
 
 const apiConfig = [baseEnvConfig];
 @Module({
@@ -20,10 +21,15 @@ const apiConfig = [baseEnvConfig];
       envFilePath: process.env.ENV_FILE_PATH,
       load: apiConfig,
     }),
+
+    // shared modules
     PostgresSharedModule,
+
+    // api modules
     NonceModule,
     UserModule,
     AuthModule,
+    ProjectModule,
   ],
   controllers: [AppController],
   providers: [
