@@ -1,0 +1,1 @@
+{"version":3,"file":"vercel-entrypoint.js","sourceRoot":"","sources":["../../src/vercel-entrypoint.ts"],"names":[],"mappings":";;AAIA,0BAKC;AATD,iCAAmC;AAEnC,IAAI,YAAiB,CAAC;AAEP,KAAK,UAAU,OAAO,CAAC,GAAG,EAAE,GAAG;IAC5C,IAAI,CAAC,YAAY,EAAE,CAAC;QAClB,YAAY,GAAG,MAAM,IAAA,gBAAS,GAAE,CAAC;IACnC,CAAC;IACD,OAAO,YAAY,CAAC,GAAG,EAAE,GAAG,CAAC,CAAC;AAChC,CAAC"}
