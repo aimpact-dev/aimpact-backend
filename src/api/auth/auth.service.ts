@@ -7,6 +7,8 @@ import * as nacl from 'tweetnacl';
 import * as bs58 from 'bs58';
 import { validateSignedMessage } from '../utils/validSignMessage';
 import { SignupWalletDto } from '../dtos/signupWallet.dto';
+import { generateMessage } from '../utils/generateMessage';
+
 @Injectable()
 export class AuthService {
   private readonly logger = new Logger(AuthService.name);
@@ -15,17 +17,15 @@ export class AuthService {
     private readonly usersService: UserService,
     private readonly nonceService: NonceService,
   ) {}
+1
   async loginWithSolanaWallet(
     address: string,
-    signedMessage: string,
-    nonce: number,
+    signature: string,
+    nonce: string,
   ) {
-    const user = await this.usersService.findByWalletAddress(address);
+    let user = await this.usersService.findByWalletAddress(address);
     if (!user) {
-      throw new HttpException(
-        `User with wallet address ${address} haven't been registered yet.`,
-        HttpStatus.UNAUTHORIZED,
-      );
+      user = await this.usersService.createUserWithSolanaWallet(address, signature, nonce);
     }
     let isNonceUsed = await this.nonceService.isNonceUsed(user.id, nonce);
     if (isNonceUsed) {
@@ -34,8 +34,8 @@ export class AuthService {
         HttpStatus.UNAUTHORIZED,
       );
     }
-    const message = `Sign this message to prove you have access to this wallet with nonce ${nonce}.`;
-    const isValid = validateSignedMessage(address, message, signedMessage);
+    const message = generateMessage(nonce);
+    const isValid = validateSignedMessage(address, message, signature);
     await this.nonceService.addUsedNonce(user.id, nonce);
     if (isValid) {
       const payload = { sub: user.id };
@@ -50,14 +50,9 @@ export class AuthService {
     }
   }
 
-  async signupAndLoginWithSolanaWallet(signupDto: SignupWalletDto) {
-    const newUser = await this.usersService.createUserWithSolanaWallet(
-      signupDto.walletAddress,
-      signupDto.signedMessage,
-    );
-    const payload = { sub: newUser.id };
-    return {
-      access_token: this.jwtService.sign(payload),
-    };
+  async requestMessage(address: string) {
+    const nonce = await this.nonceService.createNewNonce(address);
+    const message = generateMessage(nonce.nonce);
+    return { message, nonce: nonce.nonce };
   }
 }

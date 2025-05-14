@@ -4,6 +4,7 @@ import { AuthService } from './auth.service';
 import { SigninWalletDto } from '../dtos/signinWallet.dto';
 import { SignupWalletDto } from '../dtos/signupWallet.dto';
 import { Public } from './public.decorator';
+import { RequestMessageDto } from '../dtos/requestMessage.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -42,17 +43,19 @@ export class AuthController {
   }
 
   @Public()
-  @Post('signupWalletAndAuth')
+  @Post('requestMessage')
   @ApiOperation({
-    summary: 'Register a new user by using Solana wallet and log-in',
+    summary: 'Request message and nonce from backend',
+    description:
+      'User need to sign message "Sign this message to prove you have access to this wallet with nonce <uniq nonce, for example you can use current timestamp>."',
   })
   @ApiBody({
-    type: SignupWalletDto,
-    description: 'Details for creating a new user by using wallet.',
+    type: RequestMessageDto ,
+    description: 'User login credentials by using wallet.',
   })
   @ApiResponse({
-    status: 201,
-    description: 'User successfully created.',
+    status: 200,
+    description: 'Successful authentication.',
     schema: {
       example: {
         accessToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
@@ -60,10 +63,10 @@ export class AuthController {
     },
   })
   @ApiResponse({
-    status: 400,
-    description: 'Invalid input data or user creation failed.',
+    status: 401,
+    description: 'Invalid credentials.',
   })
-  async signupAndLoginWithSolanaWallet(@Body() signupDto: SignupWalletDto) {
-    return this.authService.signupAndLoginWithSolanaWallet(signupDto);
+  async requestMessage(@Body() signin: RequestMessageDto) {
+    return this.authService.requestMessage(signin.walletAddress);
   }
 }

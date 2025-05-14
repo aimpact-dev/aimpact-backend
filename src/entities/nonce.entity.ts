@@ -1,15 +1,5 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  ManyToOne,
-  JoinColumn,
-  PrimaryColumn,
-  CreateDateColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
-import { User } from './user.entity';
 
 @Entity('nonce')
 export class Nonce {
@@ -31,15 +21,15 @@ export class Nonce {
     description: 'The nonce which was used by the owner',
     example: 16,
   })
-  @Column({ type: 'bigint' })
-  nonce: number;
+  @Column({ type: 'varchar' })
+  nonce: string;
 
   @ApiProperty({
-    description: 'UUID of the user',
-    example: '550e8400-e29b-41d4-a716-446655440000',
+    description: 'Address of the user',
+    example: '7HmYsWHYZzixB3px79Y9sx91puwvLtv4ikLB9evx1vX4',
   })
-  @Column({ type: 'uuid' })
-  userId: string;
+  @Column({ type: 'varchar' })
+  address: string;
 
   @ApiProperty({
     description: 'Date when the nonce was created',
@@ -54,8 +44,4 @@ export class Nonce {
   })
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
-
-  @ManyToOne(() => User, (user) => user.nonces, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'userId' })
-  user: User;
 }
