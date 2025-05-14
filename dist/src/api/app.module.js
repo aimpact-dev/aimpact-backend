@@ -13,6 +13,11 @@ const app_service_1 = require("./app.service");
 const config_1 = require("@nestjs/config");
 const config_2 = require("../shared/config");
 const postgres_shared_module_1 = require("../shared/modules/database/postgres-shared.module");
+const user_module_1 = require("./user/user.module");
+const nonce_module_1 = require("./nonce/nonce.module");
+const auth_module_1 = require("./auth/auth.module");
+const jwt_auth_guard_1 = require("./auth/jwt-auth.guard");
+const core_1 = require("@nestjs/core");
 const apiConfig = [config_2.baseEnvConfig];
 let AppModule = class AppModule {
 };
@@ -26,9 +31,18 @@ exports.AppModule = AppModule = __decorate([
                 load: apiConfig,
             }),
             postgres_shared_module_1.PostgresSharedModule,
+            nonce_module_1.NonceModule,
+            user_module_1.UserModule,
+            auth_module_1.AuthModule,
         ],
         controllers: [app_controller_1.AppController],
-        providers: [app_service_1.AppService],
+        providers: [
+            app_service_1.AppService,
+            {
+                provide: core_1.APP_GUARD,
+                useClass: jwt_auth_guard_1.JwtAuthGuard,
+            },
+        ],
     })
 ], AppModule);
 //# sourceMappingURL=app.module.js.map

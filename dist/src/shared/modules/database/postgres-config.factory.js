@@ -28,7 +28,7 @@ let PostgresConfigFactory = class PostgresConfigFactory {
             username: this.databaseConfig.DATABASE_USER,
             password: this.databaseConfig.DATABASE_PASSWORD,
             database: this.databaseConfig.DATABASE_NAME,
-            entities: [`${__dirname}/../entities/*.entity{.ts,.js}`],
+            entities: [`${__dirname}/../../../entities/*.entity{.ts,.js}`],
             synchronize: this.baseConfig.NODE_ENV === 'development',
             logging: this.baseConfig.NODE_ENV === 'development',
             migrations: [`${__dirname}/../../db/migrations/*{.ts,.js}`],
