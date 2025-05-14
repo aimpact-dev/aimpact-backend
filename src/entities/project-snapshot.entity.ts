@@ -8,7 +8,7 @@ export class ProjectSnapshot {
   @Column({ type: 'jsonb' })
   files: any;
 
-  @Column({ type: 'varchar', nullable: true })
+  @Column({ type: 'text', nullable: true })
   summary?: string;
 
   @CreateDateColumn({ type: 'timestamp' })
