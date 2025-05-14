@@ -1,10 +1,8 @@
-import { User } from './user.entity';
 export declare class Nonce {
     id: number;
     dateOfUsage: Date;
-    nonce: number;
-    userId: string;
+    nonce: string;
+    address: string;
     createdAt: Date;
     updatedAt: Date;
-    user: User;
 }

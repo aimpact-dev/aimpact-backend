@@ -16,6 +16,7 @@ const jwt_1 = require("@nestjs/jwt");
 const user_service_1 = require("../user/user.service");
 const nonce_service_1 = require("../nonce/nonce.service");
 const validSignMessage_1 = require("../utils/validSignMessage");
+const generateMessage_1 = require("../utils/generateMessage");
 let AuthService = AuthService_1 = class AuthService {
     constructor(jwtService, usersService, nonceService) {
         this.jwtService = jwtService;
@@ -23,17 +24,17 @@ let AuthService = AuthService_1 = class AuthService {
         this.nonceService = nonceService;
         this.logger = new common_1.Logger(AuthService_1.name);
     }
-    async loginWithSolanaWallet(address, signedMessage, nonce) {
-        const user = await this.usersService.findByWalletAddress(address);
+    async loginWithSolanaWallet(address, signature, nonce) {
+        let user = await this.usersService.findByWalletAddress(address);
         if (!user) {
-            throw new common_1.HttpException(`User with wallet address ${address} haven't been registered yet.`, common_1.HttpStatus.UNAUTHORIZED);
+            user = await this.usersService.createUserWithSolanaWallet(address, signature, nonce);
         }
         let isNonceUsed = await this.nonceService.isNonceUsed(user.id, nonce);
         if (isNonceUsed) {
             throw new common_1.HttpException(`User with wallet address ${address} have already used the nonce ${nonce}`, common_1.HttpStatus.UNAUTHORIZED);
         }
-        const message = `Sign this message to prove you have access to this wallet with nonce ${nonce}.`;
-        const isValid = (0, validSignMessage_1.validateSignedMessage)(address, message, signedMessage);
+        const message = (0, generateMessage_1.generateMessage)(nonce);
+        const isValid = (0, validSignMessage_1.validateSignedMessage)(address, message, signature);
         await this.nonceService.addUsedNonce(user.id, nonce);
         if (isValid) {
             const payload = { sub: user.id };
@@ -45,12 +46,10 @@ let AuthService = AuthService_1 = class AuthService {
             throw new common_1.HttpException(`The signed message isn't valid`, common_1.HttpStatus.UNAUTHORIZED);
         }
     }
-    async signupAndLoginWithSolanaWallet(signupDto) {
-        const newUser = await this.usersService.createUserWithSolanaWallet(signupDto.walletAddress, signupDto.signedMessage);
-        const payload = { sub: newUser.id };
-        return {
-            access_token: this.jwtService.sign(payload),
-        };
+    async requestMessage(address) {
+        const nonce = await this.nonceService.createNewNonce(address);
+        const message = (0, generateMessage_1.generateMessage)(nonce.nonce);
+        return { message, nonce: nonce.nonce };
     }
 };
 exports.AuthService = AuthService;

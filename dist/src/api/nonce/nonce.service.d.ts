@@ -3,6 +3,7 @@ import { Repository } from 'typeorm';
 export declare class NonceService {
     private readonly nonceRepository;
     constructor(nonceRepository: Repository<Nonce>);
-    addUsedNonce(userId: string, nonce: number): Promise<Nonce>;
-    isNonceUsed(userId: string, nonce: number): Promise<boolean>;
+    addUsedNonce(address: string, nonce: string): Promise<void>;
+    isNonceUsed(address: string, nonce: string): Promise<boolean>;
+    createNewNonce(address: string): Promise<Nonce>;
 }

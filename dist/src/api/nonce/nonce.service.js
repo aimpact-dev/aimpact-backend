@@ -17,31 +17,30 @@ const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const nonce_entity_1 = require("../../entities/nonce.entity");
 const typeorm_2 = require("typeorm");
+const generateMessage_1 = require("../utils/generateMessage");
 let NonceService = class NonceService {
     constructor(nonceRepository) {
         this.nonceRepository = nonceRepository;
     }
-    async addUsedNonce(userId, nonce) {
+    async addUsedNonce(address, nonce) {
         const userNonce = await this.nonceRepository.findOne({
-            where: { nonce, userId },
+            where: { nonce, address },
         });
-        if (userNonce) {
-            throw new Error(`The user with ${userId} id already used nonce ${nonce}`);
+        if (!userNonce) {
+            throw new Error(`The user with ${address} address already used nonce ${nonce}`);
         }
         let dateOfUsage = new Date();
         dateOfUsage = new Date(dateOfUsage.getTime() + dateOfUsage.getTimezoneOffset() * 60000);
-        const newNonce = await this.nonceRepository.create({
-            userId,
-            nonce,
+        await this.nonceRepository.update(userNonce, {
             dateOfUsage,
         });
-        return await this.nonceRepository.save(newNonce);
     }
-    async isNonceUsed(userId, nonce) {
+    async isNonceUsed(address, nonce) {
         const nonceEntity = await this.nonceRepository
             .createQueryBuilder('nonce')
-            .where('nonce.userId = :userId', { userId: userId })
-            .andWhere('nonce.nonce = :nonce', { nonce: nonce })
+            .where('nonce.address = :address', { address })
+            .andWhere('nonce.nonce = :nonce', { nonce })
+            .andWhere('nonce.dateOfUsage IS NOT NULL')
             .getOne();
         if (!nonceEntity) {
             return false;
@@ -49,6 +48,11 @@ let NonceService = class NonceService {
         else {
             return true;
         }
+    }
+    async createNewNonce(address) {
+        const nonce = (0, generateMessage_1.generateNonce)();
+        const nonceEntity = await this.nonceRepository.create({ address, nonce });
+        return nonceEntity;
     }
 };
 exports.NonceService = NonceService;

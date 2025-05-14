@@ -18,5 +18,5 @@ export class SigninWalletDto {
     description: 'Uniq nonce which was used in the message',
   })
   @IsNumber()
-  nonce: number;
+  nonce: string;
 }

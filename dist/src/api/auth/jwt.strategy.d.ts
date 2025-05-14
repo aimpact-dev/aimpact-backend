@@ -9,7 +9,6 @@ export declare class JwtStrategy extends JwtStrategy_base {
         roles: any;
         id: string;
         wallet: string;
-        nonces: import("../../entities/nonce.entity").Nonce[];
         createdAt: Date;
         updatedAt: Date;
     }>;

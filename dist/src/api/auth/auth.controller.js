@@ -17,8 +17,8 @@ const common_1 = require("@nestjs/common");
 const swagger_1 = require("@nestjs/swagger");
 const auth_service_1 = require("./auth.service");
 const signinWallet_dto_1 = require("../dtos/signinWallet.dto");
-const signupWallet_dto_1 = require("../dtos/signupWallet.dto");
 const public_decorator_1 = require("./public.decorator");
+const requestMessage_dto_1 = require("../dtos/requestMessage.dto");
 let AuthController = class AuthController {
     constructor(authService) {
         this.authService = authService;
@@ -26,8 +26,8 @@ let AuthController = class AuthController {
     async loginWithWallet(signin) {
         return this.authService.loginWithSolanaWallet(signin.walletAddress, signin.signedMessage, signin.nonce);
     }
-    async signupAndLoginWithSolanaWallet(signupDto) {
-        return this.authService.signupAndLoginWithSolanaWallet(signupDto);
+    async requestMessage(signin) {
+        return this.authService.requestMessage(signin.walletAddress);
     }
 };
 exports.AuthController = AuthController;
@@ -62,17 +62,18 @@ __decorate([
 ], AuthController.prototype, "loginWithWallet", null);
 __decorate([
     (0, public_decorator_1.Public)(),
-    (0, common_1.Post)('signupWalletAndAuth'),
+    (0, common_1.Post)('requestMessage'),
     (0, swagger_1.ApiOperation)({
-        summary: 'Register a new user by using Solana wallet and log-in',
+        summary: 'Request message and nonce from backend',
+        description: 'User need to sign message "Sign this message to prove you have access to this wallet with nonce <uniq nonce, for example you can use current timestamp>."',
     }),
     (0, swagger_1.ApiBody)({
-        type: signupWallet_dto_1.SignupWalletDto,
-        description: 'Details for creating a new user by using wallet.',
+        type: requestMessage_dto_1.RequestMessageDto,
+        description: 'User login credentials by using wallet.',
     }),
     (0, swagger_1.ApiResponse)({
-        status: 201,
-        description: 'User successfully created.',
+        status: 200,
+        description: 'Successful authentication.',
         schema: {
             example: {
                 accessToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
@@ -80,14 +81,14 @@ __decorate([
         },
     }),
     (0, swagger_1.ApiResponse)({
-        status: 400,
-        description: 'Invalid input data or user creation failed.',
+        status: 401,
+        description: 'Invalid credentials.',
     }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [signupWallet_dto_1.SignupWalletDto]),
+    __metadata("design:paramtypes", [requestMessage_dto_1.RequestMessageDto]),
     __metadata("design:returntype", Promise)
-], AuthController.prototype, "signupAndLoginWithSolanaWallet", null);
+], AuthController.prototype, "requestMessage", null);
 exports.AuthController = AuthController = __decorate([
     (0, common_1.Controller)('auth'),
     __metadata("design:paramtypes", [auth_service_1.AuthService])

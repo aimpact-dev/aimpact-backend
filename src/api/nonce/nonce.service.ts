@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Nonce } from 'src/entities/nonce.entity';
 import { Repository } from 'typeorm';
+import { generateNonce } from '../utils/generateMessage';
 
 @Injectable()
 export class NonceService {
@@ -10,34 +11,40 @@ export class NonceService {
     private readonly nonceRepository: Repository<Nonce>,
   ) {}
 
-  async addUsedNonce(userId: string, nonce: number): Promise<Nonce> {
+  async addUsedNonce(address: string, nonce: string): Promise<void> {
     const userNonce = await this.nonceRepository.findOne({
-      where: { nonce, userId },
+      where: { nonce, address },
     });
-    if (userNonce) {
-      throw new Error(`The user with ${userId} id already used nonce ${nonce}`);
+    if (!userNonce) {
+      throw new Error(`The user with ${address} address already used nonce ${nonce}`);
     }
     let dateOfUsage = new Date();
     dateOfUsage = new Date(
       dateOfUsage.getTime() + dateOfUsage.getTimezoneOffset() * 60000,
     );
-    const newNonce = await this.nonceRepository.create({
-      userId,
-      nonce,
+
+    await this.nonceRepository.update(userNonce, {
       dateOfUsage,
     });
-    return await this.nonceRepository.save(newNonce);
   }
-  async isNonceUsed(userId: string, nonce: number): Promise<boolean> {
+
+  async isNonceUsed(address: string, nonce: string): Promise<boolean> {
     const nonceEntity = await this.nonceRepository
       .createQueryBuilder('nonce')
-      .where('nonce.userId = :userId', { userId: userId })
-      .andWhere('nonce.nonce = :nonce', { nonce: nonce })
+      .where('nonce.address = :address', { address })
+      .andWhere('nonce.nonce = :nonce', { nonce })
+      .andWhere('nonce.dateOfUsage IS NOT NULL')
       .getOne();
     if (!nonceEntity) {
       return false;
     } else {
       return true;
     }
+  }
+
+  async createNewNonce(address: string): Promise<Nonce> {
+    const nonce = generateNonce();
+    const nonceEntity = await this.nonceRepository.create({ address, nonce });
+    return nonceEntity;
   }
 }

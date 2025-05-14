@@ -12,7 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Nonce = void 0;
 const typeorm_1 = require("typeorm");
 const swagger_1 = require("@nestjs/swagger");
-const user_entity_1 = require("./user.entity");
 let Nonce = class Nonce {
 };
 exports.Nonce = Nonce;
@@ -37,17 +36,17 @@ __decorate([
         description: 'The nonce which was used by the owner',
         example: 16,
     }),
-    (0, typeorm_1.Column)({ type: 'bigint' }),
-    __metadata("design:type", Number)
+    (0, typeorm_1.Column)({ type: 'varchar' }),
+    __metadata("design:type", String)
 ], Nonce.prototype, "nonce", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
-        description: 'UUID of the user',
-        example: '550e8400-e29b-41d4-a716-446655440000',
+        description: 'Address of the user',
+        example: '7HmYsWHYZzixB3px79Y9sx91puwvLtv4ikLB9evx1vX4',
     }),
-    (0, typeorm_1.Column)({ type: 'uuid' }),
+    (0, typeorm_1.Column)({ type: 'varchar' }),
     __metadata("design:type", String)
-], Nonce.prototype, "userId", void 0);
+], Nonce.prototype, "address", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
         description: 'Date when the nonce was created',
@@ -64,11 +63,6 @@ __decorate([
     (0, typeorm_1.UpdateDateColumn)({ type: 'timestamp' }),
     __metadata("design:type", Date)
 ], Nonce.prototype, "updatedAt", void 0);
-__decorate([
-    (0, typeorm_1.ManyToOne)(() => user_entity_1.User, (user) => user.nonces, { onDelete: 'CASCADE' }),
-    (0, typeorm_1.JoinColumn)({ name: 'userId' }),
-    __metadata("design:type", user_entity_1.User)
-], Nonce.prototype, "user", void 0);
 exports.Nonce = Nonce = __decorate([
     (0, typeorm_1.Entity)('nonce')
 ], Nonce);

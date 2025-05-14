@@ -34,6 +34,6 @@ __decorate([
         description: 'Uniq nonce which was used in the message',
     }),
     (0, class_validator_1.IsNumber)(),
-    __metadata("design:type", Number)
+    __metadata("design:type", String)
 ], SigninWalletDto.prototype, "nonce", void 0);
 //# sourceMappingURL=signinWallet.dto.js.map

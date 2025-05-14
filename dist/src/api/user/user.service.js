@@ -18,6 +18,7 @@ const typeorm_1 = require("@nestjs/typeorm");
 const user_entity_1 = require("../../entities/user.entity");
 const typeorm_2 = require("typeorm");
 const validSignMessage_1 = require("../utils/validSignMessage");
+const generateMessage_1 = require("../utils/generateMessage");
 let UserService = class UserService {
     constructor(userRepository) {
         this.userRepository = userRepository;
@@ -28,9 +29,9 @@ let UserService = class UserService {
     async findById(id) {
         return await this.userRepository.findOne({ where: { id } });
     }
-    async createUserWithSolanaWallet(wallet, signedMessage) {
-        const message = `I agree that I am registered in aimpact as user and allow to store my ${wallet} wallet address`;
-        const isValid = (0, validSignMessage_1.validateSignedMessage)(wallet, message, signedMessage);
+    async createUserWithSolanaWallet(wallet, signature, nonce) {
+        const message = (0, generateMessage_1.generateMessage)(nonce);
+        const isValid = (0, validSignMessage_1.validateSignedMessage)(wallet, message, signature);
         if (!isValid) {
             throw new common_1.UnauthorizedException('Invalid signature');
         }

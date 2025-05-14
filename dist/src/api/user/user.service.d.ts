@@ -5,5 +5,5 @@ export declare class UserService {
     constructor(userRepository: Repository<User>);
     findByWalletAddress(wallet: string): Promise<User | null>;
     findById(id: string): Promise<User | null>;
-    createUserWithSolanaWallet(wallet: string, signedMessage: string): Promise<User>;
+    createUserWithSolanaWallet(wallet: string, signature: string, nonce: string): Promise<User>;
 }
