@@ -33,11 +33,12 @@ export class Nonce {
   nonce: number;
 
   @ApiProperty({
-    description: 'ID of the user',
-    example: 42,
+    description: 'UUID of the user',
+    example: '550e8400-e29b-41d4-a716-446655440000',
   })
-  @Column({ type: 'int' })
-  userId: number;
+  @Column({ type: 'uuid' })
+  userId: string;
+
   @ManyToOne(() => User, (user) => user.nonces, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'userId' })
   user: User;
