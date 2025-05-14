@@ -1,15 +1,10 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  PrimaryColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Column, CreateDateColumn, Entity, PrimaryColumn, UpdateDateColumn } from 'typeorm';
 
 export interface Message {
   id: string;
   content: string;
   role: string;
+  annotations?: any;
   createdAt?: Date;
 }
 

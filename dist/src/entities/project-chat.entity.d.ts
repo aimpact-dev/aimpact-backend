@@ -2,6 +2,7 @@ export interface Message {
     id: string;
     content: string;
     role: string;
+    annotations?: any;
     createdAt?: Date;
 }
 export declare class ProjectChat {

@@ -1,11 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsArray,
-  IsNotEmpty,
-  IsObject,
-  IsOptional,
-  IsString,
-} from 'class-validator';
+import { IsArray, IsNotEmpty, IsObject, IsOptional, IsString } from 'class-validator';
 
 export class MessageRequest {
   @ApiProperty({ required: false })
@@ -22,6 +16,11 @@ export class MessageRequest {
   @IsString()
   @IsNotEmpty()
   role: string;
+
+  @ApiProperty({ nullable: true })
+  @IsOptional()
+  @IsArray()
+  annotations?: any[];
 }
 
 export class ProjectChatRequest {
