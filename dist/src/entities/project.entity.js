@@ -11,6 +11,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Project = void 0;
 const typeorm_1 = require("typeorm");
+const project_chat_entity_1 = require("./project-chat.entity");
+const project_snapshot_entity_1 = require("./project-snapshot.entity");
 let Project = class Project {
 };
 exports.Project = Project;
@@ -35,6 +37,10 @@ __decorate([
     __metadata("design:type", String)
 ], Project.prototype, "image", void 0);
 __decorate([
+    (0, typeorm_1.Column)({ type: 'uuid' }),
+    __metadata("design:type", String)
+], Project.prototype, "userId", void 0);
+__decorate([
     (0, typeorm_1.CreateDateColumn)({ type: 'timestamp' }),
     __metadata("design:type", Date)
 ], Project.prototype, "createdAt", void 0);
@@ -42,6 +48,14 @@ __decorate([
     (0, typeorm_1.UpdateDateColumn)({ type: 'timestamp' }),
     __metadata("design:type", Date)
 ], Project.prototype, "updatedAt", void 0);
+__decorate([
+    (0, typeorm_1.OneToOne)(() => project_chat_entity_1.ProjectChat, (projectChat) => projectChat.projectId),
+    __metadata("design:type", project_chat_entity_1.ProjectChat)
+], Project.prototype, "projectChat", void 0);
+__decorate([
+    (0, typeorm_1.OneToOne)(() => project_snapshot_entity_1.ProjectSnapshot, (projectSnapshot) => projectSnapshot.projectId),
+    __metadata("design:type", project_snapshot_entity_1.ProjectSnapshot)
+], Project.prototype, "projectSnapshot", void 0);
 exports.Project = Project = __decorate([
     (0, typeorm_1.Entity)('project')
 ], Project);

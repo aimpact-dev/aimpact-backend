@@ -18,6 +18,7 @@ const nonce_module_1 = require("./nonce/nonce.module");
 const auth_module_1 = require("./auth/auth.module");
 const jwt_auth_guard_1 = require("./auth/jwt-auth.guard");
 const core_1 = require("@nestjs/core");
+const project_module_1 = require("./project/project.module");
 const apiConfig = [config_2.baseEnvConfig];
 let AppModule = class AppModule {
 };
@@ -34,6 +35,7 @@ exports.AppModule = AppModule = __decorate([
             nonce_module_1.NonceModule,
             user_module_1.UserModule,
             auth_module_1.AuthModule,
+            project_module_1.ProjectModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [

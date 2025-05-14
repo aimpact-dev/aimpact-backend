@@ -9,33 +9,32 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.User = void 0;
+exports.ProjectSnapshot = void 0;
 const typeorm_1 = require("typeorm");
-const project_entity_1 = require("./project.entity");
-let User = class User {
+let ProjectSnapshot = class ProjectSnapshot {
 };
-exports.User = User;
+exports.ProjectSnapshot = ProjectSnapshot;
 __decorate([
-    (0, typeorm_1.PrimaryGeneratedColumn)('uuid'),
+    (0, typeorm_1.PrimaryColumn)({ type: 'uuid' }),
     __metadata("design:type", String)
-], User.prototype, "id", void 0);
+], ProjectSnapshot.prototype, "projectId", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'varchar', unique: true }),
+    (0, typeorm_1.Column)({ type: 'jsonb' }),
+    __metadata("design:type", Object)
+], ProjectSnapshot.prototype, "files", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: 'varchar', nullable: true }),
     __metadata("design:type", String)
-], User.prototype, "wallet", void 0);
+], ProjectSnapshot.prototype, "summary", void 0);
 __decorate([
     (0, typeorm_1.CreateDateColumn)({ type: 'timestamp' }),
     __metadata("design:type", Date)
-], User.prototype, "createdAt", void 0);
+], ProjectSnapshot.prototype, "createdAt", void 0);
 __decorate([
     (0, typeorm_1.UpdateDateColumn)({ type: 'timestamp' }),
     __metadata("design:type", Date)
-], User.prototype, "updatedAt", void 0);
-__decorate([
-    (0, typeorm_1.OneToMany)(() => project_entity_1.Project, (project) => project.userId),
-    __metadata("design:type", Array)
-], User.prototype, "projects", void 0);
-exports.User = User = __decorate([
-    (0, typeorm_1.Entity)('user')
-], User);
-//# sourceMappingURL=user.entity.js.map
+], ProjectSnapshot.prototype, "updatedAt", void 0);
+exports.ProjectSnapshot = ProjectSnapshot = __decorate([
+    (0, typeorm_1.Entity)('project_snapshot')
+], ProjectSnapshot);
+//# sourceMappingURL=project-snapshot.entity.js.map

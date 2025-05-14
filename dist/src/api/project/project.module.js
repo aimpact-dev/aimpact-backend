@@ -10,13 +10,18 @@ exports.ProjectModule = void 0;
 const common_1 = require("@nestjs/common");
 const project_controller_1 = require("./project.controller");
 const project_service_1 = require("./project.service");
+const typeorm_1 = require("@nestjs/typeorm");
+const project_entity_1 = require("../../entities/project.entity");
+const project_chat_entity_1 = require("../../entities/project-chat.entity");
+const project_snapshot_entity_1 = require("../../entities/project-snapshot.entity");
 let ProjectModule = class ProjectModule {
 };
 exports.ProjectModule = ProjectModule;
 exports.ProjectModule = ProjectModule = __decorate([
     (0, common_1.Module)({
+        imports: [typeorm_1.TypeOrmModule.forFeature([project_entity_1.Project, project_chat_entity_1.ProjectChat, project_snapshot_entity_1.ProjectSnapshot])],
         controllers: [project_controller_1.ProjectController],
-        providers: [project_service_1.ProjectService]
+        providers: [project_service_1.ProjectService],
     })
 ], ProjectModule);
 //# sourceMappingURL=project.module.js.map
