@@ -49,11 +49,11 @@ __decorate([
     __metadata("design:type", Date)
 ], Project.prototype, "updatedAt", void 0);
 __decorate([
-    (0, typeorm_1.OneToOne)(() => project_chat_entity_1.ProjectChat, (projectChat) => projectChat.projectId),
+    (0, typeorm_1.OneToOne)(() => project_chat_entity_1.ProjectChat, (projectChat) => projectChat.project),
     __metadata("design:type", project_chat_entity_1.ProjectChat)
 ], Project.prototype, "projectChat", void 0);
 __decorate([
-    (0, typeorm_1.OneToOne)(() => project_snapshot_entity_1.ProjectSnapshot, (projectSnapshot) => projectSnapshot.projectId),
+    (0, typeorm_1.OneToOne)(() => project_snapshot_entity_1.ProjectSnapshot, (projectSnapshot) => projectSnapshot.project),
     __metadata("design:type", project_snapshot_entity_1.ProjectSnapshot)
 ], Project.prototype, "projectSnapshot", void 0);
 exports.Project = Project = __decorate([

@@ -24,13 +24,11 @@ let JwtStrategy = class JwtStrategy extends (0, passport_1.PassportStrategy)(pas
             jwtFromRequest: passport_jwt_1.ExtractJwt.fromAuthHeaderAsBearerToken(),
             ignoreExpiration: false,
             secretOrKey: jwtConfig.JWT_SECRET,
-            algorithms: ['RS256'],
         });
         this.jwtConfig = jwtConfig;
         this.usersService = usersService;
     }
     async validate(payload) {
-        common_1.Logger.log('JWT payload', payload);
         const user = await this.usersService.findById(payload.sub);
         if (!user) {
             throw new common_1.UnauthorizedException();

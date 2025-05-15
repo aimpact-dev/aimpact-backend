@@ -1,3 +1,4 @@
+import { Project } from './project.entity';
 export declare class ProjectSnapshot {
     projectId: string;
     files: any;
@@ -5,4 +6,5 @@ export declare class ProjectSnapshot {
     summary?: string;
     createdAt: Date;
     updatedAt: Date;
+    project: Project;
 }

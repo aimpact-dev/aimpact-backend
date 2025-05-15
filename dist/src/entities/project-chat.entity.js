@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProjectChat = void 0;
 const typeorm_1 = require("typeorm");
+const project_entity_1 = require("./project.entity");
 let ProjectChat = class ProjectChat {
 };
 exports.ProjectChat = ProjectChat;
@@ -38,6 +39,11 @@ __decorate([
     (0, typeorm_1.UpdateDateColumn)({ type: 'timestamp' }),
     __metadata("design:type", Date)
 ], ProjectChat.prototype, "updatedAt", void 0);
+__decorate([
+    (0, typeorm_1.OneToOne)(() => project_entity_1.Project, (project) => project.projectChat),
+    (0, typeorm_1.JoinColumn)({ name: 'projectId' }),
+    __metadata("design:type", project_entity_1.Project)
+], ProjectChat.prototype, "project", void 0);
 exports.ProjectChat = ProjectChat = __decorate([
     (0, typeorm_1.Entity)('project_chat')
 ], ProjectChat);

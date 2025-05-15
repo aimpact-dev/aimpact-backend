@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -35,9 +36,9 @@ export class Project {
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
 
-  @OneToOne(() => ProjectChat, (projectChat) => projectChat.projectId)
+  @OneToOne(() => ProjectChat, (projectChat) => projectChat.project)
   projectChat: ProjectChat;
 
-  @OneToOne(() => ProjectSnapshot, (projectSnapshot) => projectSnapshot.projectId)
+  @OneToOne(() => ProjectSnapshot, (projectSnapshot) => projectSnapshot.project)
   projectSnapshot: ProjectSnapshot;
 }
