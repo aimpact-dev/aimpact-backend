@@ -26,8 +26,7 @@ let NonceService = class NonceService {
         const userNonce = await this.nonceRepository.findOne({
             where: { nonce, address },
         });
-        console.log(userNonce, userNonce?.dateOfUsage);
-        if (!userNonce || userNonce?.dateOfUsage) {
+        if (!userNonce) {
             throw new Error(`The user with ${address} address already used nonce ${nonce}`);
         }
         let dateOfUsage = new Date();

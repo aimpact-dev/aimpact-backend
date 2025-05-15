@@ -69,7 +69,7 @@ __decorate([
     }),
     (0, swagger_1.ApiBody)({
         type: requestMessage_dto_1.RequestMessageDto,
-        description: 'User wallet address',
+        description: 'User login credentials by using wallet.',
     }),
     (0, swagger_1.ApiResponse)({
         status: 200,

@@ -21,7 +21,7 @@ async function bootstrap() {
 
   // adding global jwt auth guard
   app.useGlobalPipes(new ValidationPipe());
-  app.useGlobalGuards(new JwtAuthGuard(new Reflector()));
+  app.useGlobalGuards(new JwtAuthGuard(app.get(Reflector)));
 
   app.enableCors();
 

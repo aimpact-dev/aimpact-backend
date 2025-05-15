@@ -16,7 +16,7 @@ const postgres_shared_module_1 = require("../shared/modules/database/postgres-sh
 const user_module_1 = require("./user/user.module");
 const nonce_module_1 = require("./nonce/nonce.module");
 const auth_module_1 = require("./auth/auth.module");
-const project_module_1 = require("./project/project.module");
+const projects_module_1 = require("./projects/projects.module");
 const final_exception_filter_1 = require("../shared/rest/general/final-exception.filter");
 const core_1 = require("@nestjs/core");
 const apiConfig = [config_2.baseEnvConfig];
@@ -35,7 +35,7 @@ exports.AppModule = AppModule = __decorate([
             nonce_module_1.NonceModule,
             user_module_1.UserModule,
             auth_module_1.AuthModule,
-            project_module_1.ProjectModule,
+            projects_module_1.ProjectsModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [

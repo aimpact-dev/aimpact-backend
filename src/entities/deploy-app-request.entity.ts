@@ -3,21 +3,19 @@ import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, OneToOne, Prima
 import { Project } from "./project.entity";
 import { IsBoolean, IsNotEmpty } from "class-validator";
 
-@Entity('nonce')
+@Entity('deploy_app_request')
 export class DeployAppRequest {
-  @ApiProperty({
-    description: 'Unique identifier for the tournament.',
-    example: 1,
-  })
-  @PrimaryGeneratedColumn("uuid")
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ApiProperty({
-    description: 'Project, that must be deployed in this request',
-  })
-  @OneToOne(() => Project, (project) => project.id)
-  @IsNotEmpty()
-  project?: Project;
+  @Column({ type: 'boolean', default: false })
+  isDeployed: boolean;
+
+  @Column({ type: 'varchar', nullable: true })
+  message?: string;
+
+  @Column({ type: 'varchar', nullable: true })
+  finalUrl?: string;
 
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
@@ -25,16 +23,6 @@ export class DeployAppRequest {
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
 
-  @ApiProperty()
-  @Column({ type: "boolean", default: false })
-  @IsNotEmpty()
-  isDeployed: boolean;
-
-  @ApiProperty()
-  @Column({ type: "string" })
-  message: string;
-
-  @ApiProperty()
-  @Column({ type: "string" })
-  finalUrl: string;
+  @OneToOne(() => Project, (project) => project.id)
+  project?: Project;
 }
