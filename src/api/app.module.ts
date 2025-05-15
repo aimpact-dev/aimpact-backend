@@ -10,7 +10,7 @@ import { AuthModule } from './auth/auth.module';
 import { ProjectModule } from './project/project.module';
 import FinalExceptionFilter from 'src/shared/rest/general/final-exception.filter';
 import { APP_FILTER } from '@nestjs/core';
-
+import { DeployAppModule } from './deploy-app/deploy-app.module';
 const apiConfig = [baseEnvConfig];
 @Module({
   imports: [
@@ -28,6 +28,7 @@ const apiConfig = [baseEnvConfig];
     UserModule,
     AuthModule,
     ProjectModule,
+    DeployAppModule,
   ],
   controllers: [AppController],
   providers: [

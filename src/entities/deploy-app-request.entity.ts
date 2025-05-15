@@ -1,23 +1,27 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { Project } from "./project.entity";
-import { IsBoolean, IsNotEmpty } from "class-validator";
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import { Project } from './project.entity';
 
-@Entity('nonce')
+@Entity('deploy_app_request')
 export class DeployAppRequest {
-  @ApiProperty({
-    description: 'Unique identifier for the tournament.',
-    example: 1,
-  })
-  @PrimaryGeneratedColumn("uuid")
-  id: string;
+  @PrimaryGeneratedColumn('uuid')
+  projectId: string;
 
-  @ApiProperty({
-    description: 'Project, that must be deployed in this request',
-  })
-  @OneToOne(() => Project, (project) => project.id)
-  @IsNotEmpty()
-  project?: Project;
+  @Column({ type: 'boolean', default: false })
+  isDeployed: boolean;
+
+  @Column({ type: 'varchar', nullable: true })
+  message?: string;
+
+  @Column({ type: 'varchar', nullable: true })
+  finalUrl?: string;
 
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
@@ -25,16 +29,7 @@ export class DeployAppRequest {
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
 
-  @ApiProperty()
-  @Column({ type: "boolean", default: false })
-  @IsNotEmpty()
-  isDeployed: boolean;
-
-  @ApiProperty()
-  @Column({ type: "string" })
-  message: string;
-
-  @ApiProperty()
-  @Column({ type: "string" })
-  finalUrl: string;
+  @OneToOne(() => Project, (project) => project.deployAppRequest)
+  @JoinColumn({ name: 'projectId' })
+  project?: Project;
 }

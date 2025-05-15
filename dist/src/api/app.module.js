@@ -19,6 +19,7 @@ const auth_module_1 = require("./auth/auth.module");
 const project_module_1 = require("./project/project.module");
 const final_exception_filter_1 = require("../shared/rest/general/final-exception.filter");
 const core_1 = require("@nestjs/core");
+const deploy_app_module_1 = require("./deploy-app/deploy-app.module");
 const apiConfig = [config_2.baseEnvConfig];
 let AppModule = class AppModule {
 };
@@ -36,6 +37,7 @@ exports.AppModule = AppModule = __decorate([
             user_module_1.UserModule,
             auth_module_1.AuthModule,
             project_module_1.ProjectModule,
+            deploy_app_module_1.DeployAppModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [

@@ -16,14 +16,16 @@ export class DeployAppService {
     private readonly projectRepository: Repository<Project>,
   ) {}
 
-  async requestDeployApp(user: User, dto: RequestDeployAppDto): Promise<DeployAppRequest> {  // Deploy app to vercel
+  async requestDeployApp(user: User, dto: RequestDeployAppDto): Promise<DeployAppRequest> {
+    // Deploy app to vercel
     const project = await this.projectRepository.findOne({ where: { id: dto.projectId } });
-    if (!project) throw new NotFoundException("Project not found");
+    if (!project) throw new NotFoundException('Project not found');
 
     const vercelApiKey = process.env.VERCEL_API_KEY;
     const deployRequest = await this.deployAppRequestRepository.create({
-      project,
+      projectId: project.id,
     });
+    await this.deployAppRequestRepository.save(deployRequest);
 
     // Create task here for deploying
     // ...
@@ -33,9 +35,9 @@ export class DeployAppService {
 
   async getDeployApp(user: User, dto: GetDeployAppDto): Promise<DeployAppRequest> {
     const deployAppReq = await this.deployAppRequestRepository.findOne({
-      where: { id: dto.projectId },
+      where: { projectId: dto.projectId },
     });
-    if (!deployAppReq) throw new NotFoundException("Deploy Request not found");
+    if (!deployAppReq) throw new NotFoundException('Deploy Request not found');
 
     return deployAppReq;
   }

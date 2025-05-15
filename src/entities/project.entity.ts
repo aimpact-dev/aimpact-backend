@@ -1,13 +1,7 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  OneToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Column, CreateDateColumn, Entity, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { ProjectChat } from './project-chat.entity';
 import { ProjectSnapshot } from './project-snapshot.entity';
+import { DeployAppRequest } from './deploy-app-request.entity';
 @Entity('project')
 export class Project {
   @PrimaryGeneratedColumn('uuid')
@@ -35,8 +29,11 @@ export class Project {
   updatedAt: Date;
 
   @OneToOne(() => ProjectChat, (projectChat) => projectChat.project)
-  projectChat: ProjectChat;
+  projectChat?: ProjectChat;
 
   @OneToOne(() => ProjectSnapshot, (projectSnapshot) => projectSnapshot.project)
-  projectSnapshot: ProjectSnapshot;
+  projectSnapshot?: ProjectSnapshot;
+
+  @OneToOne(() => DeployAppRequest, (deployAppRequest) => deployAppRequest.project)
+  deployAppRequest?: DeployAppRequest;
 }

@@ -1,0 +1,56 @@
+"use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.DeployAppService = void 0;
+const common_1 = require("@nestjs/common");
+const typeorm_1 = require("@nestjs/typeorm");
+const typeorm_2 = require("typeorm");
+const deploy_app_request_entity_1 = require("../../entities/deploy-app-request.entity");
+const project_entity_1 = require("../../entities/project.entity");
+let DeployAppService = class DeployAppService {
+    constructor(deployAppRequestRepository, projectRepository) {
+        this.deployAppRequestRepository = deployAppRequestRepository;
+        this.projectRepository = projectRepository;
+    }
+    async requestDeployApp(user, dto) {
+        const project = await this.projectRepository.findOne({ where: { id: dto.projectId } });
+        if (!project)
+            throw new common_1.NotFoundException('Project not found');
+        const vercelApiKey = process.env.VERCEL_API_KEY;
+        const deployRequest = await this.deployAppRequestRepository.create({
+            projectId: project.id,
+        });
+        await this.deployAppRequestRepository.save(deployRequest);
+        return deployRequest;
+    }
+    async getDeployApp(user, dto) {
+        const deployAppReq = await this.deployAppRequestRepository.findOne({
+            where: { projectId: dto.projectId },
+        });
+        if (!deployAppReq)
+            throw new common_1.NotFoundException('Deploy Request not found');
+        return deployAppReq;
+    }
+    async listDeployApp() {
+    }
+};
+exports.DeployAppService = DeployAppService;
+exports.DeployAppService = DeployAppService = __decorate([
+    (0, common_1.Injectable)(),
+    __param(0, (0, typeorm_1.InjectRepository)(deploy_app_request_entity_1.DeployAppRequest)),
+    __param(1, (0, typeorm_1.InjectRepository)(project_entity_1.Project)),
+    __metadata("design:paramtypes", [typeorm_2.Repository,
+        typeorm_2.Repository])
+], DeployAppService);
+//# sourceMappingURL=deploy-app.service.js.map
