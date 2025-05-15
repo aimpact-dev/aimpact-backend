@@ -15,6 +15,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       context.getHandler(),
       context.getClass(),
     ]);
+
     // If the route is public, skip JWT guard
     if (isPublic) {
       return true;

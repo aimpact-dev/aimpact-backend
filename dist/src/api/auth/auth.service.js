@@ -8,6 +8,9 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 var AuthService_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthService = void 0;
@@ -17,11 +20,13 @@ const user_service_1 = require("../user/user.service");
 const nonce_service_1 = require("../nonce/nonce.service");
 const validSignMessage_1 = require("../utils/validSignMessage");
 const generateMessage_1 = require("../utils/generateMessage");
+const config_1 = require("../../shared/config");
 let AuthService = AuthService_1 = class AuthService {
-    constructor(jwtService, usersService, nonceService) {
+    constructor(jwtService, usersService, nonceService, jwtConfig) {
         this.jwtService = jwtService;
         this.usersService = usersService;
         this.nonceService = nonceService;
+        this.jwtConfig = jwtConfig;
         this.logger = new common_1.Logger(AuthService_1.name);
     }
     async loginWithSolanaWallet(address, signature, nonce) {
@@ -55,8 +60,9 @@ let AuthService = AuthService_1 = class AuthService {
 exports.AuthService = AuthService;
 exports.AuthService = AuthService = AuthService_1 = __decorate([
     (0, common_1.Injectable)(),
+    __param(3, (0, common_1.Inject)(config_1.jwtEnvConfig.KEY)),
     __metadata("design:paramtypes", [jwt_1.JwtService,
         user_service_1.UserService,
-        nonce_service_1.NonceService])
+        nonce_service_1.NonceService, void 0])
 ], AuthService);
 //# sourceMappingURL=auth.service.js.map

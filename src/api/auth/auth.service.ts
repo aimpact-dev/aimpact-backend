@@ -1,9 +1,11 @@
-import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user/user.service';
 import { NonceService } from '../nonce/nonce.service';
 import { validateSignedMessage } from '../utils/validSignMessage';
 import { generateMessage } from '../utils/generateMessage';
+import { jwtEnvConfig } from 'src/shared/config';
+import { ConfigType } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
@@ -12,6 +14,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly usersService: UserService,
     private readonly nonceService: NonceService,
+    @Inject(jwtEnvConfig.KEY) private readonly jwtConfig: ConfigType<typeof jwtEnvConfig>,
   ) {}
 
   async loginWithSolanaWallet(address: string, signature: string, nonce: string) {

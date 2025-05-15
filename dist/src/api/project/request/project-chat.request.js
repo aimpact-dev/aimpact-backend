@@ -9,42 +9,15 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ProjectChatRequest = exports.MessageRequest = void 0;
+exports.ProjectChatRequest = void 0;
 const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
-class MessageRequest {
-}
-exports.MessageRequest = MessageRequest;
-__decorate([
-    (0, swagger_1.ApiProperty)({ required: false }),
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.IsOptional)(),
-    __metadata("design:type", String)
-], MessageRequest.prototype, "id", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.IsNotEmpty)(),
-    __metadata("design:type", String)
-], MessageRequest.prototype, "content", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.IsNotEmpty)(),
-    __metadata("design:type", String)
-], MessageRequest.prototype, "role", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)({ nullable: true }),
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsArray)(),
-    __metadata("design:type", Array)
-], MessageRequest.prototype, "annotations", void 0);
 class ProjectChatRequest {
 }
 exports.ProjectChatRequest = ProjectChatRequest;
 __decorate([
-    (0, swagger_1.ApiProperty)({ type: [MessageRequest] }),
-    (0, class_validator_1.IsArray)({ each: true }),
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsArray)(),
     __metadata("design:type", Array)
 ], ProjectChatRequest.prototype, "messages", void 0);
 __decorate([

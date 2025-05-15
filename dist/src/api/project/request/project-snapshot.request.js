@@ -18,7 +18,7 @@ class ProjectSnapshotRequest {
 exports.ProjectSnapshotRequest = ProjectSnapshotRequest;
 __decorate([
     (0, swagger_1.ApiProperty)(),
-    (0, class_validator_1.IsNotEmptyObject)(),
+    (0, class_validator_1.IsObject)(),
     __metadata("design:type", Object)
 ], ProjectSnapshotRequest.prototype, "files", void 0);
 __decorate([
