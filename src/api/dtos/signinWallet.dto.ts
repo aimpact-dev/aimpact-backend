@@ -17,6 +17,6 @@ export class SigninWalletDto {
   @ApiProperty({
     description: 'Uniq nonce which was used in the message',
   })
-  @IsNumber()
+  @IsString()
   nonce: string;
 }

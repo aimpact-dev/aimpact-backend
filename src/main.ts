@@ -9,6 +9,7 @@ async function bootstrap() {
   await envLoad();
 
   const app = await NestFactory.create(AppModule);
+  if (process.env.ENABLE_CORS) app.enableCors();
   const config = new DocumentBuilder()
     .setTitle('AImpact API docs')
     .setDescription('The AImpact API description')

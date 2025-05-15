@@ -33,7 +33,7 @@ __decorate([
     (0, swagger_1.ApiProperty)({
         description: 'Uniq nonce which was used in the message',
     }),
-    (0, class_validator_1.IsNumber)(),
+    (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], SigninWalletDto.prototype, "nonce", void 0);
 //# sourceMappingURL=signinWallet.dto.js.map

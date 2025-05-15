@@ -15,7 +15,9 @@ export class NonceService {
     const userNonce = await this.nonceRepository.findOne({
       where: { nonce, address },
     });
-    if (!userNonce) {
+
+    console.log(userNonce, userNonce?.dateOfUsage)
+    if (!userNonce || userNonce?.dateOfUsage) {
       throw new Error(`The user with ${address} address already used nonce ${nonce}`);
     }
     let dateOfUsage = new Date();
@@ -35,16 +37,15 @@ export class NonceService {
       .andWhere('nonce.nonce = :nonce', { nonce })
       .andWhere('nonce.dateOfUsage IS NOT NULL')
       .getOne();
-    if (!nonceEntity) {
-      return false;
-    } else {
-      return true;
-    }
+    console.log(nonceEntity, typeof nonceEntity, !!nonceEntity, "return false");
+    return !!nonceEntity
   }
 
   async createNewNonce(address: string): Promise<Nonce> {
     const nonce = generateNonce();
     const nonceEntity = await this.nonceRepository.create({ address, nonce });
+    await this.nonceRepository.save(nonceEntity);
+    console.log(nonceEntity)
     return nonceEntity;
   }
 }

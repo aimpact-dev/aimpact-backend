@@ -65,18 +65,19 @@ __decorate([
     (0, common_1.Post)('requestMessage'),
     (0, swagger_1.ApiOperation)({
         summary: 'Request message and nonce from backend',
-        description: 'User need to sign message "Sign this message to prove you have access to this wallet with nonce <uniq nonce, for example you can use current timestamp>."',
+        description: 'User get this message and must sign it to be authorized',
     }),
     (0, swagger_1.ApiBody)({
         type: requestMessage_dto_1.RequestMessageDto,
-        description: 'User login credentials by using wallet.',
+        description: 'User wallet address',
     }),
     (0, swagger_1.ApiResponse)({
         status: 200,
-        description: 'Successful authentication.',
+        description: 'Message created',
         schema: {
             example: {
-                accessToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+                message: 'SignIn\n8a526a75-cb8c-4e54-a9a6-5e97b69910ab',
+                nonce: '8a526a75-cb8c-4e54-a9a6-5e97b69910ab',
             },
         },
     }),

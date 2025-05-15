@@ -9,6 +9,8 @@ const jwt_auth_guard_1 = require("./api/auth/jwt-auth.guard");
 async function bootstrap() {
     await (0, config_1.envLoad)();
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
+    if (process.env.ENABLE_CORS)
+        app.enableCors();
     const config = new swagger_1.DocumentBuilder()
         .setTitle('AImpact API docs')
         .setDescription('The AImpact API description')

@@ -27,7 +27,7 @@ export class AuthService {
     if (!user) {
       user = await this.usersService.createUserWithSolanaWallet(address, signature, nonce);
     }
-    let isNonceUsed = await this.nonceService.isNonceUsed(user.id, nonce);
+    let isNonceUsed = await this.nonceService.isNonceUsed(address, nonce);
     if (isNonceUsed) {
       throw new HttpException(
         `User with wallet address ${address} have already used the nonce ${nonce}`,
