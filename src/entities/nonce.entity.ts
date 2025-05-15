@@ -14,8 +14,8 @@ export class Nonce {
     description: 'Date when the nonce was used',
     example: '2024-01-20T18:00:00Z',
   })
-  @Column({ type: 'timestamp' })
-  dateOfUsage: Date;
+  @Column({ type: 'timestamp', nullable: true })
+  dateOfUsage?: Date;
 
   @ApiProperty({
     description: 'The nonce which was used by the owner',

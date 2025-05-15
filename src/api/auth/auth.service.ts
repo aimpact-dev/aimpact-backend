@@ -17,36 +17,30 @@ export class AuthService {
     private readonly usersService: UserService,
     private readonly nonceService: NonceService,
   ) {}
-1
-  async loginWithSolanaWallet(
-    address: string,
-    signature: string,
-    nonce: string,
-  ) {
+  1;
+  async loginWithSolanaWallet(address: string, signature: string, nonce: string) {
     let user = await this.usersService.findByWalletAddress(address);
     if (!user) {
       user = await this.usersService.createUserWithSolanaWallet(address, signature, nonce);
     }
-    let isNonceUsed = await this.nonceService.isNonceUsed(user.id, nonce);
+    let isNonceUsed = await this.nonceService.isNonceUsed(address, nonce);
     if (isNonceUsed) {
       throw new HttpException(
         `User with wallet address ${address} have already used the nonce ${nonce}`,
         HttpStatus.UNAUTHORIZED,
       );
     }
+
     const message = generateMessage(nonce);
     const isValid = validateSignedMessage(address, message, signature);
-    await this.nonceService.addUsedNonce(user.id, nonce);
+    await this.nonceService.addUsedNonce(address, nonce);
     if (isValid) {
       const payload = { sub: user.id };
       return {
         access_token: this.jwtService.sign(payload),
       };
     } else {
-      throw new HttpException(
-        `The signed message isn't valid`,
-        HttpStatus.UNAUTHORIZED,
-      );
+      throw new HttpException(`The signed message isn't valid`, HttpStatus.UNAUTHORIZED);
     }
   }
 

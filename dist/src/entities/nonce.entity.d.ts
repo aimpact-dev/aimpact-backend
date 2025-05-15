@@ -1,6 +1,6 @@
 export declare class Nonce {
     id: number;
-    dateOfUsage: Date;
+    dateOfUsage?: Date;
     nonce: string;
     address: string;
     createdAt: Date;

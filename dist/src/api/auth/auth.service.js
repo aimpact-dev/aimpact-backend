@@ -29,13 +29,13 @@ let AuthService = AuthService_1 = class AuthService {
         if (!user) {
             user = await this.usersService.createUserWithSolanaWallet(address, signature, nonce);
         }
-        let isNonceUsed = await this.nonceService.isNonceUsed(user.id, nonce);
+        let isNonceUsed = await this.nonceService.isNonceUsed(address, nonce);
         if (isNonceUsed) {
             throw new common_1.HttpException(`User with wallet address ${address} have already used the nonce ${nonce}`, common_1.HttpStatus.UNAUTHORIZED);
         }
         const message = (0, generateMessage_1.generateMessage)(nonce);
         const isValid = (0, validSignMessage_1.validateSignedMessage)(address, message, signature);
-        await this.nonceService.addUsedNonce(user.id, nonce);
+        await this.nonceService.addUsedNonce(address, nonce);
         if (isValid) {
             const payload = { sub: user.id };
             return {

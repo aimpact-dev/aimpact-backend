@@ -51,7 +51,8 @@ let NonceService = class NonceService {
     }
     async createNewNonce(address) {
         const nonce = (0, generateMessage_1.generateNonce)();
-        const nonceEntity = await this.nonceRepository.create({ address, nonce });
+        const nonceEntity = this.nonceRepository.create({ address, nonce });
+        await this.nonceRepository.save(nonceEntity);
         return nonceEntity;
     }
 };
