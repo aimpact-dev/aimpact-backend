@@ -24,8 +24,8 @@ export class ProjectService {
     private readonly projectSnapshotRepository: Repository<ProjectSnapshot>,
   ) {}
 
-  async create(dto: CreateProjectDto): Promise<ProjectResponse> {
-    const project = this.projectRepository.create(dto);
+  async create(userId: string, dto: CreateProjectDto): Promise<ProjectResponse> {
+    const project = this.projectRepository.create({ ...dto, userId });
     const savedProject = await this.projectRepository.save(project);
     return ProjectResponse.fromObject(savedProject);
   }
@@ -43,9 +43,9 @@ export class ProjectService {
     return ProjectResponse.fromObject(project);
   }
 
-  async getChat(projectId: string): Promise<ProjectChatResponse> {
+  async getChat(projectId: string, userId: string): Promise<ProjectChatResponse> {
     const project = await this.projectRepository.findOne({
-      where: { id: projectId },
+      where: { id: projectId, userId },
       relations: ['projectChat'],
     });
 
@@ -59,9 +59,9 @@ export class ProjectService {
     return ProjectChatResponse.fromObject(project.projectChat);
   }
 
-  async upsertChat(projectId: string, dto: ProjectChatRequest): Promise<ProjectChatResponse> {
+  async upsertChat(projectId: string, userId: string, dto: ProjectChatRequest): Promise<ProjectChatResponse> {
     const project = await this.projectRepository.findOne({
-      where: { id: projectId },
+      where: { id: projectId, userId },
       relations: ['projectChat'],
     });
 
@@ -72,6 +72,7 @@ export class ProjectService {
     if (!project.projectChat) {
       const newChat = await this.projectChatRepository.save({
         projectId: project.id,
+        description: dto.description,
         messages: dto.messages,
         metadata: dto.metadata,
       });
@@ -86,6 +87,7 @@ export class ProjectService {
         id: message.id ?? randomUUID(),
         ...message,
       })),
+      description: dto.description,
       metadata: dto.metadata,
     });
 
@@ -94,9 +96,9 @@ export class ProjectService {
     return ProjectChatResponse.fromObject(updatedChat);
   }
 
-  async getSnapshot(projectId: string): Promise<ProjectSnapshotResponse> {
+  async getSnapshot(projectId: string, userId: string): Promise<ProjectSnapshotResponse | null> {
     const project = await this.projectRepository.findOne({
-      where: { id: projectId },
+      where: { id: projectId, userId },
       relations: ['projectSnapshot', 'projectChat'],
     });
 
@@ -107,15 +109,19 @@ export class ProjectService {
       throw new NotFoundException(`Project with ID ${projectId} has no chat`);
     }
     if (!project.projectSnapshot) {
-      throw new NotFoundException(`Project with ID ${projectId} has no snapshot`);
+      return null;
     }
 
     return ProjectSnapshotResponse.fromObject(project.projectSnapshot);
   }
 
-  async upsertSnapshot(projectId: string, dto: ProjectSnapshotRequest): Promise<ProjectSnapshotResponse> {
+  async upsertSnapshot(
+    projectId: string,
+    userId: string,
+    dto: ProjectSnapshotRequest,
+  ): Promise<ProjectSnapshotResponse> {
     const project = await this.projectRepository.findOne({
-      where: { id: projectId },
+      where: { id: projectId, userId },
       relations: ['projectSnapshot', 'projectChat'],
     });
 
@@ -130,6 +136,7 @@ export class ProjectService {
       const newSnapshot = await this.projectSnapshotRepository.save({
         projectId: project.id,
         files: dto.files,
+        chatIndex: dto.chatIndex,
         summary: dto.summary,
       });
 
@@ -140,6 +147,7 @@ export class ProjectService {
 
     const updatedSnapshotObject = cloneEntityWithNewProps(snapshot, {
       files: dto.files,
+      chatIndex: dto.chatIndex,
       summary: dto.summary,
     });
 

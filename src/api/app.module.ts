@@ -7,11 +7,9 @@ import { PostgresSharedModule } from 'src/shared/modules/database/postgres-share
 import { UserModule } from './user/user.module';
 import { NonceModule } from './nonce/nonce.module';
 import { AuthModule } from './auth/auth.module';
-import { AuthService } from './auth/auth.service';
-import { JwtStrategy } from './auth/jwt.strategy';
-import { JwtAuthGuard } from './auth/jwt-auth.guard';
-import { APP_GUARD } from '@nestjs/core';
 import { ProjectModule } from './project/project.module';
+import FinalExceptionFilter from 'src/shared/rest/general/final-exception.filter';
+import { APP_FILTER } from '@nestjs/core';
 
 const apiConfig = [baseEnvConfig];
 @Module({
@@ -35,8 +33,8 @@ const apiConfig = [baseEnvConfig];
   providers: [
     AppService,
     {
-      provide: APP_GUARD,
-      useClass: JwtAuthGuard,
+      provide: APP_FILTER,
+      useClass: FinalExceptionFilter,
     },
   ],
 })

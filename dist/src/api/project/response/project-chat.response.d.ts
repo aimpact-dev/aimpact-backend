@@ -8,8 +8,9 @@ export declare class MessageResponse {
 }
 export declare class ProjectChatResponse {
     projectId: string;
+    description?: string;
     messages: MessageResponse[];
-    metadata: any;
+    metadata?: any;
     createdAt: Date;
     static fromObject(projectChat: ProjectChat): ProjectChatResponse;
 }

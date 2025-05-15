@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.databaseEnvConfig = exports.baseEnvConfig = exports.envLoad = exports.DatabaseEnvironment = exports.Environment = exports.ENV_NAMESPACE_KEYS = void 0;
+exports.jwtEnvConfig = exports.databaseEnvConfig = exports.baseEnvConfig = exports.envLoad = exports.JwtEnvironment = exports.DatabaseEnvironment = exports.Environment = exports.ENV_NAMESPACE_KEYS = void 0;
 exports.createEnvValidationFunction = createEnvValidationFunction;
 const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
@@ -18,9 +18,10 @@ const class_validator_1 = require("class-validator");
 exports.ENV_NAMESPACE_KEYS = {
     API_SERVER: 'api_server',
     DATABASE: 'database',
-    aws: 'aws',
-    crypto: 'crypto',
-    email: 'email',
+    AWS: 'aws',
+    CRYPTO: 'crypto',
+    EMAIL: 'email',
+    JWT: 'jwt',
 };
 class Environment {
     constructor() {
@@ -68,6 +69,17 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], DatabaseEnvironment.prototype, "DATABASE_NAME", void 0);
+class JwtEnvironment {
+}
+exports.JwtEnvironment = JwtEnvironment;
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], JwtEnvironment.prototype, "JWT_SECRET", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], JwtEnvironment.prototype, "JWT_EXPIRATION", void 0);
 const logger = new common_1.Logger('ENV logger');
 let env = {};
 const envLoad = () => {
@@ -94,4 +106,5 @@ function createEnvValidationFunction(envSchemaClass) {
 }
 exports.baseEnvConfig = (0, config_1.registerAs)(exports.ENV_NAMESPACE_KEYS.API_SERVER, createEnvValidationFunction(Environment));
 exports.databaseEnvConfig = (0, config_1.registerAs)(exports.ENV_NAMESPACE_KEYS.DATABASE, createEnvValidationFunction(DatabaseEnvironment));
+exports.jwtEnvConfig = (0, config_1.registerAs)(exports.ENV_NAMESPACE_KEYS.JWT, createEnvValidationFunction(JwtEnvironment));
 //# sourceMappingURL=index.js.map

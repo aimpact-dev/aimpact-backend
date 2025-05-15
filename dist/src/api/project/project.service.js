@@ -30,8 +30,8 @@ let ProjectService = class ProjectService {
         this.projectChatRepository = projectChatRepository;
         this.projectSnapshotRepository = projectSnapshotRepository;
     }
-    async create(dto) {
-        const project = this.projectRepository.create(dto);
+    async create(userId, dto) {
+        const project = this.projectRepository.create({ ...dto, userId });
         const savedProject = await this.projectRepository.save(project);
         return project_response_1.ProjectResponse.fromObject(savedProject);
     }
@@ -46,9 +46,9 @@ let ProjectService = class ProjectService {
         }
         return project_response_1.ProjectResponse.fromObject(project);
     }
-    async getChat(projectId) {
+    async getChat(projectId, userId) {
         const project = await this.projectRepository.findOne({
-            where: { id: projectId },
+            where: { id: projectId, userId },
             relations: ['projectChat'],
         });
         if (!project) {
@@ -59,9 +59,9 @@ let ProjectService = class ProjectService {
         }
         return project_chat_response_1.ProjectChatResponse.fromObject(project.projectChat);
     }
-    async upsertChat(projectId, dto) {
+    async upsertChat(projectId, userId, dto) {
         const project = await this.projectRepository.findOne({
-            where: { id: projectId },
+            where: { id: projectId, userId },
             relations: ['projectChat'],
         });
         if (!project) {
@@ -70,6 +70,7 @@ let ProjectService = class ProjectService {
         if (!project.projectChat) {
             const newChat = await this.projectChatRepository.save({
                 projectId: project.id,
+                description: dto.description,
                 messages: dto.messages,
                 metadata: dto.metadata,
             });
@@ -81,14 +82,15 @@ let ProjectService = class ProjectService {
                 id: message.id ?? (0, crypto_1.randomUUID)(),
                 ...message,
             })),
+            description: dto.description,
             metadata: dto.metadata,
         });
         const updatedChat = await this.projectChatRepository.save(updatedChatObject);
         return project_chat_response_1.ProjectChatResponse.fromObject(updatedChat);
     }
-    async getSnapshot(projectId) {
+    async getSnapshot(projectId, userId) {
         const project = await this.projectRepository.findOne({
-            where: { id: projectId },
+            where: { id: projectId, userId },
             relations: ['projectSnapshot', 'projectChat'],
         });
         if (!project) {
@@ -98,13 +100,13 @@ let ProjectService = class ProjectService {
             throw new common_1.NotFoundException(`Project with ID ${projectId} has no chat`);
         }
         if (!project.projectSnapshot) {
-            throw new common_1.NotFoundException(`Project with ID ${projectId} has no snapshot`);
+            return null;
         }
         return project_snapshot_response_1.ProjectSnapshotResponse.fromObject(project.projectSnapshot);
     }
-    async upsertSnapshot(projectId, dto) {
+    async upsertSnapshot(projectId, userId, dto) {
         const project = await this.projectRepository.findOne({
-            where: { id: projectId },
+            where: { id: projectId, userId },
             relations: ['projectSnapshot', 'projectChat'],
         });
         if (!project) {
@@ -117,6 +119,7 @@ let ProjectService = class ProjectService {
             const newSnapshot = await this.projectSnapshotRepository.save({
                 projectId: project.id,
                 files: dto.files,
+                chatIndex: dto.chatIndex,
                 summary: dto.summary,
             });
             return project_snapshot_response_1.ProjectSnapshotResponse.fromObject(newSnapshot);
@@ -124,6 +127,7 @@ let ProjectService = class ProjectService {
         const snapshot = project.projectSnapshot;
         const updatedSnapshotObject = (0, clone_entity_with_new_props_1.cloneEntityWithNewProps)(snapshot, {
             files: dto.files,
+            chatIndex: dto.chatIndex,
             summary: dto.summary,
         });
         const updatedSnapshot = await this.projectSnapshotRepository.save(updatedSnapshotObject);

@@ -16,9 +16,9 @@ const postgres_shared_module_1 = require("../shared/modules/database/postgres-sh
 const user_module_1 = require("./user/user.module");
 const nonce_module_1 = require("./nonce/nonce.module");
 const auth_module_1 = require("./auth/auth.module");
-const jwt_auth_guard_1 = require("./auth/jwt-auth.guard");
-const core_1 = require("@nestjs/core");
 const project_module_1 = require("./project/project.module");
+const final_exception_filter_1 = require("../shared/rest/general/final-exception.filter");
+const core_1 = require("@nestjs/core");
 const apiConfig = [config_2.baseEnvConfig];
 let AppModule = class AppModule {
 };
@@ -41,8 +41,8 @@ exports.AppModule = AppModule = __decorate([
         providers: [
             app_service_1.AppService,
             {
-                provide: core_1.APP_GUARD,
-                useClass: jwt_auth_guard_1.JwtAuthGuard,
+                provide: core_1.APP_FILTER,
+                useClass: final_exception_filter_1.default,
             },
         ],
     })

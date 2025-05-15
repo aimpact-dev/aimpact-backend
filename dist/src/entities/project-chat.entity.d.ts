@@ -1,3 +1,4 @@
+import { Project } from './project.entity';
 export interface Message {
     id: string;
     content: string;
@@ -7,8 +8,10 @@ export interface Message {
 }
 export declare class ProjectChat {
     projectId: string;
-    messages: Message[];
+    description?: string;
+    messages: any[];
     metadata?: any;
     createdAt: Date;
     updatedAt: Date;
+    project: Project;
 }

@@ -1,4 +1,5 @@
-import { Column, CreateDateColumn, Entity, PrimaryColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, JoinColumn, OneToOne, PrimaryColumn, UpdateDateColumn } from 'typeorm';
+import { Project } from './project.entity';
 
 @Entity('project_snapshot')
 export class ProjectSnapshot {
@@ -8,6 +9,9 @@ export class ProjectSnapshot {
   @Column({ type: 'jsonb' })
   files: any;
 
+  @Column({ type: 'varchar' })
+  chatIndex: string;
+
   @Column({ type: 'text', nullable: true })
   summary?: string;
 
@@ -16,4 +20,8 @@ export class ProjectSnapshot {
 
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
+
+  @OneToOne(() => Project, (project) => project.projectSnapshot)
+  @JoinColumn({ name: 'projectId' })
+  project: Project;
 }

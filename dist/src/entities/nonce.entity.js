@@ -28,7 +28,7 @@ __decorate([
         description: 'Date when the nonce was used',
         example: '2024-01-20T18:00:00Z',
     }),
-    (0, typeorm_1.Column)({ type: 'timestamp' }),
+    (0, typeorm_1.Column)({ type: 'timestamp', nullable: true }),
     __metadata("design:type", Date)
 ], Nonce.prototype, "dateOfUsage", void 0);
 __decorate([

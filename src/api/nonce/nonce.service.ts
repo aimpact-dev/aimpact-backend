@@ -16,14 +16,11 @@ export class NonceService {
       where: { nonce, address },
     });
 
-    console.log(userNonce, userNonce?.dateOfUsage)
-    if (!userNonce || userNonce?.dateOfUsage) {
+    if (!userNonce) {
       throw new Error(`The user with ${address} address already used nonce ${nonce}`);
     }
     let dateOfUsage = new Date();
-    dateOfUsage = new Date(
-      dateOfUsage.getTime() + dateOfUsage.getTimezoneOffset() * 60000,
-    );
+    dateOfUsage = new Date(dateOfUsage.getTime() + dateOfUsage.getTimezoneOffset() * 60000);
 
     await this.nonceRepository.update(userNonce, {
       dateOfUsage,
@@ -43,9 +40,9 @@ export class NonceService {
 
   async createNewNonce(address: string): Promise<Nonce> {
     const nonce = generateNonce();
-    const nonceEntity = await this.nonceRepository.create({ address, nonce });
+    const nonceEntity = this.nonceRepository.create({ address, nonce });
+
     await this.nonceRepository.save(nonceEntity);
-    console.log(nonceEntity)
     return nonceEntity;
   }
 }

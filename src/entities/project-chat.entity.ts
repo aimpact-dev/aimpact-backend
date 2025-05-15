@@ -1,4 +1,5 @@
-import { Column, CreateDateColumn, Entity, PrimaryColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, JoinColumn, OneToOne, PrimaryColumn, UpdateDateColumn } from 'typeorm';
+import { Project } from './project.entity';
 
 export interface Message {
   id: string;
@@ -13,8 +14,11 @@ export class ProjectChat {
   @PrimaryColumn({ type: 'uuid' })
   projectId: string;
 
+  @Column({ type: 'text', nullable: true })
+  description?: string;
+
   @Column({ type: 'jsonb' })
-  messages: Message[];
+  messages: any[];
 
   @Column({ type: 'jsonb', nullable: true })
   metadata?: any;
@@ -24,4 +28,8 @@ export class ProjectChat {
 
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
+
+  @OneToOne(() => Project, (project) => project.projectChat)
+  @JoinColumn({ name: 'projectId' })
+  project: Project;
 }

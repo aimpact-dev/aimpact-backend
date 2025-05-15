@@ -7,9 +7,10 @@ import { ClassType } from '../../shared/types/class.type';
 export const ENV_NAMESPACE_KEYS = {
   API_SERVER: 'api_server',
   DATABASE: 'database',
-  aws: 'aws',
-  crypto: 'crypto',
-  email: 'email',
+  AWS: 'aws',
+  CRYPTO: 'crypto',
+  EMAIL: 'email',
+  JWT: 'jwt',
 };
 
 export class Environment {
@@ -39,6 +40,14 @@ export class DatabaseEnvironment {
   DATABASE_NAME: string = 'aimpact';
 }
 
+export class JwtEnvironment {
+  @IsString()
+  JWT_SECRET: string;
+
+  @IsString()
+  JWT_EXPIRATION: string;
+}
+
 const logger = new Logger('ENV logger');
 let env: Record<string, any> = {};
 
@@ -53,9 +62,7 @@ export const envLoad = (): any => {
   return env;
 };
 
-export function createEnvValidationFunction<T extends object>(
-  envSchemaClass: ClassType<T>,
-): () => Promise<T> {
+export function createEnvValidationFunction<T extends object>(envSchemaClass: ClassType<T>): () => Promise<T> {
   return async () => {
     const validatedConfig = plainToInstance(envSchemaClass, env, {
       enableImplicitConversion: true,
@@ -71,12 +78,11 @@ export function createEnvValidationFunction<T extends object>(
   };
 }
 
-export const baseEnvConfig = registerAs(
-  ENV_NAMESPACE_KEYS.API_SERVER,
-  createEnvValidationFunction(Environment),
-);
+export const baseEnvConfig = registerAs(ENV_NAMESPACE_KEYS.API_SERVER, createEnvValidationFunction(Environment));
 
 export const databaseEnvConfig = registerAs(
   ENV_NAMESPACE_KEYS.DATABASE,
   createEnvValidationFunction(DatabaseEnvironment),
 );
+
+export const jwtEnvConfig = registerAs(ENV_NAMESPACE_KEYS.JWT, createEnvValidationFunction(JwtEnvironment));

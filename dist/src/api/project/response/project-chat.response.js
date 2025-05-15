@@ -42,6 +42,7 @@ class ProjectChatResponse {
     static fromObject(projectChat) {
         return {
             projectId: projectChat.projectId,
+            description: projectChat.description,
             messages: projectChat.messages.map(MessageResponse.fromObject),
             metadata: projectChat.metadata,
             createdAt: projectChat.createdAt,
@@ -53,6 +54,10 @@ __decorate([
     (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], ProjectChatResponse.prototype, "projectId", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ nullable: true }),
+    __metadata("design:type", String)
+], ProjectChatResponse.prototype, "description", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ type: [MessageResponse] }),
     __metadata("design:type", Array)
