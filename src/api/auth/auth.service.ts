@@ -30,6 +30,7 @@ export class AuthService {
     const message = generateMessage(nonce);
     const isValid = validateSignedMessage(address, message, signature);
     await this.nonceService.addUsedNonce(address, nonce);
+
     if (isValid) {
       const payload = { sub: user.id };
       return {

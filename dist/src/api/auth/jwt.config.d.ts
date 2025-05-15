@@ -1,7 +1,8 @@
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigType } from '@nestjs/config';
 import { JwtModuleOptions } from '@nestjs/jwt';
+import { jwtEnvConfig } from 'src/shared/config';
 export declare const jwtConfig: {
-    imports: (typeof ConfigModule)[];
-    inject: (typeof ConfigService)[];
-    useFactory: (configService: ConfigService) => Promise<JwtModuleOptions>;
+    imports: import("@nestjs/common").DynamicModule[];
+    useFactory: (jwtConfig: ConfigType<typeof jwtEnvConfig>) => Promise<JwtModuleOptions>;
+    inject: (string | symbol)[];
 };
