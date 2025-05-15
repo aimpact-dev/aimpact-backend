@@ -1,4 +1,4 @@
-import { IsNumber, IsString } from 'class-validator';
+import { IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class SigninWalletDto {
@@ -17,6 +17,6 @@ export class SigninWalletDto {
   @ApiProperty({
     description: 'Uniq nonce which was used in the message',
   })
-  @IsNumber()
+  @IsString()
   nonce: string;
 }
