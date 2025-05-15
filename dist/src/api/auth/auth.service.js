@@ -39,7 +39,7 @@ let AuthService = AuthService_1 = class AuthService {
         if (isValid) {
             const payload = { sub: user.id };
             return {
-                access_token: this.jwtService.sign(payload),
+                accessToken: this.jwtService.sign(payload),
             };
         }
         else {

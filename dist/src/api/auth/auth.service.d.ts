@@ -7,9 +7,8 @@ export declare class AuthService {
     private readonly nonceService;
     private readonly logger;
     constructor(jwtService: JwtService, usersService: UserService, nonceService: NonceService);
-    1: any;
     loginWithSolanaWallet(address: string, signature: string, nonce: string): Promise<{
-        access_token: string;
+        accessToken: string;
     }>;
     requestMessage(address: string): Promise<{
         message: string;

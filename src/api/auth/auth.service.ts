@@ -1,12 +1,8 @@
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { User } from 'src/entities/user.entity';
 import { UserService } from '../user/user.service';
 import { NonceService } from '../nonce/nonce.service';
-import * as nacl from 'tweetnacl';
-import * as bs58 from 'bs58';
 import { validateSignedMessage } from '../utils/validSignMessage';
-import { SignupWalletDto } from '../dtos/signupWallet.dto';
 import { generateMessage } from '../utils/generateMessage';
 
 @Injectable()
@@ -17,7 +13,7 @@ export class AuthService {
     private readonly usersService: UserService,
     private readonly nonceService: NonceService,
   ) {}
-  1;
+
   async loginWithSolanaWallet(address: string, signature: string, nonce: string) {
     let user = await this.usersService.findByWalletAddress(address);
     if (!user) {
@@ -37,7 +33,7 @@ export class AuthService {
     if (isValid) {
       const payload = { sub: user.id };
       return {
-        access_token: this.jwtService.sign(payload),
+        accessToken: this.jwtService.sign(payload),
       };
     } else {
       throw new HttpException(`The signed message isn't valid`, HttpStatus.UNAUTHORIZED);
