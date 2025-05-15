@@ -12,7 +12,7 @@ import { Project } from './project.entity';
 @Entity('deploy_app_request')
 export class DeployAppRequest {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  projectId: string;
 
   @Column({ type: 'boolean', default: false })
   isDeployed: boolean;
@@ -33,4 +33,3 @@ export class DeployAppRequest {
   @JoinColumn({ name: 'projectId' })
   project?: Project;
 }
-
