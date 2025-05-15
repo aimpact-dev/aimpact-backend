@@ -11,6 +11,7 @@ export declare class JwtStrategy extends JwtStrategy_base {
         wallet: string;
         createdAt: Date;
         updatedAt: Date;
+        projects: import("../../entities/project.entity").Project[];
     }>;
 }
 export {};
