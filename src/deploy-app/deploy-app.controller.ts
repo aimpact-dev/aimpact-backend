@@ -1,13 +1,15 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, UseGuards, Request } from '@nestjs/common';
 import { DeployAppService } from './deploy-app.service';
-import { Public } from 'src/api/auth/public.decorator';
+import { RequestDeployAppDto } from './dto/requestDeployApp.dto';
+import { JwtAuthGuard } from 'src/api/auth/jwt-auth.guard';
 
 @Controller('deploy-app')
 export class DeployAppController {
   constructor (private readonly deployAppService: DeployAppService) {}
 
   @Post()
-  requestDeployApp(@Body() dto: ) {
-    
+  @UseGuards(JwtAuthGuard)
+  requestDeployApp(@Body() dto: RequestDeployAppDto, @Request() req) {
+    return this.deployAppService.requestDeployApp(req.user, dto);
   }
 }
