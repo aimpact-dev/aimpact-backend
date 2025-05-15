@@ -12,6 +12,7 @@ export declare class JwtStrategy extends JwtStrategy_base {
         createdAt: Date;
         updatedAt: Date;
         projects: import("../../entities/project.entity").Project[];
+        receipts: import("../../entities/funds-receipt.entity").FundsReceipt[];
     }>;
 }
 export {};

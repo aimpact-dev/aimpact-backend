@@ -9,38 +9,38 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.User = void 0;
+exports.FundsReceipt = void 0;
 const typeorm_1 = require("typeorm");
-const project_entity_1 = require("./project.entity");
-const funds_receipt_entity_1 = require("./funds-receipt.entity");
-let User = class User {
+const user_entity_1 = require("./user.entity");
+let FundsReceipt = class FundsReceipt {
 };
-exports.User = User;
+exports.FundsReceipt = FundsReceipt;
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)('uuid'),
     __metadata("design:type", String)
-], User.prototype, "id", void 0);
+], FundsReceipt.prototype, "id", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'varchar', unique: true }),
+    (0, typeorm_1.Column)({ type: 'uuid' }),
     __metadata("design:type", String)
-], User.prototype, "wallet", void 0);
+], FundsReceipt.prototype, "userId", void 0);
 __decorate([
-    (0, typeorm_1.CreateDateColumn)({ type: 'timestamp' }),
+    (0, typeorm_1.Column)({ type: 'timestamp' }),
     __metadata("design:type", Date)
-], User.prototype, "createdAt", void 0);
+], FundsReceipt.prototype, "timestamp", void 0);
 __decorate([
-    (0, typeorm_1.UpdateDateColumn)({ type: 'timestamp' }),
-    __metadata("design:type", Date)
-], User.prototype, "updatedAt", void 0);
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 18, scale: 9 }),
+    __metadata("design:type", Number)
+], FundsReceipt.prototype, "amount", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => project_entity_1.Project, (project) => project.userId),
-    __metadata("design:type", Array)
-], User.prototype, "projects", void 0);
+    (0, typeorm_1.Column)({ type: 'varchar' }),
+    __metadata("design:type", String)
+], FundsReceipt.prototype, "transactionHash", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => funds_receipt_entity_1.FundsReceipt, (receipt) => receipt.userId),
-    __metadata("design:type", Array)
-], User.prototype, "receipts", void 0);
-exports.User = User = __decorate([
-    (0, typeorm_1.Entity)('user')
-], User);
-//# sourceMappingURL=user.entity.js.map
+    (0, typeorm_1.ManyToOne)(() => user_entity_1.User, (user) => user.receipts),
+    (0, typeorm_1.JoinColumn)({ name: 'userId' }),
+    __metadata("design:type", user_entity_1.User)
+], FundsReceipt.prototype, "user", void 0);
+exports.FundsReceipt = FundsReceipt = __decorate([
+    (0, typeorm_1.Entity)('funds_receipts')
+], FundsReceipt);
+//# sourceMappingURL=funds-receipt.entity.js.map
