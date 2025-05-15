@@ -16,25 +16,37 @@ exports.DeployAppController = void 0;
 const common_1 = require("@nestjs/common");
 const deploy_app_service_1 = require("./deploy-app.service");
 const requestDeployApp_dto_1 = require("./dto/requestDeployApp.dto");
-const jwt_auth_guard_1 = require("../api/auth/jwt-auth.guard");
+const api_context_decorator_1 = require("../auth/decorator/api-context.decorator");
+const user_entity_1 = require("../../entities/user.entity");
+const getDeployApp_dto_1 = require("./dto/getDeployApp.dto");
 let DeployAppController = class DeployAppController {
     constructor(deployAppService) {
         this.deployAppService = deployAppService;
     }
-    requestDeployApp(dto, req) {
-        return this.deployAppService.requestDeployApp(req.user, dto);
+    requestDeployApp(user, dto) {
+        return this.deployAppService.requestDeployApp(user, dto);
+    }
+    getDeployApp(user, dto) {
+        return this.deployAppService.getDeployApp(user, dto);
     }
 };
 exports.DeployAppController = DeployAppController;
 __decorate([
     (0, common_1.Post)(),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
-    __param(0, (0, common_1.Body)()),
-    __param(1, (0, common_1.Request)()),
+    __param(0, (0, api_context_decorator_1.ApiContext)()),
+    __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [requestDeployApp_dto_1.RequestDeployAppDto, Object]),
+    __metadata("design:paramtypes", [user_entity_1.User, requestDeployApp_dto_1.RequestDeployAppDto]),
     __metadata("design:returntype", void 0)
 ], DeployAppController.prototype, "requestDeployApp", null);
+__decorate([
+    (0, common_1.Get)(),
+    __param(0, (0, api_context_decorator_1.ApiContext)()),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [user_entity_1.User, getDeployApp_dto_1.GetDeployAppDto]),
+    __metadata("design:returntype", void 0)
+], DeployAppController.prototype, "getDeployApp", null);
 exports.DeployAppController = DeployAppController = __decorate([
     (0, common_1.Controller)('deploy-app'),
     __metadata("design:paramtypes", [deploy_app_service_1.DeployAppService])

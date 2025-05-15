@@ -16,8 +16,8 @@ exports.DeployAppService = void 0;
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
-const deploy_app_request_entity_1 = require("../entities/deploy-app-request.entity");
-const project_entity_1 = require("../entities/project.entity");
+const deploy_app_request_entity_1 = require("../../entities/deploy-app-request.entity");
+const project_entity_1 = require("../../entities/project.entity");
 let DeployAppService = class DeployAppService {
     constructor(deployAppRequestRepository, projectRepository) {
         this.deployAppRequestRepository = deployAppRequestRepository;
@@ -26,19 +26,20 @@ let DeployAppService = class DeployAppService {
     async requestDeployApp(user, dto) {
         const project = await this.projectRepository.findOne({ where: { id: dto.projectId } });
         if (!project)
-            throw new common_1.NotFoundException("Project not found");
+            throw new common_1.NotFoundException('Project not found');
         const vercelApiKey = process.env.VERCEL_API_KEY;
         const deployRequest = await this.deployAppRequestRepository.create({
-            project,
+            projectId: project.id,
         });
+        await this.deployAppRequestRepository.save(deployRequest);
         return deployRequest;
     }
     async getDeployApp(user, dto) {
         const deployAppReq = await this.deployAppRequestRepository.findOne({
-            where: { id: dto.projectId },
+            where: { projectId: dto.projectId },
         });
         if (!deployAppReq)
-            throw new common_1.NotFoundException("Deploy Request not found");
+            throw new common_1.NotFoundException('Deploy Request not found');
         return deployAppReq;
     }
     async listDeployApp() {

@@ -10,13 +10,17 @@ exports.DeployAppModule = void 0;
 const common_1 = require("@nestjs/common");
 const deploy_app_service_1 = require("./deploy-app.service");
 const deploy_app_controller_1 = require("./deploy-app.controller");
+const deploy_app_request_entity_1 = require("../../entities/deploy-app-request.entity");
+const typeorm_1 = require("@nestjs/typeorm");
+const project_entity_1 = require("../../entities/project.entity");
 let DeployAppModule = class DeployAppModule {
 };
 exports.DeployAppModule = DeployAppModule;
 exports.DeployAppModule = DeployAppModule = __decorate([
     (0, common_1.Module)({
+        imports: [typeorm_1.TypeOrmModule.forFeature([deploy_app_request_entity_1.DeployAppRequest, project_entity_1.Project])],
         providers: [deploy_app_service_1.DeployAppService],
-        controllers: [deploy_app_controller_1.DeployAppController]
+        controllers: [deploy_app_controller_1.DeployAppController],
     })
 ], DeployAppModule);
 //# sourceMappingURL=deploy-app.module.js.map

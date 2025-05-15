@@ -1,7 +1,13 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { Project } from "./project.entity";
-import { IsBoolean, IsNotEmpty } from "class-validator";
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import { Project } from './project.entity';
 
 @Entity('deploy_app_request')
 export class DeployAppRequest {
@@ -23,6 +29,8 @@ export class DeployAppRequest {
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
 
-  @OneToOne(() => Project, (project) => project.id)
+  @OneToOne(() => Project, (project) => project.deployAppRequest)
+  @JoinColumn({ name: 'projectId' })
   project?: Project;
 }
+

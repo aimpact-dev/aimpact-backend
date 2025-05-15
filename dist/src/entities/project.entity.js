@@ -13,6 +13,7 @@ exports.Project = void 0;
 const typeorm_1 = require("typeorm");
 const project_chat_entity_1 = require("./project-chat.entity");
 const project_snapshot_entity_1 = require("./project-snapshot.entity");
+const deploy_app_request_entity_1 = require("./deploy-app-request.entity");
 let Project = class Project {
 };
 exports.Project = Project;
@@ -56,6 +57,10 @@ __decorate([
     (0, typeorm_1.OneToOne)(() => project_snapshot_entity_1.ProjectSnapshot, (projectSnapshot) => projectSnapshot.project),
     __metadata("design:type", project_snapshot_entity_1.ProjectSnapshot)
 ], Project.prototype, "projectSnapshot", void 0);
+__decorate([
+    (0, typeorm_1.OneToOne)(() => deploy_app_request_entity_1.DeployAppRequest, (deployAppRequest) => deployAppRequest.project),
+    __metadata("design:type", deploy_app_request_entity_1.DeployAppRequest)
+], Project.prototype, "deployAppRequest", void 0);
 exports.Project = Project = __decorate([
     (0, typeorm_1.Entity)('project')
 ], Project);
