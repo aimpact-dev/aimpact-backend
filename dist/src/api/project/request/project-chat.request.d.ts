@@ -6,5 +6,6 @@ export declare class MessageRequest {
 }
 export declare class ProjectChatRequest {
     messages: MessageRequest[];
+    description?: string;
     metadata?: object;
 }

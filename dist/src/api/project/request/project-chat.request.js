@@ -50,6 +50,12 @@ __decorate([
 __decorate([
     (0, swagger_1.ApiProperty)({ nullable: true }),
     (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], ProjectChatRequest.prototype, "description", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ nullable: true }),
+    (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsObject)(),
     __metadata("design:type", Object)
 ], ProjectChatRequest.prototype, "metadata", void 0);

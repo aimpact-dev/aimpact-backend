@@ -13,11 +13,11 @@ export declare class ProjectService {
     private readonly projectChatRepository;
     private readonly projectSnapshotRepository;
     constructor(projectRepository: Repository<Project>, projectChatRepository: Repository<ProjectChat>, projectSnapshotRepository: Repository<ProjectSnapshot>);
-    create(dto: CreateProjectDto): Promise<ProjectResponse>;
+    create(userId: string, dto: CreateProjectDto): Promise<ProjectResponse>;
     findAll(): Promise<ProjectResponse[]>;
     findOne(id: string): Promise<ProjectResponse>;
-    getChat(projectId: string): Promise<ProjectChatResponse>;
-    upsertChat(projectId: string, dto: ProjectChatRequest): Promise<ProjectChatResponse>;
-    getSnapshot(projectId: string): Promise<ProjectSnapshotResponse>;
-    upsertSnapshot(projectId: string, dto: ProjectSnapshotRequest): Promise<ProjectSnapshotResponse>;
+    getChat(projectId: string, userId: string): Promise<ProjectChatResponse>;
+    upsertChat(projectId: string, userId: string, dto: ProjectChatRequest): Promise<ProjectChatResponse>;
+    getSnapshot(projectId: string, userId: string): Promise<ProjectSnapshotResponse | null>;
+    upsertSnapshot(projectId: string, userId: string, dto: ProjectSnapshotRequest): Promise<ProjectSnapshotResponse>;
 }

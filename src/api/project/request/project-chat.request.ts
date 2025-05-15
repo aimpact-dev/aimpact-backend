@@ -30,6 +30,11 @@ export class ProjectChatRequest {
 
   @ApiProperty({ nullable: true })
   @IsOptional()
+  @IsString()
+  description?: string;
+
+  @ApiProperty({ nullable: true })
+  @IsOptional()
   @IsObject()
   metadata?: object;
 }

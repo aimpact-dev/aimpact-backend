@@ -22,6 +22,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     if (!user) {
       throw new UnauthorizedException();
     }
-    return { ...user, roles: payload.roles }; // Attach user object to request
+
+    return { ...user }; // Attach user object to request
   }
 }

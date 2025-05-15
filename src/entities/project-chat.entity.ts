@@ -13,6 +13,9 @@ export class ProjectChat {
   @PrimaryColumn({ type: 'uuid' })
   projectId: string;
 
+  @Column({ type: 'text', nullable: true })
+  description?: string;
+
   @Column({ type: 'jsonb' })
   messages: Message[];
 

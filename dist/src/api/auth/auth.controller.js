@@ -17,7 +17,7 @@ const common_1 = require("@nestjs/common");
 const swagger_1 = require("@nestjs/swagger");
 const auth_service_1 = require("./auth.service");
 const signinWallet_dto_1 = require("../dtos/signinWallet.dto");
-const public_decorator_1 = require("./public.decorator");
+const public_decorator_1 = require("./decorator/public.decorator");
 const requestMessage_dto_1 = require("../dtos/requestMessage.dto");
 let AuthController = class AuthController {
     constructor(authService) {

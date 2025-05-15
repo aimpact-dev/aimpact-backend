@@ -3,7 +3,7 @@ import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { SigninWalletDto } from '../dtos/signinWallet.dto';
 import { SignupWalletDto } from '../dtos/signupWallet.dto';
-import { Public } from './public.decorator';
+import { Public } from './decorator/public.decorator';
 import { RequestMessageDto } from '../dtos/requestMessage.dto';
 
 @Controller('auth')
@@ -35,11 +35,7 @@ export class AuthController {
     description: 'Invalid credentials.',
   })
   async loginWithWallet(@Body() signin: SigninWalletDto) {
-    return this.authService.loginWithSolanaWallet(
-      signin.walletAddress,
-      signin.signedMessage,
-      signin.nonce,
-    );
+    return this.authService.loginWithSolanaWallet(signin.walletAddress, signin.signedMessage, signin.nonce);
   }
 
   @Public()
@@ -50,7 +46,7 @@ export class AuthController {
       'User need to sign message "Sign this message to prove you have access to this wallet with nonce <uniq nonce, for example you can use current timestamp>."',
   })
   @ApiBody({
-    type: RequestMessageDto ,
+    type: RequestMessageDto,
     description: 'User login credentials by using wallet.',
   })
   @ApiResponse({

@@ -8,6 +8,9 @@ export class ProjectSnapshot {
   @Column({ type: 'jsonb' })
   files: any;
 
+  @Column({ type: 'varchar' })
+  chatIndex: string;
+
   @Column({ type: 'text', nullable: true })
   summary?: string;
 

@@ -1,6 +1,6 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { UserService } from './user.service';
-import { Public } from '../auth/public.decorator';
+import { Public } from '../auth/decorator/public.decorator';
 
 @Controller('user')
 export class UserController {

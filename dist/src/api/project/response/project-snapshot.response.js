@@ -16,6 +16,7 @@ class ProjectSnapshotResponse {
         return {
             projectId: projectSnapshot.projectId,
             files: projectSnapshot.files,
+            chatIndex: projectSnapshot.chatIndex,
             summary: projectSnapshot.summary,
             updatedAt: projectSnapshot.updatedAt,
         };
@@ -30,6 +31,10 @@ __decorate([
     (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Object)
 ], ProjectSnapshotResponse.prototype, "files", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)(),
+    __metadata("design:type", String)
+], ProjectSnapshotResponse.prototype, "chatIndex", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ nullable: true }),
     __metadata("design:type", String)

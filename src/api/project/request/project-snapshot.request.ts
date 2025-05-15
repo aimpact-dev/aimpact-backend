@@ -7,6 +7,11 @@ export class ProjectSnapshotRequest {
   @IsNotEmptyObject()
   files: object;
 
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  chatIndex: string;
+
   @ApiProperty({ required: false })
   @IsOptional()
   @IsString()

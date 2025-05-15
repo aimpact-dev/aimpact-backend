@@ -7,6 +7,7 @@ export interface Message {
 }
 export declare class ProjectChat {
     projectId: string;
+    description?: string;
     messages: Message[];
     metadata?: any;
     createdAt: Date;

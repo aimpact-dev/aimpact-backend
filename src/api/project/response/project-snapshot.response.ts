@@ -1,6 +1,4 @@
-import { IsDate, IsNotEmptyObject, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty } from 'class-validator';
 import { ProjectSnapshot } from 'src/entities/project-snapshot.entity';
 
 export class ProjectSnapshotResponse {
@@ -9,6 +7,9 @@ export class ProjectSnapshotResponse {
 
   @ApiProperty()
   files: object;
+
+  @ApiProperty()
+  chatIndex: string;
 
   @ApiProperty({ nullable: true })
   summary?: string;
@@ -20,6 +21,7 @@ export class ProjectSnapshotResponse {
     return {
       projectId: projectSnapshot.projectId,
       files: projectSnapshot.files,
+      chatIndex: projectSnapshot.chatIndex,
       summary: projectSnapshot.summary,
       updatedAt: projectSnapshot.updatedAt,
     };

@@ -23,6 +23,10 @@ __decorate([
     __metadata("design:type", Object)
 ], ProjectSnapshot.prototype, "files", void 0);
 __decorate([
+    (0, typeorm_1.Column)({ type: 'varchar' }),
+    __metadata("design:type", String)
+], ProjectSnapshot.prototype, "chatIndex", void 0);
+__decorate([
     (0, typeorm_1.Column)({ type: 'text', nullable: true }),
     __metadata("design:type", String)
 ], ProjectSnapshot.prototype, "summary", void 0);

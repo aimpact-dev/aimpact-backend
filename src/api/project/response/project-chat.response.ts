@@ -28,11 +28,14 @@ export class ProjectChatResponse {
   @ApiProperty()
   projectId: string;
 
+  @ApiProperty({ nullable: true })
+  description?: string;
+
   @ApiProperty({ type: [MessageResponse] })
   messages: MessageResponse[];
 
   @ApiProperty({ nullable: true })
-  metadata: any;
+  metadata?: any;
 
   @ApiProperty()
   createdAt: Date;
@@ -40,6 +43,7 @@ export class ProjectChatResponse {
   static fromObject(projectChat: ProjectChat): ProjectChatResponse {
     return {
       projectId: projectChat.projectId,
+      description: projectChat.description,
       messages: projectChat.messages.map(MessageResponse.fromObject),
       metadata: projectChat.metadata,
       createdAt: projectChat.createdAt,

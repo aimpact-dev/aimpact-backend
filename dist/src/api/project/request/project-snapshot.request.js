@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProjectSnapshotRequest = void 0;
 const class_validator_1 = require("class-validator");
 const swagger_1 = require("@nestjs/swagger");
+const class_validator_2 = require("class-validator");
 class ProjectSnapshotRequest {
 }
 exports.ProjectSnapshotRequest = ProjectSnapshotRequest;
@@ -20,6 +21,12 @@ __decorate([
     (0, class_validator_1.IsNotEmptyObject)(),
     __metadata("design:type", Object)
 ], ProjectSnapshotRequest.prototype, "files", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_2.IsNotEmpty)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], ProjectSnapshotRequest.prototype, "chatIndex", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ required: false }),
     (0, class_validator_1.IsOptional)(),

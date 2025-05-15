@@ -19,6 +19,10 @@ __decorate([
     __metadata("design:type", String)
 ], ProjectChat.prototype, "projectId", void 0);
 __decorate([
+    (0, typeorm_1.Column)({ type: 'text', nullable: true }),
+    __metadata("design:type", String)
+], ProjectChat.prototype, "description", void 0);
+__decorate([
     (0, typeorm_1.Column)({ type: 'jsonb' }),
     __metadata("design:type", Array)
 ], ProjectChat.prototype, "messages", void 0);
