@@ -38,7 +38,7 @@ exports.AppModule = AppModule = __decorate([
             user_module_1.UserModule,
             auth_module_1.AuthModule,
             billing_module_1.BillingModule,
-            project_module_1.ProjectModule,
+            projects_module_1.ProjectsModule,
             deploy_app_module_1.DeployAppModule,
         ],
         controllers: [app_controller_1.AppController],

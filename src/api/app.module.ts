@@ -30,7 +30,7 @@ const apiConfig = [baseEnvConfig];
     UserModule,
     AuthModule,
     BillingModule,
-    ProjectModule,
+    ProjectsModule,
     DeployAppModule,
   ],
   controllers: [AppController],
