@@ -7,9 +7,10 @@ import { PostgresSharedModule } from 'src/shared/modules/database/postgres-share
 import { UserModule } from './user/user.module';
 import { NonceModule } from './nonce/nonce.module';
 import { AuthModule } from './auth/auth.module';
-import { ProjectModule } from './project/project.module';
+import { ProjectsModule } from './projects/projects.module';
 import FinalExceptionFilter from 'src/shared/rest/general/final-exception.filter';
 import { APP_FILTER } from '@nestjs/core';
+
 import { DeployAppModule } from './deploy-app/deploy-app.module';
 import { BillingModule } from './billing/billing.module';
 const apiConfig = [baseEnvConfig];
@@ -39,6 +40,10 @@ const apiConfig = [baseEnvConfig];
       provide: APP_FILTER,
       useClass: FinalExceptionFilter,
     },
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: JwtAuthGuard,
+    // },
   ],
 })
 export class AppModule {}

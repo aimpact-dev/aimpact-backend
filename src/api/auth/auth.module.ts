@@ -8,6 +8,8 @@ import { jwtConfig } from './jwt.config';
 import { JwtStrategy } from './jwt.strategy';
 import { ConfigModule } from '@nestjs/config';
 import { jwtEnvConfig } from 'src/shared/config';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtAuthGuard } from './jwt-auth.guard';
 
 @Module({
   imports: [ConfigModule.forFeature(jwtEnvConfig), JwtModule.registerAsync(jwtConfig), UserModule, NonceModule],

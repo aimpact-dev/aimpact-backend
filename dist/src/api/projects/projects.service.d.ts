@@ -8,7 +8,7 @@ import { ProjectSnapshotResponse } from './response/project-snapshot.response';
 import { ProjectSnapshotRequest } from './request/project-snapshot.request';
 import { ProjectSnapshot } from 'src/entities/project-snapshot.entity';
 import { ProjectResponse } from './response/project.response';
-export declare class ProjectService {
+export declare class ProjectsService {
     private readonly projectRepository;
     private readonly projectChatRepository;
     private readonly projectSnapshotRepository;

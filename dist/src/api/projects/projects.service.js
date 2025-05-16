@@ -12,7 +12,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ProjectService = void 0;
+exports.ProjectsService = void 0;
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
@@ -24,7 +24,7 @@ const crypto_1 = require("crypto");
 const project_snapshot_response_1 = require("./response/project-snapshot.response");
 const project_snapshot_entity_1 = require("../../entities/project-snapshot.entity");
 const project_response_1 = require("./response/project.response");
-let ProjectService = class ProjectService {
+let ProjectsService = class ProjectsService {
     constructor(projectRepository, projectChatRepository, projectSnapshotRepository) {
         this.projectRepository = projectRepository;
         this.projectChatRepository = projectChatRepository;
@@ -134,8 +134,8 @@ let ProjectService = class ProjectService {
         return project_snapshot_response_1.ProjectSnapshotResponse.fromObject(updatedSnapshot);
     }
 };
-exports.ProjectService = ProjectService;
-exports.ProjectService = ProjectService = __decorate([
+exports.ProjectsService = ProjectsService;
+exports.ProjectsService = ProjectsService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(project_entity_1.Project)),
     __param(1, (0, typeorm_1.InjectRepository)(project_chat_entity_1.ProjectChat)),
@@ -143,5 +143,5 @@ exports.ProjectService = ProjectService = __decorate([
     __metadata("design:paramtypes", [typeorm_2.Repository,
         typeorm_2.Repository,
         typeorm_2.Repository])
-], ProjectService);
-//# sourceMappingURL=project.service.js.map
+], ProjectsService);
+//# sourceMappingURL=projects.service.js.map

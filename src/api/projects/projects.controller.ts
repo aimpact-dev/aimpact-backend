@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
-import { ProjectService } from './project.service';
+import { ProjectsService } from './projects.service';
 import { CreateProjectDto } from './dto/CreateProjectDto';
 import { ProjectChatResponse } from './response/project-chat.response';
 import { ProjectResponse } from './response/project.response';
@@ -10,9 +10,9 @@ import { Public } from '../auth/decorator/public.decorator';
 import { ApiContext } from '../auth/decorator/api-context.decorator';
 import { User } from 'src/entities/user.entity';
 
-@Controller('project')
-export class ProjectController {
-  constructor(private readonly projectService: ProjectService) {}
+@Controller('projects')
+export class ProjectsController {
+  constructor(private readonly projectService: ProjectsService) {}
 
   @Post()
   async create(@ApiContext() user: User, @Body() dto: CreateProjectDto): Promise<ProjectResponse> {

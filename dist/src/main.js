@@ -17,7 +17,7 @@ async function bootstrap() {
     const document = swagger_1.SwaggerModule.createDocument(app, config);
     swagger_1.SwaggerModule.setup('swagger', app, document);
     app.useGlobalPipes(new common_1.ValidationPipe());
-    app.useGlobalGuards(new jwt_auth_guard_1.JwtAuthGuard(new core_1.Reflector()));
+    app.useGlobalGuards(new jwt_auth_guard_1.JwtAuthGuard(app.get(core_1.Reflector)));
     app.enableCors();
     await app.listen(process.env.PORT ?? 3000);
 }

@@ -14,7 +14,7 @@ import { ProjectSnapshot } from 'src/entities/project-snapshot.entity';
 import { ProjectResponse } from './response/project.response';
 
 @Injectable()
-export class ProjectService {
+export class ProjectsService {
   constructor(
     @InjectRepository(Project)
     private readonly projectRepository: Repository<Project>,

@@ -12,16 +12,16 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ProjectController = void 0;
+exports.ProjectsController = void 0;
 const common_1 = require("@nestjs/common");
-const project_service_1 = require("./project.service");
+const projects_service_1 = require("./projects.service");
 const CreateProjectDto_1 = require("./dto/CreateProjectDto");
 const project_chat_request_1 = require("./request/project-chat.request");
 const project_snapshot_request_1 = require("./request/project-snapshot.request");
 const public_decorator_1 = require("../auth/decorator/public.decorator");
 const api_context_decorator_1 = require("../auth/decorator/api-context.decorator");
 const user_entity_1 = require("../../entities/user.entity");
-let ProjectController = class ProjectController {
+let ProjectsController = class ProjectsController {
     constructor(projectService) {
         this.projectService = projectService;
     }
@@ -47,7 +47,7 @@ let ProjectController = class ProjectController {
         return this.projectService.upsertSnapshot(id, user.id, dto);
     }
 };
-exports.ProjectController = ProjectController;
+exports.ProjectsController = ProjectsController;
 __decorate([
     (0, common_1.Post)(),
     __param(0, (0, api_context_decorator_1.ApiContext)()),
@@ -55,14 +55,14 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [user_entity_1.User, CreateProjectDto_1.CreateProjectDto]),
     __metadata("design:returntype", Promise)
-], ProjectController.prototype, "create", null);
+], ProjectsController.prototype, "create", null);
 __decorate([
     (0, public_decorator_1.Public)(),
     (0, common_1.Get)(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
-], ProjectController.prototype, "findAll", null);
+], ProjectsController.prototype, "findAll", null);
 __decorate([
     (0, public_decorator_1.Public)(),
     (0, common_1.Get)(':id'),
@@ -70,7 +70,7 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
-], ProjectController.prototype, "findOne", null);
+], ProjectsController.prototype, "findOne", null);
 __decorate([
     (0, common_1.Get)(':id/chat'),
     __param(0, (0, api_context_decorator_1.ApiContext)()),
@@ -78,7 +78,7 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [user_entity_1.User, String]),
     __metadata("design:returntype", Promise)
-], ProjectController.prototype, "getChat", null);
+], ProjectsController.prototype, "getChat", null);
 __decorate([
     (0, common_1.Post)(':id/chat'),
     __param(0, (0, api_context_decorator_1.ApiContext)()),
@@ -87,7 +87,7 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [user_entity_1.User, String, project_chat_request_1.ProjectChatRequest]),
     __metadata("design:returntype", Promise)
-], ProjectController.prototype, "upsertChat", null);
+], ProjectsController.prototype, "upsertChat", null);
 __decorate([
     (0, common_1.Get)(':id/snapshot'),
     __param(0, (0, api_context_decorator_1.ApiContext)()),
@@ -95,7 +95,7 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [user_entity_1.User, String]),
     __metadata("design:returntype", Promise)
-], ProjectController.prototype, "getSnapshot", null);
+], ProjectsController.prototype, "getSnapshot", null);
 __decorate([
     (0, common_1.Post)(':id/snapshot'),
     __param(0, (0, api_context_decorator_1.ApiContext)()),
@@ -104,9 +104,9 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [user_entity_1.User, String, project_snapshot_request_1.ProjectSnapshotRequest]),
     __metadata("design:returntype", Promise)
-], ProjectController.prototype, "upsertSnapshot", null);
-exports.ProjectController = ProjectController = __decorate([
-    (0, common_1.Controller)('project'),
-    __metadata("design:paramtypes", [project_service_1.ProjectService])
-], ProjectController);
-//# sourceMappingURL=project.controller.js.map
+], ProjectsController.prototype, "upsertSnapshot", null);
+exports.ProjectsController = ProjectsController = __decorate([
+    (0, common_1.Controller)('projects'),
+    __metadata("design:paramtypes", [projects_service_1.ProjectsService])
+], ProjectsController);
+//# sourceMappingURL=projects.controller.js.map

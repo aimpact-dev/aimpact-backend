@@ -6,22 +6,22 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ProjectModule = void 0;
+exports.ProjectsModule = void 0;
 const common_1 = require("@nestjs/common");
-const project_controller_1 = require("./project.controller");
-const project_service_1 = require("./project.service");
+const projects_controller_1 = require("./projects.controller");
+const projects_service_1 = require("./projects.service");
 const typeorm_1 = require("@nestjs/typeorm");
 const project_entity_1 = require("../../entities/project.entity");
 const project_chat_entity_1 = require("../../entities/project-chat.entity");
 const project_snapshot_entity_1 = require("../../entities/project-snapshot.entity");
-let ProjectModule = class ProjectModule {
+let ProjectsModule = class ProjectsModule {
 };
-exports.ProjectModule = ProjectModule;
-exports.ProjectModule = ProjectModule = __decorate([
+exports.ProjectsModule = ProjectsModule;
+exports.ProjectsModule = ProjectsModule = __decorate([
     (0, common_1.Module)({
         imports: [typeorm_1.TypeOrmModule.forFeature([project_entity_1.Project, project_chat_entity_1.ProjectChat, project_snapshot_entity_1.ProjectSnapshot])],
-        controllers: [project_controller_1.ProjectController],
-        providers: [project_service_1.ProjectService],
+        controllers: [projects_controller_1.ProjectsController],
+        providers: [projects_service_1.ProjectsService],
     })
-], ProjectModule);
-//# sourceMappingURL=project.module.js.map
+], ProjectsModule);
+//# sourceMappingURL=projects.module.js.map
