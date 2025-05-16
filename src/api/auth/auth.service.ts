@@ -58,7 +58,6 @@ export class AuthService {
     return {
       id: user.id,
       wallet: user.wallet,
-      projectsCount: user.projects.length,
     }
   }
 }

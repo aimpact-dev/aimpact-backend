@@ -77,7 +77,6 @@ export class AuthController {
     type: User,
   })
   async userMe(@Request() request) {
-    console.log(request.user)
     return this.authService.getMe(request.user.id);
   }
 }
