@@ -34,7 +34,14 @@ export class DeployAppService {
       requestBody: {
         name: project.id, //The project id used in the deployment URL
         target: 'production',
-        files: deserializeSnapshot(project.projectSnapshot.files)
+        files: deserializeSnapshot(project.projectSnapshot.files),
+        projectSettings: {
+          buildCommand: 'npm run build',
+          installCommand: 'npm i',
+          devCommand: 'npm run dev',
+          outputDirectory: 'dist',
+          framework: 'vite',
+        }
       }
     });
 

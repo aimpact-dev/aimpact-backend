@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { DeployAppService } from './deploy-app.service';
 import { RequestDeployAppDto } from './dto/requestDeployApp.dto';
 import { ApiContext } from 'src/api/auth/decorator/api-context.decorator';
@@ -15,7 +15,7 @@ export class DeployAppController {
   }
 
   @Get()
-  getDeployApp(@ApiContext() user: User, @Body() dto: GetDeployAppDto) {
+  getDeployApp(@ApiContext() user: User, @Query() dto: GetDeployAppDto) {
     return this.deployAppService.getDeployApp(user, dto);
   }
 }
