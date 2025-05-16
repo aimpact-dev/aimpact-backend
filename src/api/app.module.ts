@@ -46,4 +46,4 @@ const apiConfig = [baseEnvConfig];
     // },
   ],
 })
-export class AppModule {}
+export class AppModule { }
