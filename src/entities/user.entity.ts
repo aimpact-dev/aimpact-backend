@@ -16,6 +16,12 @@ export class User {
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
 
+  @Column({ type: 'timestamp', nullable: true })
+  subscriptionStart: Date;
+
+  @Column({ type: 'timestamp', nullable: true })
+  subscriptionEnd: Date;
+
   @OneToMany(() => Project, (project) => project.userId)
   projects: Project[];
 

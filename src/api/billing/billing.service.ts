@@ -19,6 +19,7 @@ export class BillingService implements OnModuleInit {
   private readonly logger = new Logger(BillingService.name);
   private lastLamports; // SOL balance
   private connection: Connection;
+  public minSolToDeposit = 0.001;
   constructor(
     private readonly configService: ConfigService,
     @InjectRepository(FundsReceipt)
@@ -47,8 +48,9 @@ export class BillingService implements OnModuleInit {
           const solAmount = diff / 1e9;
           // 1. Get the latest transaction signature for this address
           const signatures = await this.connection.getSignaturesForAddress(account, {
-            limit: 5,
+            limit: 20,
           });
+          // console.log('signatures:', JSON.stringify(signatures));
 
           for (const sigInfo of signatures) {
             try {
@@ -94,12 +96,19 @@ export class BillingService implements OnModuleInit {
     }
     const user = await this.userRepository.findOne({ where: { wallet: sender } });
     let userId: string;
+    let doWeNeedUpdateUser: boolean = true;
     if (!user) {
       const newUser = this.userRepository.create({
         wallet: sender,
         updatedAt: new Date(),
         createdAt: new Date(),
       });
+      if (amount > this.minSolToDeposit) {
+        const months = amount % this.minSolToDeposit;
+        newUser.subscriptionStart = new Date();
+        newUser.subscriptionEnd = addMonthsToDate(new Date(), months);
+        doWeNeedUpdateUser = false;
+      }
       const savedUser = await this.userRepository.save(newUser);
       userId = savedUser.id;
     } else {
@@ -112,6 +121,7 @@ export class BillingService implements OnModuleInit {
       transactionHash: txHash,
     });
     await this.receiptRepository.save(receipt);
+    if (doWeNeedUpdateUser) await this.updateUserSubscriptionDates(userId);
     this.logger.log(`transaction ${txHash} processed: from ${sender} SOL ${amount}`);
   }
 
@@ -120,6 +130,70 @@ export class BillingService implements OnModuleInit {
       where: { transactionHash },
     });
   }
+
+  async updateUserSubscriptionDates(userUuid: string): Promise<void> {
+    this.logger.log(`Updating user subscription dates for user ${userUuid}`);
+    const user = await this.userRepository.findOne({ where: { id: userUuid } });
+    if (!user) return;
+    const currentDate = new Date();
+    // if user deposited first time enough SOL and deposited earliers but less
+    if (!user.subscriptionEnd || !user.subscriptionStart) {
+      const result = await this.receiptRepository
+        .createQueryBuilder('receipt')
+        .select('SUM(receipt.amount)', 'total')
+        .where('receipt.userId = :userId', { userId: user.id })
+        .getRawOne();
+      const totalBalance = parseFloat(result.total ?? '0');
+      const requiredMonths = totalBalance % this.minSolToDeposit;
+      user.subscriptionStart = new Date();
+      user.subscriptionEnd = addMonthsToDate(new Date(), requiredMonths);
+      await this.userRepository.save(user);
+      return;
+    }
+    // if user what to continue subscription
+    if (user.subscriptionStart < currentDate && currentDate < user.subscriptionEnd) {
+      const currentMonthsAmount = monthsBetween(user.subscriptionStart, user.subscriptionEnd);
+      const result = await this.receiptRepository
+        .createQueryBuilder('receipt')
+        .select('SUM(receipt.amount)', 'total')
+        .where('receipt.userId = :userId', { userId: user.id })
+        .getRawOne();
+      const totalBalance = parseFloat(result.total ?? '0');
+      const requiredMonths = totalBalance % this.minSolToDeposit;
+      if (requiredMonths > currentMonthsAmount) {
+        user.subscriptionEnd = addMonthsToDate(user.subscriptionEnd, requiredMonths);
+        await this.userRepository.save(user);
+        return;
+      }
+    }
+    if (currentDate > user.subscriptionEnd) {
+      const result = await this.receiptRepository
+        .createQueryBuilder('receipt')
+        .select('SUM(receipt.amount)', 'total')
+        .where('receipt.userId = :userId', { userId: user.id })
+        .andWhere('receipt.timestamp > :subEnd', { subEnd: user.subscriptionEnd })
+        .getRawOne();
+      const balance = parseFloat(result.total ?? '0');
+      console.log('balance', balance);
+      if (balance > this.minSolToDeposit) {
+        const requiredMonths = balance % this.minSolToDeposit;
+        user.subscriptionStart = new Date();
+        user.subscriptionEnd = addMonthsToDate(new Date(), requiredMonths);
+        await this.userRepository.save(user);
+        return;
+      }
+    }
+  }
+}
+
+function monthsBetween(date1: Date, date2: Date): number {
+  const d1 = new Date(date1);
+  const d2 = new Date(date2);
+
+  const yearDiff = d2.getFullYear() - d1.getFullYear();
+  const monthDiff = d2.getMonth() - d1.getMonth();
+
+  return yearDiff * 12 + monthDiff;
 }
 
 function isParsedInstruction(ix: ParsedInstruction | PartiallyDecodedInstruction): ix is ParsedInstruction {
@@ -128,4 +202,12 @@ function isParsedInstruction(ix: ParsedInstruction | PartiallyDecodedInstruction
 
 function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+export function addMonthsToDate(date: Date, months: number): Date {
+  const newDate = new Date(date);
+
+  // Add the months to the current month
+  newDate.setMonth(newDate.getMonth() + months);
+  return newDate;
 }
