@@ -32,7 +32,7 @@ __decorate([
     __metadata("design:type", Number)
 ], FundsReceipt.prototype, "amount", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'varchar' }),
+    (0, typeorm_1.Column)({ type: 'varchar', unique: true }),
     __metadata("design:type", String)
 ], FundsReceipt.prototype, "transactionHash", void 0);
 __decorate([

@@ -15,7 +15,7 @@ export class FundsReceipt {
   @Column({ type: 'decimal', precision: 18, scale: 9 })
   amount: number;
 
-  @Column({ type: 'varchar' })
+  @Column({ type: 'varchar', unique: true })
   transactionHash: string;
 
   @ManyToOne(() => User, (user) => user.receipts)
