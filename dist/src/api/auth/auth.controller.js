@@ -19,6 +19,7 @@ const auth_service_1 = require("./auth.service");
 const signinWallet_dto_1 = require("../dtos/signinWallet.dto");
 const public_decorator_1 = require("./decorator/public.decorator");
 const requestMessage_dto_1 = require("../dtos/requestMessage.dto");
+const user_entity_1 = require("../../entities/user.entity");
 let AuthController = class AuthController {
     constructor(authService) {
         this.authService = authService;
@@ -28,6 +29,10 @@ let AuthController = class AuthController {
     }
     async requestMessage(signin) {
         return this.authService.requestMessage(signin.walletAddress);
+    }
+    async userMe(request) {
+        console.log(request.user);
+        return this.authService.getMe(request.user.id);
     }
 };
 exports.AuthController = AuthController;
@@ -90,6 +95,21 @@ __decorate([
     __metadata("design:paramtypes", [requestMessage_dto_1.RequestMessageDto]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "requestMessage", null);
+__decorate([
+    (0, common_1.Get)('me'),
+    (0, swagger_1.ApiOperation)({
+        summary: "Get current user info",
+    }),
+    (0, swagger_1.ApiResponse)({
+        status: 200,
+        description: "User info",
+        type: user_entity_1.User,
+    }),
+    __param(0, (0, common_1.Request)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "userMe", null);
 exports.AuthController = AuthController = __decorate([
     (0, common_1.Controller)('auth'),
     __metadata("design:paramtypes", [auth_service_1.AuthService])

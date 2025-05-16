@@ -1,10 +1,10 @@
-import { Controller, Post, Body, UnauthorizedException } from '@nestjs/common';
+import { Controller, Post, Body, UnauthorizedException, Get, Request } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { SigninWalletDto } from '../dtos/signinWallet.dto';
-import { SignupWalletDto } from '../dtos/signupWallet.dto';
 import { Public } from './decorator/public.decorator';
 import { RequestMessageDto } from '../dtos/requestMessage.dto';
+import { User } from 'src/entities/user.entity';
 
 @Controller('auth')
 export class AuthController {
@@ -65,5 +65,19 @@ export class AuthController {
   })
   async requestMessage(@Body() signin: RequestMessageDto) {
     return this.authService.requestMessage(signin.walletAddress);
+  }
+
+  @Get('me')
+  @ApiOperation({
+    summary: "Get current user info",
+  })
+  @ApiResponse({
+    status: 200,
+    description: "User info",
+    type: User,
+  })
+  async userMe(@Request() request) {
+    console.log(request.user)
+    return this.authService.getMe(request.user.id);
   }
 }
