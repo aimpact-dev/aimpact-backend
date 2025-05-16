@@ -1,4 +1,9 @@
-import { InlinedFile } from '@vercel/sdk/src/models/createdeploymentop';
+type Encoding = 'base64' | 'utf-8';
+interface InlinedFile {
+  data: string;
+  encoding?: Encoding;
+  file: string;
+}
 
 interface File {
   type: 'file';
@@ -18,7 +23,6 @@ type Dirent = File | Folder;
 
 export type FileMap = Record<string, Dirent | undefined>;
 
-
 const WORK_DIR_NAME = 'project';
 const WORK_DIR = `/home/${WORK_DIR_NAME}`;
 
@@ -37,8 +41,8 @@ export function deserializeSnapshot(snapshot: FileMap) {
       // split the path into segments
       files.push({
         data: dirent.content,
-        file: relativePath
-      })
+        file: relativePath,
+      });
     }
   }
   return files;

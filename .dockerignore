@@ -1,0 +1,17 @@
+# compiled output
+/node_modules
+/dist
+
+# Tests
+/coverage
+/test
+
+# Environment variables
+.env
+
+# VSCode
+.vscode
+
+# GitHub
+.github
+
