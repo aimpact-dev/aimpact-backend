@@ -30,4 +30,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: vladfo01/aimpact:${{ steps.short-sha.outputs.SHORT_SHA }}
+          tags: vladfo01/aimpact:${{ env.SHORT_SHA }}
