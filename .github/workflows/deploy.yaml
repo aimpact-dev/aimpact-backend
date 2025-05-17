@@ -26,4 +26,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: vladfo01/aimpact:${{ github.sha }}
+          tags: vladfo01/aimpact:${{ github.sha.substr(0,8) }}
