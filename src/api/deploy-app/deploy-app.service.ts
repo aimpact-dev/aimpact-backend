@@ -3,7 +3,6 @@ import { RequestDeployAppDto } from './dto/requestDeployApp.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { DeployAppRequest } from 'src/entities/deploy-app-request.entity';
-import { Vercel } from '@vercel/sdk';
 import { Project } from 'src/entities/project.entity';
 import { GetDeployAppDto } from './dto/getDeployApp.dto';
 import { User } from 'src/entities/user.entity';
@@ -12,7 +11,7 @@ import { deserializeSnapshot } from './webcontainerSnapshotDeserializer';
 
 @Injectable()
 export class DeployAppService {
-  private vercelClient: Vercel;
+  private vercelClient: any;
   constructor(
     private readonly configService: ConfigService,
     @InjectRepository(DeployAppRequest)
@@ -22,11 +21,18 @@ export class DeployAppService {
   ) {
     const vercelToken = this.configService.get<string>('VERCEL_API_KEY');
     if (!vercelToken) throw new Error('Vercel API key is not set');
-    this.vercelClient = new Vercel({ bearerToken: vercelToken });
+    // Use an async IIFE to allow await in constructor
+    (async () => {
+      const { Vercel } = await import('@vercel/sdk');
+      this.vercelClient = new Vercel({ bearerToken: vercelToken });
+    })();
   }
   async requestDeployApp(user: User, dto: RequestDeployAppDto): Promise<DeployAppRequest> {
     // Deploy app to vercel
-    const project = await this.projectRepository.findOne({ where: { id: dto.projectId }, relations: ['projectSnapshot', 'deployAppRequest'] });
+    const project = await this.projectRepository.findOne({
+      where: { id: dto.projectId },
+      relations: ['projectSnapshot', 'deployAppRequest'],
+    });
     if (!project) throw new NotFoundException('Project not found');
 
     if (!project.projectSnapshot) throw new NotFoundException('Project snapshot not found');
@@ -41,8 +47,8 @@ export class DeployAppService {
           devCommand: 'npm run dev',
           outputDirectory: 'dist',
           framework: 'vite',
-        }
-      }
+        },
+      },
     });
 
     if (project.deployAppRequest) {
@@ -74,7 +80,7 @@ export class DeployAppService {
     if (!deployAppReq) throw new NotFoundException('Deploy Request not found');
     const deploymentId = deployAppReq.deploymentId;
     const deploymentStatusResponse = await this.vercelClient.deployments.getDeployment({
-      idOrUrl: deploymentId
+      idOrUrl: deploymentId,
     });
 
     const deploymentStatus = deploymentStatusResponse.status;
@@ -83,7 +89,7 @@ export class DeployAppService {
     const deployAppReqToSave = {
       ...deployAppReq,
       status: deploymentStatus,
-      finalUrl: deploymentURL
+      finalUrl: deploymentURL,
     };
     if (deploymentStatus === 'READY') {
       deployAppReqToSave.isDeployed = true;
