@@ -17,4 +17,8 @@ export declare class AuthService {
         message: string;
         nonce: string;
     }>;
+    getMe(userId: string): Promise<{
+        id: string;
+        wallet: string;
+    }>;
 }

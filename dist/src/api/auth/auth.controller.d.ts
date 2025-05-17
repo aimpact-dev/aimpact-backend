@@ -11,4 +11,8 @@ export declare class AuthController {
         message: string;
         nonce: string;
     }>;
+    userMe(request: any): Promise<{
+        id: string;
+        wallet: string;
+    }>;
 }

@@ -21,6 +21,7 @@ const nonce_service_1 = require("../nonce/nonce.service");
 const validSignMessage_1 = require("../utils/validSignMessage");
 const generateMessage_1 = require("../utils/generateMessage");
 const config_1 = require("../../shared/config");
+const rxjs_1 = require("rxjs");
 let AuthService = AuthService_1 = class AuthService {
     constructor(jwtService, usersService, nonceService, jwtConfig) {
         this.jwtService = jwtService;
@@ -55,6 +56,15 @@ let AuthService = AuthService_1 = class AuthService {
         const nonce = await this.nonceService.createNewNonce(address);
         const message = (0, generateMessage_1.generateMessage)(nonce.nonce);
         return { message, nonce: nonce.nonce };
+    }
+    async getMe(userId) {
+        const user = await this.usersService.findById(userId);
+        if (!user)
+            throw new rxjs_1.NotFoundError("User not found");
+        return {
+            id: user.id,
+            wallet: user.wallet,
+        };
     }
 };
 exports.AuthService = AuthService;

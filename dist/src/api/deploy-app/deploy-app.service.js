@@ -17,7 +17,6 @@ const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
 const deploy_app_request_entity_1 = require("../../entities/deploy-app-request.entity");
-const sdk_1 = require("@vercel/sdk");
 const project_entity_1 = require("../../entities/project.entity");
 const config_1 = require("@nestjs/config");
 const webcontainerSnapshotDeserializer_1 = require("./webcontainerSnapshotDeserializer");
@@ -29,10 +28,16 @@ let DeployAppService = class DeployAppService {
         const vercelToken = this.configService.get('VERCEL_API_KEY');
         if (!vercelToken)
             throw new Error('Vercel API key is not set');
-        this.vercelClient = new sdk_1.Vercel({ bearerToken: vercelToken });
+        (async () => {
+            const { Vercel } = await import('@vercel/sdk');
+            this.vercelClient = new Vercel({ bearerToken: vercelToken });
+        })();
     }
     async requestDeployApp(user, dto) {
-        const project = await this.projectRepository.findOne({ where: { id: dto.projectId }, relations: ['projectSnapshot', 'deployAppRequest'] });
+        const project = await this.projectRepository.findOne({
+            where: { id: dto.projectId },
+            relations: ['projectSnapshot', 'deployAppRequest'],
+        });
         if (!project)
             throw new common_1.NotFoundException('Project not found');
         if (!project.projectSnapshot)
@@ -48,8 +53,8 @@ let DeployAppService = class DeployAppService {
                     devCommand: 'npm run dev',
                     outputDirectory: 'dist',
                     framework: 'vite',
-                }
-            }
+                },
+            },
         });
         if (project.deployAppRequest) {
             project.deployAppRequest.deploymentId = createResponse.id;
@@ -78,14 +83,14 @@ let DeployAppService = class DeployAppService {
             throw new common_1.NotFoundException('Deploy Request not found');
         const deploymentId = deployAppReq.deploymentId;
         const deploymentStatusResponse = await this.vercelClient.deployments.getDeployment({
-            idOrUrl: deploymentId
+            idOrUrl: deploymentId,
         });
         const deploymentStatus = deploymentStatusResponse.status;
         const deploymentURL = deploymentStatusResponse.url;
         const deployAppReqToSave = {
             ...deployAppReq,
             status: deploymentStatus,
-            finalUrl: deploymentURL
+            finalUrl: deploymentURL,
         };
         if (deploymentStatus === 'READY') {
             deployAppReqToSave.isDeployed = true;
