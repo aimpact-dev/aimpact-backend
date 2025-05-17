@@ -26,4 +26,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: vladfo01/aimpact:api
+          tags: vladfo01/aimpact:${{ github.sha }}
