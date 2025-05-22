@@ -1,7 +1,17 @@
-import { Column, CreateDateColumn, Entity, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { ProjectChat } from './project-chat.entity';
 import { ProjectSnapshot } from './project-snapshot.entity';
 import { DeployAppRequest } from './deploy-app-request.entity';
+import { User } from './user.entity';
 @Entity('project')
 export class Project {
   @PrimaryGeneratedColumn('uuid')
@@ -36,4 +46,8 @@ export class Project {
 
   @OneToOne(() => DeployAppRequest, (deployAppRequest) => deployAppRequest.project)
   deployAppRequest?: DeployAppRequest;
+
+  @ManyToOne(() => User, (user) => user.projects)
+  @JoinColumn({ name: 'userId' })
+  user: User;
 }

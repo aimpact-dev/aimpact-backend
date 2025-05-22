@@ -16,9 +16,9 @@ export class User {
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
 
-  @OneToMany(() => Project, (project) => project.userId)
+  @OneToMany(() => Project, (project) => project.user)
   projects: Project[];
 
-  @OneToMany(() => FundsReceipt, (receipt) => receipt.userId)
+  @OneToMany(() => FundsReceipt, (receipt) => receipt.user)
   receipts: FundsReceipt[];
 }
