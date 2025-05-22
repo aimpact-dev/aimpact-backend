@@ -1,4 +1,12 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { User } from './user.entity';
 
 @Entity('funds_receipts')
@@ -9,14 +17,17 @@ export class FundsReceipt {
   @Column({ type: 'uuid' })
   userId: string;
 
-  @Column({ type: 'timestamp' })
-  timestamp: Date;
-
   @Column({ type: 'decimal', precision: 18, scale: 9 })
   amount: number;
 
   @Column({ type: 'varchar', unique: true })
   transactionHash: string;
+
+  @CreateDateColumn({ type: 'timestamp' })
+  createdAt: Date;
+
+  @UpdateDateColumn({ type: 'timestamp' })
+  updatedAt: Date;
 
   @ManyToOne(() => User, (user) => user.receipts)
   @JoinColumn({ name: 'userId' })

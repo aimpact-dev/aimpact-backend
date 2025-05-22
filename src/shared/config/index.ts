@@ -11,6 +11,8 @@ export const ENV_NAMESPACE_KEYS = {
   CRYPTO: 'crypto',
   EMAIL: 'email',
   JWT: 'jwt',
+  HELIUS: 'helius',
+  BILLING: 'billing',
 };
 
 export class Environment {
@@ -46,6 +48,24 @@ export class JwtEnvironment {
 
   @IsString()
   JWT_EXPIRATION: string;
+}
+
+export class HeliusEnvironment {
+  @IsString()
+  HELIUS_WEBHOOK_AUTH_HEADER: string;
+}
+
+export class BillingEnvironment {
+  @IsString()
+  TRACK_WALLET: string;
+}
+
+export class CryptoEnvironment {
+  @IsString()
+  WSS_RPC_URL: string;
+
+  @IsString()
+  HTTP_RPC_URL: string;
 }
 
 const logger = new Logger('ENV logger');
@@ -86,3 +106,9 @@ export const databaseEnvConfig = registerAs(
 );
 
 export const jwtEnvConfig = registerAs(ENV_NAMESPACE_KEYS.JWT, createEnvValidationFunction(JwtEnvironment));
+
+export const heliusEnvConfig = registerAs(ENV_NAMESPACE_KEYS.HELIUS, createEnvValidationFunction(HeliusEnvironment));
+
+export const billingEnvConfig = registerAs(ENV_NAMESPACE_KEYS.BILLING, createEnvValidationFunction(BillingEnvironment));
+
+export const cryptoEnvConfig = registerAs(ENV_NAMESPACE_KEYS.CRYPTO, createEnvValidationFunction(CryptoEnvironment));
