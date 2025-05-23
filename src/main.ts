@@ -4,11 +4,16 @@ import { envLoad } from './shared/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
 import { JwtAuthGuard } from './api/auth/jwt-auth.guard';
+import { json, urlencoded } from 'express';
 
 async function bootstrap() {
   await envLoad();
 
   const app = await NestFactory.create(AppModule);
+
+  // Increase body size limit
+  app.use(json({ limit: '50mb' }));
+  app.use(urlencoded({ limit: '50mb', extended: true }));
 
   const config = new DocumentBuilder()
     .setTitle('AImpact API docs')
