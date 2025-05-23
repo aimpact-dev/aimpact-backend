@@ -6,6 +6,7 @@ import { FundsReceipt } from 'src/entities/funds-receipt.entity';
 import { User } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Response } from 'express';
 
 @Injectable()
 export class BillingService {
@@ -20,7 +21,7 @@ export class BillingService {
     private readonly heliusWebhookService: HeliusWebhookService,
   ) {}
 
-  async handleWebhook(event: any): Promise<void> {
+  async handleWebhook(event: any, res: Response): Promise<any> {
     this.logger.log(`Incoming event - ${JSON.stringify(event.body)}`);
 
     const validated = await this.heliusWebhookService.validateWebhook(event);
@@ -52,6 +53,8 @@ export class BillingService {
 
       await this.processFundReceipt(txHash, sender, amount);
     }
+
+    return res.status(200).json({ message: 'OK' });
   }
 
   async processFundReceipt(txHash: string, sender: string, amount: number) {

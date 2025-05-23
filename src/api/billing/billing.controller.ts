@@ -1,6 +1,7 @@
-import { Controller, Post, Request } from '@nestjs/common';
+import { Controller, Post, Request, Res } from '@nestjs/common';
 import { BillingService } from './billing.service';
 import { Public } from '../auth/decorator/public.decorator';
+import { Response } from 'express';
 
 @Controller('billing')
 export class BillingController {
@@ -8,7 +9,7 @@ export class BillingController {
 
   @Public()
   @Post('payment-webhook')
-  async handlePaymentWebhook(@Request() event: any): Promise<void> {
-    await this.billingService.handleWebhook(event);
+  async handlePaymentWebhook(@Request() event: any, @Res() res: Response): Promise<any> {
+    return this.billingService.handleWebhook(event, res);
   }
 }
