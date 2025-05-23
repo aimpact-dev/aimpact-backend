@@ -21,7 +21,7 @@ export class BillingService {
   ) {}
 
   async handleWebhook(event: any): Promise<void> {
-    this.logger.log(`Incoming event - ${JSON.stringify(event)}`);
+    this.logger.log(`Incoming event - ${JSON.stringify(event.body)}`);
 
     const validated = await this.heliusWebhookService.validateWebhook(event);
 

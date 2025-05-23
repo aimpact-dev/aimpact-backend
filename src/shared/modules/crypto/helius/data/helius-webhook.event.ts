@@ -36,7 +36,7 @@ export const HeliusWebhookEventTxSchema = z.object({
           tokenAccount: z.string(),
           mint: z.string(),
           rawTokenAmount: z.object({
-            tokenAmount: z.number(),
+            tokenAmount: z.string(),
             decimals: z.number(),
           }),
         }),
@@ -47,21 +47,24 @@ export const HeliusWebhookEventTxSchema = z.object({
     .object({
       error: z.string(),
     })
-    .nullable(),
-  instructions: z.array(
-    z.object({
-      accounts: z.array(z.string()),
-      data: z.string(),
-      innerInstructions: z.array(
-        z.object({
-          accounts: z.array(z.string()),
-          data: z.string(),
-          programId: z.string(),
-        }),
-      ),
-      programId: z.string(),
-    }),
-  ),
+    .nullable()
+    .optional(),
+  instructions: z
+    .array(
+      z.object({
+        accounts: z.array(z.string()),
+        data: z.string(),
+        innerInstructions: z.array(
+          z.object({
+            accounts: z.array(z.string()),
+            data: z.string(),
+            programId: z.string(),
+          }),
+        ),
+        programId: z.string(),
+      }),
+    )
+    .optional(),
   events: z.any(),
 });
 
