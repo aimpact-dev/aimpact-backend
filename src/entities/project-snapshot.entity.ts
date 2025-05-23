@@ -6,8 +6,8 @@ export class ProjectSnapshot {
   @PrimaryColumn({ type: 'uuid' })
   projectId: string;
 
-  @Column({ type: 'jsonb' })
-  files: any
+  @Column({ type: 'varchar'})
+  filesPath: string;
 
   @Column({ type: 'varchar' })
   chatIndex: string;

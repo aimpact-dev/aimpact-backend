@@ -12,10 +12,12 @@ import { ProjectSnapshotResponse } from './response/project-snapshot.response';
 import { ProjectSnapshotRequest } from './request/project-snapshot.request';
 import { ProjectSnapshot } from 'src/entities/project-snapshot.entity';
 import { ProjectResponse } from './response/project.response';
+import { S3Service } from '../../shared/modules/aws/s3/s3.service';
 
 @Injectable()
 export class ProjectsService {
   constructor(
+    private readonly s3Client: S3Service,
     @InjectRepository(Project)
     private readonly projectRepository: Repository<Project>,
     @InjectRepository(ProjectChat)
@@ -112,7 +114,17 @@ export class ProjectsService {
       return null;
     }
 
-    return ProjectSnapshotResponse.fromObject(project.projectSnapshot);
+    if (!project.projectSnapshot.filesPath) {
+      throw new NotFoundException(`Project with ID ${projectId} has no snapshot`);
+    }
+
+    const filesPath = project.projectSnapshot.filesPath;
+    const files = await this.s3Client.downloadObjectFromFile(filesPath);
+    if (!files) {
+      throw new NotFoundException(`Project with ID ${projectId} has no snapshot`);
+    }
+
+    return ProjectSnapshotResponse.fromObject({...(project.projectSnapshot as Omit<ProjectSnapshot, 'filesPath'>), files: files});
   }
 
   async upsertSnapshot(
@@ -133,26 +145,39 @@ export class ProjectsService {
     }
 
     if (!project.projectSnapshot) {
+      if (!dto.files) {
+        throw new BadRequestException('Files are required to create a snapshot');
+      }
+      const filesPath = `projects/${projectId}/snapshots/${randomUUID()}`;
+      // dto.files is a json string with has to be saved to s3 object
+
+      const files = JSON.stringify(dto.files);
+      await this.s3Client.uploadTextFile(filesPath, files);
       const newSnapshot = await this.projectSnapshotRepository.save({
         projectId: project.id,
-        files: dto.files,
+        filesPath: filesPath,
         chatIndex: dto.chatIndex,
         summary: dto.summary,
       });
 
-      return ProjectSnapshotResponse.fromObject(newSnapshot);
+      return ProjectSnapshotResponse.fromObject({...(newSnapshot as Omit<ProjectSnapshot, 'filesPath'>), files: dto.files});
     }
 
     const snapshot = project.projectSnapshot;
+    if (!dto.files) {
+      throw new BadRequestException('Files are required to update a snapshot');
+    }
+    const filesPath = snapshot.filesPath;
+    const files = JSON.stringify(dto.files);
+    await this.s3Client.uploadTextFile(filesPath, files);
 
     const updatedSnapshotObject = cloneEntityWithNewProps(snapshot, {
-      files: dto.files,
       chatIndex: dto.chatIndex,
       summary: dto.summary,
     });
 
     const updatedSnapshot = await this.projectSnapshotRepository.save(updatedSnapshotObject);
 
-    return ProjectSnapshotResponse.fromObject(updatedSnapshot);
+    return ProjectSnapshotResponse.fromObject({...(updatedSnapshot as Omit<ProjectSnapshot, 'filesPath'>), files: dto.files});
   }
 }

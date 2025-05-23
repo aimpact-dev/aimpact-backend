@@ -7,13 +7,15 @@ import { Project } from 'src/entities/project.entity';
 import { GetDeployAppDto } from './dto/getDeployApp.dto';
 import { User } from 'src/entities/user.entity';
 import { ConfigService } from '@nestjs/config';
-import { deserializeSnapshot } from './webcontainerSnapshotDeserializer';
+import { deserializeSnapshot, FileMap } from './webcontainerSnapshotDeserializer';
+import { S3Service } from '../../shared/modules/aws/s3/s3.service';
 
 @Injectable()
 export class DeployAppService {
   private vercelClient: any;
   constructor(
     private readonly configService: ConfigService,
+    private readonly s3Client: S3Service,
     @InjectRepository(DeployAppRequest)
     private readonly deployAppRequestRepository: Repository<DeployAppRequest>,
     @InjectRepository(Project)
@@ -36,11 +38,17 @@ export class DeployAppService {
     if (!project) throw new NotFoundException('Project not found');
 
     if (!project.projectSnapshot) throw new NotFoundException('Project snapshot not found');
+    if (!project.projectSnapshot.filesPath) throw new NotFoundException('Project files not found');
+    // download the files from s3
+    const filesPath = project.projectSnapshot.filesPath;
+    const files = await this.s3Client.downloadObjectFromFile(filesPath);
+    if (!files) throw new NotFoundException('Project files not found');
+
     const createResponse = await this.vercelClient.deployments.createDeployment({
       requestBody: {
         name: project.id, //The project id used in the deployment URL
         target: 'production',
-        files: deserializeSnapshot(project.projectSnapshot.files),
+        files: deserializeSnapshot(files as FileMap),
         projectSettings: {
           buildCommand: 'npm run build',
           installCommand: 'npm i',

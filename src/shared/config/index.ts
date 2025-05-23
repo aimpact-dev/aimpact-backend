@@ -68,6 +68,20 @@ export class CryptoEnvironment {
   HTTP_RPC_URL: string;
 }
 
+export class AWSEnvironment {
+  @IsString()
+  AWS_REGION: string;
+
+  @IsString()
+  AWS_ACCESS_KEY_ID: string;
+
+  @IsString()
+  AWS_SECRET_ACCESS_KEY: string;
+
+  @IsString()
+  AWS_BUCKET_NAME: string;
+}
+
 const logger = new Logger('ENV logger');
 let env: Record<string, any> = {};
 
@@ -108,6 +122,8 @@ export const databaseEnvConfig = registerAs(
 export const jwtEnvConfig = registerAs(ENV_NAMESPACE_KEYS.JWT, createEnvValidationFunction(JwtEnvironment));
 
 export const heliusEnvConfig = registerAs(ENV_NAMESPACE_KEYS.HELIUS, createEnvValidationFunction(HeliusEnvironment));
+
+export const awsEnvConfig = registerAs(ENV_NAMESPACE_KEYS.AWS, createEnvValidationFunction(AWSEnvironment));
 
 export const billingEnvConfig = registerAs(ENV_NAMESPACE_KEYS.BILLING, createEnvValidationFunction(BillingEnvironment));
 
