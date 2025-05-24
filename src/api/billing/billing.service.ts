@@ -87,6 +87,11 @@ export class BillingService {
     this.logger.log(`transaction ${txHash} processed: from ${sender} SOL ${amount}`);
   }
 
+  async decrementMessagesLeft(user: User) {
+    user.messagesLeft -= 1;
+    await this.userRepository.save(user);
+  }
+
   private async updateUserMessagesLeft(userId: string, solAmountPaid: number) {
     const user = await this.userRepository.findOne({ where: { id: userId } });
     if (!user) {
