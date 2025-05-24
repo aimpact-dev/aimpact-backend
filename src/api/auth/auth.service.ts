@@ -53,11 +53,12 @@ export class AuthService {
 
   async getMe(userId: string) {
     const user = await this.usersService.findById(userId);
-    if (!user) throw new NotFoundError("User not found");
+    if (!user) throw new NotFoundError('User not found');
 
     return {
       id: user.id,
       wallet: user.wallet,
-    }
+      messagesLeft: user.messagesLeft,
+    };
   }
 }

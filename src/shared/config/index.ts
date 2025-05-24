@@ -58,6 +58,10 @@ export class HeliusEnvironment {
 export class BillingEnvironment {
   @IsString()
   TRACK_WALLET: string;
+
+  @IsNumber()
+  @Transform(({ value }) => Number(value))
+  PRICE_PER_MESSAGE_IN_SOL: number;
 }
 
 export class CryptoEnvironment {
