@@ -1,4 +1,4 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
 import { billingEnvConfig, cryptoEnvConfig } from 'src/shared/config';
 import { HeliusWebhookService } from 'src/shared/modules/crypto/helius/helius-webhook.service';
@@ -7,6 +7,7 @@ import { User } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Response } from 'express';
+import { MessagesLeftResponse } from './response/messages-left.response';
 
 @Injectable()
 export class BillingService {
@@ -82,7 +83,30 @@ export class BillingService {
     });
     await this.receiptRepository.save(receipt);
 
+    await this.updateUserMessagesLeft(userId, amount);
+
     this.logger.log(`transaction ${txHash} processed: from ${sender} SOL ${amount}`);
+  }
+
+  async decrementMessagesLeft(user: User): Promise<MessagesLeftResponse> {
+    user.messagesLeft -= 1;
+    await this.userRepository.save(user);
+
+    return { messagesLeft: user.messagesLeft };
+  }
+
+  private async updateUserMessagesLeft(userId: string, solAmountPaid: number) {
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const messagesPaid = Math.floor(solAmountPaid / this.billingConfig.PRICE_PER_MESSAGE_IN_SOL);
+    user.messagesLeft += messagesPaid;
+
+    await this.userRepository.save(user);
+
+    this.logger.log(`User ${userId} paid ${solAmountPaid} SOL, added ${messagesPaid} messages`);
   }
 
   private async findByTransactionHash(transactionHash: string): Promise<FundsReceipt | null> {

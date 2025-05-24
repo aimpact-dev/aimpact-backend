@@ -10,6 +10,9 @@ export class User {
   @Column({ type: 'varchar', unique: true })
   wallet: string;
 
+  @Column({ type: 'integer', default: 3 })
+  messagesLeft: number;
+
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
 
