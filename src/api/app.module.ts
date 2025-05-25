@@ -13,6 +13,7 @@ import { APP_FILTER } from '@nestjs/core';
 
 import { DeployAppModule } from './deploy-app/deploy-app.module';
 import { BillingModule } from './billing/billing.module';
+import { ProxyModule } from './proxy/proxy.module';
 const apiConfig = [baseEnvConfig];
 @Module({
   imports: [
@@ -32,6 +33,7 @@ const apiConfig = [baseEnvConfig];
     BillingModule,
     ProjectsModule,
     DeployAppModule,
+    ProxyModule,
   ],
   controllers: [AppController],
   providers: [
@@ -46,4 +48,4 @@ const apiConfig = [baseEnvConfig];
     // },
   ],
 })
-export class AppModule { }
+export class AppModule {}
