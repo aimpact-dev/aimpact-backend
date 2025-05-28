@@ -45,4 +45,10 @@ export class UserService {
     const user = await this.userRepository.save(newUser);
     return user;
   }
+
+  async countReferrals(userId: string): Promise<number> {
+    return await this.userRepository.count({
+      where: { referrerId: userId },
+    });
+  }
 }

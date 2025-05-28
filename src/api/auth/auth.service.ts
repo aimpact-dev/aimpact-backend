@@ -59,6 +59,16 @@ export class AuthService {
       id: user.id,
       wallet: user.wallet,
       messagesLeft: user.messagesLeft,
+      inviteCode: user.inviteCode,
+      discountPercent: user.discountPercent,
+    };
+  }
+
+  async getReferralsCount(userId: string) {
+    const referralsCount = await this.usersService.countReferrals(userId);
+
+    return {
+      referralsCount
     };
   }
 }

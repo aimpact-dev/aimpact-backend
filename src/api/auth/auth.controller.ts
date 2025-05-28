@@ -79,4 +79,17 @@ export class AuthController {
   async userMe(@Request() request) {
     return this.authService.getMe(request.user.id);
   }
+
+  @Get('referralsCount')
+  @ApiOperation({
+    summary: "Get current user referrals count",
+  })
+  @ApiResponse({
+    status: 200,
+    description: "User referrals count",
+    type: typeof { referralsCount: 0 },
+  })
+  async getReferralsCount(@Request() request) {
+    return this.authService.getReferralsCount(request.user.id);
+  }
 }
