@@ -1,4 +1,11 @@
-import { Inject, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
 import { billingEnvConfig, cryptoEnvConfig, referralsEnvConfig } from 'src/shared/config';
 import { HeliusWebhookService } from 'src/shared/modules/crypto/helius/helius-webhook.service';
@@ -8,6 +15,8 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Response } from 'express';
 import { MessagesLeftResponse } from './response/messages-left.response';
+import { BuyForRewardsDto } from './dto/buyForRewards.dto';
+import { solToLamports } from 'src/api/utils/solanaConvert';
 
 @Injectable()
 export class BillingService {
@@ -129,5 +138,20 @@ export class BillingService {
     return this.receiptRepository.findOne({
       where: { transactionHash },
     });
+  }
+
+  async buyMessagesForRewards(user: User, buyInfo: BuyForRewardsDto): Promise<MessagesLeftResponse> {
+    const lamportsAmount = solToLamports(buyInfo.amount);
+    if (lamportsAmount > user.referralsRewards) {
+      throw new BadRequestException('Not enough rewards to buy messages');
+    }
+    const messagesPaid = Math.floor(buyInfo.amount / this.billingConfig.PRICE_PER_MESSAGE_IN_SOL);
+    user.messagesLeft += messagesPaid;
+    user.referralsRewards -= lamportsAmount;
+    await this.userRepository.save(user);
+
+    return {
+      messagesLeft: user.messagesLeft
+    }
   }
 }

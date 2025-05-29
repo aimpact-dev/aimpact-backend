@@ -7,6 +7,7 @@ import { generateMessage } from '../utils/generateMessage';
 import { jwtEnvConfig } from 'src/shared/config';
 import { ConfigType } from '@nestjs/config';
 import { NotFoundError } from 'rxjs';
+import { lamportsToSol } from '../utils/solanaConvert';
 
 @Injectable()
 export class AuthService {
@@ -61,7 +62,7 @@ export class AuthService {
       messagesLeft: user.messagesLeft,
       inviteCode: user.inviteCode,
       discountPercent: user.discountPercent,
-      referralsRewards: user.referralsRewards,
+      referralsRewards: lamportsToSol(user.referralsRewards),
     };
   }
 
