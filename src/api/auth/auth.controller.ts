@@ -5,6 +5,7 @@ import { SigninWalletDto } from '../dtos/signinWallet.dto';
 import { Public } from './decorator/public.decorator';
 import { RequestMessageDto } from '../dtos/requestMessage.dto';
 import { User } from 'src/entities/user.entity';
+import { ReferralsCountResponse } from './response/referrals-count.response';
 
 @Controller('auth')
 export class AuthController {
@@ -89,7 +90,7 @@ export class AuthController {
   @ApiResponse({
     status: 200,
     description: "User referrals count",
-    type: typeof { referralsCount: 0 },
+    type: ReferralsCountResponse,
   })
   async getReferralsCount(@Request() request) {
     return this.authService.getReferralsCount(request.user.id);
