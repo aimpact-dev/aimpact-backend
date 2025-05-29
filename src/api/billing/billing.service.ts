@@ -217,7 +217,7 @@ export class BillingService {
     return (await this.receiptRepository.find({ where: { userId: user.id } })).map(receipt => {
       return {
         id: receipt.id,
-        amount: receipt.amount,
+        amount: parseFloat(receipt.amount as unknown as string),
         transactionHash: receipt.transactionHash,
         createdAt: receipt.createdAt,
       };
