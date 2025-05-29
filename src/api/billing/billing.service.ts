@@ -16,10 +16,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Response } from 'express';
 import { MessagesLeftResponse } from './response/messages-left.response';
 import { BuyForRewardsDto } from './dto/buyForRewards.dto';
-import { solToLamports } from 'src/api/utils/solanaConvert';
+import { lamportsToSol, solToLamports } from 'src/api/utils/solanaConvert';
 import { RewardsWithdrawalReceipt } from '../../entities/rewards-withdrawal-receipt.entity';
 import { Connection, Keypair, PublicKey, sendAndConfirmTransaction, SystemProgram, Transaction } from '@solana/web3.js';
 import bs58 from 'bs58';
+import { WithdrawalReceiptResponse } from './response/withdrawal-reciept.response';
+import { FundReceiptResponse } from './response/fund-receipt.response';
 
 @Injectable()
 export class BillingService {
@@ -197,5 +199,29 @@ export class BillingService {
     await this.userRepository.save(user);
 
     return receipt;
+  }
+
+  async getRewardsWithdrawalReceipts(user: User): Promise<WithdrawalReceiptResponse[]> {
+    return (await this.rewardsReceiptRepository.find({ where: { userId: user.id } })).map(receipt => {
+      receipt.amount = lamportsToSol(receipt.amount);
+      return {
+        id: receipt.id,
+        amount: receipt.amount,
+        transactionHash: receipt.transactionHash,
+        createdAt: receipt.createdAt,
+      };
+    });
+  }
+
+  async getFundsReceipts(user: User): Promise<FundReceiptResponse[]> {
+    return (await this.receiptRepository.find({ where: { userId: user.id } })).map(receipt => {
+      receipt.amount = lamportsToSol(receipt.amount);
+      return {
+        id: receipt.id,
+        amount: receipt.amount,
+        transactionHash: receipt.transactionHash,
+        createdAt: receipt.createdAt,
+      };
+    });
   }
 }
