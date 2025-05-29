@@ -1,5 +1,5 @@
 import { Controller, Post, Body, UnauthorizedException, Get, Request } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiBearerAuth } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { SigninWalletDto } from '../dtos/signinWallet.dto';
 import { Public } from './decorator/public.decorator';
@@ -68,6 +68,7 @@ export class AuthController {
   }
 
   @Get('me')
+  @ApiBearerAuth()
   @ApiOperation({
     summary: "Get current user info",
   })
@@ -81,6 +82,7 @@ export class AuthController {
   }
 
   @Get('referralsCount')
+  @ApiBearerAuth()
   @ApiOperation({
     summary: "Get current user referrals count",
   })

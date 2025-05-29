@@ -9,12 +9,14 @@ import { ProjectSnapshotRequest } from './request/project-snapshot.request';
 import { Public } from '../auth/decorator/public.decorator';
 import { ApiContext } from '../auth/decorator/api-context.decorator';
 import { User } from 'src/entities/user.entity';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('projects')
 export class ProjectsController {
   constructor(private readonly projectService: ProjectsService) {}
 
   @Post()
+  @ApiBearerAuth()
   async create(@ApiContext() user: User, @Body() dto: CreateProjectDto): Promise<ProjectResponse> {
     return this.projectService.create(user.id, dto);
   }
@@ -32,11 +34,13 @@ export class ProjectsController {
   }
 
   @Get(':id/chat')
+  @ApiBearerAuth()
   async getChat(@ApiContext() user: User, @Param('id') id: string): Promise<ProjectChatResponse> {
     return this.projectService.getChat(id, user.id);
   }
 
   @Post(':id/chat')
+  @ApiBearerAuth()
   async upsertChat(
     @ApiContext() user: User,
     @Param('id') id: string,
@@ -46,11 +50,13 @@ export class ProjectsController {
   }
 
   @Get(':id/snapshot')
+  @ApiBearerAuth()
   async getSnapshot(@ApiContext() user: User, @Param('id') id: string): Promise<ProjectSnapshotResponse | null> {
     return this.projectService.getSnapshot(id, user.id);
   }
 
   @Post(':id/snapshot')
+  @ApiBearerAuth()
   async upsertSnapshot(
     @ApiContext() user: User,
     @Param('id') id: string,
