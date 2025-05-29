@@ -17,6 +17,9 @@ import { Response } from 'express';
 import { MessagesLeftResponse } from './response/messages-left.response';
 import { BuyForRewardsDto } from './dto/buyForRewards.dto';
 import { solToLamports } from 'src/api/utils/solanaConvert';
+import { RewardsWithdrawalReceipt } from '../../entities/rewards-withdrawal-receipt.entity';
+import { Connection, Keypair, PublicKey, sendAndConfirmTransaction, SystemProgram, Transaction } from '@solana/web3.js';
+import bs58 from 'bs58';
 
 @Injectable()
 export class BillingService {
@@ -30,6 +33,8 @@ export class BillingService {
     private readonly receiptRepository: Repository<FundsReceipt>,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    @InjectRepository(RewardsWithdrawalReceipt)
+    private readonly rewardsReceiptRepository: Repository<RewardsWithdrawalReceipt>,
     private readonly heliusWebhookService: HeliusWebhookService,
   ) {}
 
@@ -154,5 +159,43 @@ export class BillingService {
     return {
       messagesLeft: user.messagesLeft
     }
+  }
+
+  async withdrawRewards(user: User): Promise<RewardsWithdrawalReceipt> {
+    if (user.referralsRewards <= 0) {
+      throw new BadRequestException('No rewards to withdraw');
+    }
+
+    const privateKey = bs58.decode(this.cryptoConfig.WALLET_PRIVATE_KEY);
+
+    const connection = new Connection(this.cryptoConfig.HTTP_RPC_URL, 'confirmed');
+    const fromAccount = Keypair.fromSecretKey(privateKey)
+    const transaction = new Transaction().add(
+      SystemProgram.transfer({
+        fromPubkey: fromAccount.publicKey,
+        toPubkey: new PublicKey(user.wallet),
+        lamports: user.referralsRewards  // Already in lamports
+      }),
+    );
+
+    const signature = await sendAndConfirmTransaction(
+      connection,
+      transaction,
+      [fromAccount],
+    );
+    this.logger.log(`Transaction sent with signature: ${signature}`);
+    // Create a receipt for the withdrawal
+    const receipt = this.rewardsReceiptRepository.create({
+      userId: user.id,
+      amount: user.referralsRewards,
+      transactionHash: signature,
+    });
+
+    // Reset user's rewards after withdrawal
+    user.referralsRewards = 0;
+    await this.rewardsReceiptRepository.save(receipt);
+    await this.userRepository.save(user);
+
+    return receipt;
   }
 }

@@ -74,6 +74,9 @@ export class CryptoEnvironment {
 
   @IsNumber()
   DECIMALS: number = 9;
+
+  @IsString()
+  WALLET_PRIVATE_KEY: string;
 }
 
 export class AWSEnvironment {

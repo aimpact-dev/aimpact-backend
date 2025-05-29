@@ -5,8 +5,9 @@ import { Response } from 'express';
 import { ApiContext } from '../auth/decorator/api-context.decorator';
 import { User } from 'src/entities/user.entity';
 import { MessagesLeftResponse } from './response/messages-left.response';
-import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { BuyForRewardsDto } from './dto/buyForRewards.dto';
+import { RewardsWithdrawalReceipt } from '../../entities/rewards-withdrawal-receipt.entity';
 
 @Controller('billing')
 export class BillingController {
@@ -37,5 +38,16 @@ export class BillingController {
   })
   async buyMessagesForRewards(@ApiContext() user: User, @Body() buyInfo: BuyForRewardsDto): Promise<MessagesLeftResponse> {
     return this.billingService.buyMessagesForRewards(user, buyInfo);
+  }
+
+  @Post('withdraw-rewards')
+  @ApiBearerAuth()
+  @ApiResponse({
+    status: 200,
+    description: "User info",
+    type: RewardsWithdrawalReceipt,
+  })
+  async withdrawRewards(@ApiContext() user: User): Promise<RewardsWithdrawalReceipt> {
+    return this.billingService.withdrawRewards(user);
   }
 }

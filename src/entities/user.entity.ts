@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { Project } from './project.entity';
 import { FundsReceipt } from './funds-receipt.entity';
+import { RewardsWithdrawalReceipt } from './rewards-withdrawal-receipt.entity';
 
 
 const randomInviteCode = () => {
@@ -58,4 +59,7 @@ export class User {
 
   @OneToMany(() => FundsReceipt, (receipt) => receipt.user)
   receipts: FundsReceipt[];
+
+  @OneToMany(() => RewardsWithdrawalReceipt, (receipt) => receipt.user)
+  withdraws: RewardsWithdrawalReceipt[];
 }
