@@ -215,7 +215,6 @@ export class BillingService {
 
   async getFundsReceipts(user: User): Promise<FundReceiptResponse[]> {
     return (await this.receiptRepository.find({ where: { userId: user.id } })).map(receipt => {
-      receipt.amount = lamportsToSol(receipt.amount);
       return {
         id: receipt.id,
         amount: receipt.amount,
