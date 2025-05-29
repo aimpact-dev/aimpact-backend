@@ -96,6 +96,9 @@ export class ReferralsEnvironment {
 
   @IsNumber()
   REFERRER_FEE: number = 0.1; // 10% referrer fee
+
+  @IsNumber()
+  MESSAGES_FOR_REWARDS_MULTIPLIER: number = 2;
 }
 
 const logger = new Logger('ENV logger');

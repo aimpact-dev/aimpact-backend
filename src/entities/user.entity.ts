@@ -37,7 +37,7 @@ export class User {
   @Column({ type: 'integer', nullable: false, default: 0 })
   discountPercent: number;
 
-  @Column({ type: 'decimal', precision: 18, scale: 0, nullable: false, default: 0 })
+  @Column({ type: 'decimal', precision: 18, scale: 0, nullable: false, default: 0 })  // Store rewards in lamports
   referralsRewards: number;
 
   @CreateDateColumn({ type: 'timestamp' })

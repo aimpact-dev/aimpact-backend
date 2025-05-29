@@ -145,11 +145,12 @@ export class BillingService {
     if (lamportsAmount > user.referralsRewards) {
       throw new BadRequestException('Not enough rewards to buy messages');
     }
-    const messagesPaid = Math.floor(buyInfo.amount / this.billingConfig.PRICE_PER_MESSAGE_IN_SOL);
-    user.messagesLeft += messagesPaid;
-    user.referralsRewards -= lamportsAmount;
-    await this.userRepository.save(user);
-
+    const messagesPaid = Math.floor(buyInfo.amount / this.billingConfig.PRICE_PER_MESSAGE_IN_SOL * this.referralsConfig.MESSAGES_FOR_REWARDS_MULTIPLIER);
+    if (messagesPaid > 0) {
+      user.messagesLeft += messagesPaid;
+      user.referralsRewards -= lamportsAmount;
+      await this.userRepository.save(user);
+    }
     return {
       messagesLeft: user.messagesLeft
     }
