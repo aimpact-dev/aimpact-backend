@@ -1,6 +1,6 @@
-import { Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
-import { billingEnvConfig, cryptoEnvConfig } from 'src/shared/config';
+import { billingEnvConfig, cryptoEnvConfig, referralsEnvConfig } from 'src/shared/config';
 import { HeliusWebhookService } from 'src/shared/modules/crypto/helius/helius-webhook.service';
 import { FundsReceipt } from 'src/entities/funds-receipt.entity';
 import { User } from 'src/entities/user.entity';
@@ -15,6 +15,8 @@ export class BillingService {
 
   constructor(
     @Inject(billingEnvConfig.KEY) private readonly billingConfig: ConfigType<typeof billingEnvConfig>,
+    @Inject(referralsEnvConfig.KEY) private readonly referralsConfig: ConfigType<typeof referralsEnvConfig>,
+    @Inject(cryptoEnvConfig.KEY) private readonly cryptoConfig: ConfigType<typeof cryptoEnvConfig>,
     @InjectRepository(FundsReceipt)
     private readonly receiptRepository: Repository<FundsReceipt>,
     @InjectRepository(User)
@@ -58,6 +60,17 @@ export class BillingService {
     return res.status(200).json({ message: 'OK' });
   }
 
+  private async creditReferralReward(user: User, amount: number) {
+    const referrer = await this.userRepository.findOne({ where: { id: user.referrerId } });
+    if (!referrer) {
+      return;
+    }
+    const referralReward = amount * this.referralsConfig.REFERRER_FEE * Math.pow(10, this.cryptoConfig.DECIMALS);
+    referrer.referralsRewards = parseFloat(referrer.referralsRewards.toString()) + referralReward;
+    this.logger.log(`Credited referral reward of ${referralReward} lamports to referrer ${referrer.id}`);
+    await this.userRepository.save(referrer);
+  }
+
   async processFundReceipt(txHash: string, sender: string, amount: number) {
     const tx = await this.findByTransactionHash(txHash);
     if (tx) {
@@ -65,25 +78,22 @@ export class BillingService {
       return;
     }
 
-    const user = await this.userRepository.findOne({ where: { wallet: sender } });
+    let user = await this.userRepository.findOne({ where: { wallet: sender } });
 
-    let userId: string;
     if (!user) {
       const newUser = this.userRepository.create({ wallet: sender });
-      const savedUser = await this.userRepository.save(newUser);
-      userId = savedUser.id;
-    } else {
-      userId = user.id;
+      user = await this.userRepository.save(newUser);
     }
+    const userId = user.id;
 
     const receipt = this.receiptRepository.create({
       userId,
       amount,
       transactionHash: txHash,
     });
-    await this.receiptRepository.save(receipt);
-
+    await this.creditReferralReward(user, amount);
     await this.updateUserMessagesLeft(userId, amount);
+    await this.receiptRepository.save(receipt);
 
     this.logger.log(`transaction ${txHash} processed: from ${sender} SOL ${amount}`);
   }
@@ -101,8 +111,14 @@ export class BillingService {
       throw new NotFoundException('User not found');
     }
 
-    const messagesPaid = Math.floor(solAmountPaid / this.billingConfig.PRICE_PER_MESSAGE_IN_SOL);
+    const discount = user.discountPercent / 100;
+    const pricePerMessageWithDiscount = this.billingConfig.PRICE_PER_MESSAGE_IN_SOL - (this.billingConfig.PRICE_PER_MESSAGE_IN_SOL * discount);
+    if (pricePerMessageWithDiscount == 0) {
+      throw new InternalServerErrorException("Price per message with discount cannot be zero. Seems like user has 100% discount.");
+    }
+    const messagesPaid = Math.floor(solAmountPaid / pricePerMessageWithDiscount);
     user.messagesLeft += messagesPaid;
+    user.discountPercent = 0;  // Reset discount after payment
 
     await this.userRepository.save(user);
 

@@ -37,6 +37,9 @@ export class User {
   @Column({ type: 'integer', nullable: false, default: 0 })
   discountPercent: number;
 
+  @Column({ type: 'decimal', precision: 18, scale: 0, nullable: false, default: 0 })
+  referralsRewards: number;
+
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
 

@@ -18,10 +18,10 @@ export class AuthService {
     @Inject(jwtEnvConfig.KEY) private readonly jwtConfig: ConfigType<typeof jwtEnvConfig>,
   ) {}
 
-  async loginWithSolanaWallet(address: string, signature: string, nonce: string) {
+  async loginWithSolanaWallet(address: string, signature: string, nonce: string, inviteCode?: string | null | undefined) {
     let user = await this.usersService.findByWalletAddress(address);
     if (!user) {
-      user = await this.usersService.createUserWithSolanaWallet(address, signature, nonce);
+      user = await this.usersService.createUserWithSolanaWallet(address, signature, nonce, inviteCode);
     }
     let isNonceUsed = await this.nonceService.isNonceUsed(address, nonce);
     if (isNonceUsed) {
@@ -61,6 +61,7 @@ export class AuthService {
       messagesLeft: user.messagesLeft,
       inviteCode: user.inviteCode,
       discountPercent: user.discountPercent,
+      referralsRewards: user.referralsRewards,
     };
   }
 

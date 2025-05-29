@@ -1,15 +1,18 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
 import { validateSignedMessage } from '../utils/validSignMessage';
 import { generateMessage } from '../utils/generateMessage';
+import { referralsEnvConfig } from '../../shared/config';
+import { ConfigType } from '@nestjs/config';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    @Inject(referralsEnvConfig.KEY) private readonly referralsConfig: ConfigType<typeof referralsEnvConfig>
   ) {}
 
   async findByWalletAddress(wallet: string): Promise<User | null> {
@@ -24,6 +27,7 @@ export class UserService {
     wallet: string,
     signature: string,
     nonce: string,
+    inviteCode?: string | null | undefined,
   ): Promise<User> {
     const message = generateMessage(nonce);
     const isValid = validateSignedMessage(wallet, message, signature);
@@ -42,6 +46,17 @@ export class UserService {
     const newUser = this.userRepository.create({
       wallet,
     });
+    if (inviteCode) {
+      const referrer = await this.userRepository.findOne({
+        where: { inviteCode },
+      });
+      if (referrer) {
+        newUser.referrerId = referrer.id;
+        newUser.discountPercent = this.referralsConfig.NEW_REFERRALS_DISCOUNT_PERCENT;
+      } else {
+        throw new UnauthorizedException('Invalid invite code');
+      }
+    }
     const user = await this.userRepository.save(newUser);
     return user;
   }

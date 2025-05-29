@@ -35,7 +35,7 @@ export class AuthController {
     description: 'Invalid credentials.',
   })
   async loginWithWallet(@Body() signin: SigninWalletDto) {
-    return this.authService.loginWithSolanaWallet(signin.walletAddress, signin.signedMessage, signin.nonce);
+    return this.authService.loginWithSolanaWallet(signin.walletAddress, signin.signedMessage, signin.nonce, signin.inviteCode);
   }
 
   @Public()
