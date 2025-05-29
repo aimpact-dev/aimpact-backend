@@ -25,7 +25,7 @@ export class User {
   @Column({ type: 'varchar', unique: true })
   wallet: string;
 
-  @Column({ type: 'integer', default: 3 })
+  @Column({ type: 'integer', default: 0 })
   messagesLeft: number;
 
   @Unique('uq_invite_code', ['inviteCode'])

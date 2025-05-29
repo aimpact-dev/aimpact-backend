@@ -44,7 +44,7 @@ export class UserService {
       );
     }
     const newUser = this.userRepository.create({
-      wallet,
+      wallet, messagesLeft: 0
     });
     if (inviteCode) {
       const referrer = await this.userRepository.findOne({
