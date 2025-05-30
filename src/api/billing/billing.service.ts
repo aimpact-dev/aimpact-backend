@@ -158,6 +158,9 @@ export class BillingService {
       user.referralsRewards -= lamportsAmount;
       await this.userRepository.save(user);
     }
+    else {
+      throw new BadRequestException('Not enough rewards to buy messages');
+    }
     return {
       messagesLeft: user.messagesLeft
     }
