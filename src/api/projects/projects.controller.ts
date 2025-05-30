@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { ProjectsService } from './projects.service';
 import { CreateProjectDto } from './dto/CreateProjectDto';
 import { ProjectChatResponse } from './response/project-chat.response';
@@ -6,10 +6,11 @@ import { ProjectResponse } from './response/project.response';
 import { ProjectSnapshotResponse } from './response/project-snapshot.response';
 import { ProjectChatRequest } from './request/project-chat.request';
 import { ProjectSnapshotRequest } from './request/project-snapshot.request';
-import { Public } from '../auth/decorator/public.decorator';
+import { AuthAllowed, Public } from '../auth/decorator/public.decorator';
 import { ApiContext } from '../auth/decorator/api-context.decorator';
 import { User } from 'src/entities/user.entity';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
+import { ProjectsFiltersRequest } from './request/projects-filters.request';
 
 @Controller('projects')
 export class ProjectsController {
@@ -22,9 +23,12 @@ export class ProjectsController {
   }
 
   @Public()
+  @AuthAllowed()
   @Get()
-  async findAll(): Promise<ProjectResponse[]> {
-    return this.projectService.findAll();
+  @ApiOperation({ summary: 'Get all projects' })
+  @ApiBearerAuth()
+  async findAll(@Query() filters: ProjectsFiltersRequest, @ApiContext({ required: false }) user?: User): Promise<ProjectResponse[]> {
+    return this.projectService.findAll(filters, user);
   }
 
   @Public()
