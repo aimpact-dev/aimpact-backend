@@ -4,8 +4,10 @@ import { RequestDeployAppDto } from './dto/requestDeployApp.dto';
 import { ApiContext } from 'src/api/auth/decorator/api-context.decorator';
 import { User } from 'src/entities/user.entity';
 import { GetDeployAppDto } from './dto/getDeployApp.dto';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('deploy-app')
+@ApiBearerAuth()
 export class DeployAppController {
   constructor(private readonly deployAppService: DeployAppService) {}
 

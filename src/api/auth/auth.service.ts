@@ -7,6 +7,7 @@ import { generateMessage } from '../utils/generateMessage';
 import { jwtEnvConfig } from 'src/shared/config';
 import { ConfigType } from '@nestjs/config';
 import { NotFoundError } from 'rxjs';
+import { lamportsToSol } from '../utils/solanaConvert';
 
 @Injectable()
 export class AuthService {
@@ -18,10 +19,10 @@ export class AuthService {
     @Inject(jwtEnvConfig.KEY) private readonly jwtConfig: ConfigType<typeof jwtEnvConfig>,
   ) {}
 
-  async loginWithSolanaWallet(address: string, signature: string, nonce: string) {
+  async loginWithSolanaWallet(address: string, signature: string, nonce: string, inviteCode?: string | null | undefined) {
     let user = await this.usersService.findByWalletAddress(address);
     if (!user) {
-      user = await this.usersService.createUserWithSolanaWallet(address, signature, nonce);
+      user = await this.usersService.createUserWithSolanaWallet(address, signature, nonce, inviteCode);
     }
     let isNonceUsed = await this.nonceService.isNonceUsed(address, nonce);
     if (isNonceUsed) {
@@ -53,11 +54,23 @@ export class AuthService {
 
   async getMe(userId: string) {
     const user = await this.usersService.findById(userId);
-    if (!user) throw new NotFoundError("User not found");
+    if (!user) throw new NotFoundError('User not found');
 
     return {
       id: user.id,
       wallet: user.wallet,
-    }
+      messagesLeft: user.messagesLeft,
+      inviteCode: user.inviteCode,
+      discountPercent: user.discountPercent,
+      referralsRewards: lamportsToSol(user.referralsRewards),
+    };
+  }
+
+  async getReferralsCount(userId: string) {
+    const referralsCount = await this.usersService.countReferrals(userId);
+
+    return {
+      referralsCount
+    };
   }
 }

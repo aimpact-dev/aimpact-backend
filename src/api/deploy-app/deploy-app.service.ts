@@ -99,14 +99,38 @@ export class DeployAppService {
       status: deploymentStatus,
       finalUrl: deploymentURL,
     };
+    const buildFinished = deploymentStatus === 'READY' || deploymentStatus === 'ERROR';
     if (deploymentStatus === 'READY') {
       deployAppReqToSave.isDeployed = true;
     }
-    if (deploymentStatus === 'ERROR') {
-      deployAppReqToSave.message = deploymentStatusResponse.errorMessage || 'Unknown error';
+    if (buildFinished) {
+      try {
+        // Get build logs for more detailed error information
+        const buildLogsResponse = (await this.vercelClient.deployments.getDeploymentEvents({
+          idOrUrl: deploymentId,
+          direction: 'forward'
+        })) as Array<any>;
+
+        // Add basic error message
+        if (deploymentStatusResponse.errorMessage) {
+          deployAppReqToSave.message = deploymentStatusResponse.errorMessage || 'Unknown error'
+        }
+
+        // Add build error logs
+        deployAppReqToSave.logs = buildLogsResponse.map((log: any) => ({
+          message: log.text,
+          timestamp: log.created,
+          type: log.type,
+          level: log.level || null,
+        }));
+
+      } catch (logError) {
+        console.error('Failed to retrieve deployment logs:', logError);
+        deployAppReqToSave.message = deploymentStatusResponse.errorMessage || 'Unknown error - logs unavailable';
+      }
     }
     await this.deployAppRequestRepository.save(deployAppReqToSave);
 
-    return deployAppReq;
+    return deployAppReqToSave;
   }
 }

@@ -1,4 +1,4 @@
-import { IsString } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class SigninWalletDto {
@@ -19,4 +19,13 @@ export class SigninWalletDto {
   })
   @IsString()
   nonce: string;
+
+  @ApiProperty({
+    description: 'Invite code for referral program (optional)',
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  inviteCode?: string;
+
 }

@@ -13,6 +13,7 @@ export const ENV_NAMESPACE_KEYS = {
   JWT: 'jwt',
   HELIUS: 'helius',
   BILLING: 'billing',
+  REFERRALS: 'referrals',
 };
 
 export class Environment {
@@ -58,6 +59,10 @@ export class HeliusEnvironment {
 export class BillingEnvironment {
   @IsString()
   TRACK_WALLET: string;
+
+  @IsNumber()
+  @Transform(({ value }) => Number(value))
+  PRICE_PER_MESSAGE_IN_SOL: number;
 }
 
 export class CryptoEnvironment {
@@ -66,6 +71,12 @@ export class CryptoEnvironment {
 
   @IsString()
   HTTP_RPC_URL: string;
+
+  @IsNumber()
+  DECIMALS: number = 9;
+
+  @IsString()
+  WALLET_PRIVATE_KEY: string;
 }
 
 export class AWSEnvironment {
@@ -80,6 +91,17 @@ export class AWSEnvironment {
 
   @IsString()
   AWS_BUCKET_NAME: string;
+}
+
+export class ReferralsEnvironment {
+  @IsNumber()
+  NEW_REFERRALS_DISCOUNT_PERCENT: number = 50;
+
+  @IsNumber()
+  REFERRER_FEE: number = 0.1; // 10% referrer fee
+
+  @IsNumber()
+  MESSAGES_FOR_REWARDS_MULTIPLIER: number = 2;
 }
 
 const logger = new Logger('ENV logger');
@@ -128,3 +150,5 @@ export const awsEnvConfig = registerAs(ENV_NAMESPACE_KEYS.AWS, createEnvValidati
 export const billingEnvConfig = registerAs(ENV_NAMESPACE_KEYS.BILLING, createEnvValidationFunction(BillingEnvironment));
 
 export const cryptoEnvConfig = registerAs(ENV_NAMESPACE_KEYS.CRYPTO, createEnvValidationFunction(CryptoEnvironment));
+
+export const referralsEnvConfig = registerAs(ENV_NAMESPACE_KEYS.REFERRALS, createEnvValidationFunction(ReferralsEnvironment));

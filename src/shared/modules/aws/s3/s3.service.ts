@@ -1,4 +1,4 @@
-import { S3Client, PutObjectCommand, GetObjectCommand} from "@aws-sdk/client-s3";
+import { S3Client, PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
 
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 
@@ -11,18 +11,14 @@ export class S3Service {
   private readonly bucketName: string;
 
   constructor(@Inject(awsEnvConfig.KEY) private readonly awsConfig: ConfigType<typeof awsEnvConfig>) {
-    const awsRegion = awsConfig.AWS_REGION;
-    const awsAccessKeyId = awsConfig.AWS_ACCESS_KEY_ID;
-    const awsSecretAccessKey = awsConfig.AWS_SECRET_ACCESS_KEY;
-    const awsBucketName = awsConfig.AWS_BUCKET_NAME;
     this.s3Client = new S3Client({
-      region: awsRegion,
+      region: awsConfig.AWS_REGION,
       credentials: {
-        accessKeyId: awsAccessKeyId,
-        secretAccessKey: awsSecretAccessKey,
+        accessKeyId: awsConfig.AWS_ACCESS_KEY_ID,
+        secretAccessKey: awsConfig.AWS_SECRET_ACCESS_KEY,
       },
-    } as any);
-    this.bucketName = awsBucketName;
+    });
+    this.bucketName = awsConfig.AWS_BUCKET_NAME;
   }
 
   async uploadTextFile(fileName: string, fileContent: string): Promise<void> {
@@ -32,7 +28,6 @@ export class S3Service {
       Body: fileContent,
     });
 
-    // @ts-ignore
     await this.s3Client.send(command);
   }
 
@@ -42,14 +37,12 @@ export class S3Service {
       Key: fileName,
     });
 
-    // @ts-ignore
-    const response = await this.s3Client.send(command);  // AWS kurwa messed up with their types
-    // @ts-ignore
-    if (!response.Body) {  // AWS kurwa messed up with their types
+    const response = await this.s3Client.send(command);
+    if (!response.Body) {
       throw new NotFoundException(`File ${fileName} not found`);
     }
-    // @ts-ignore
-    const fileContent = await response.Body.transformToString();  // AWS kurwa messed up with their types
-    return JSON.parse(fileContent)
+    const fileContent = await response.Body.transformToString();
+
+    return JSON.parse(fileContent);
   }
 }

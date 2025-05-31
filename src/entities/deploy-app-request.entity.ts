@@ -12,6 +12,12 @@ import { Project } from './project.entity';
 
 type DeploymentStatus = "QUEUED" | "BUILDING" | "ERROR" | "INITIALIZING" | "READY" | "CANCELED";
 
+type DeploymentLog = {
+  type: string;
+  message: string;
+  timestamp: Date;
+  level?: string | null;
+};
 
 @Entity('deploy_app_request')
 export class DeployAppRequest {
@@ -29,6 +35,9 @@ export class DeployAppRequest {
 
   @Column({ type: 'varchar', nullable: true })
   message?: string;
+
+  @Column({ type: 'jsonb', nullable: true })
+  logs?: Array<DeploymentLog>;
 
   @Column({ type: 'varchar', nullable: true })
   finalUrl?: string;

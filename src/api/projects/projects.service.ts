@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Project } from 'src/entities/project.entity';
@@ -13,6 +13,8 @@ import { ProjectSnapshotRequest } from './request/project-snapshot.request';
 import { ProjectSnapshot } from 'src/entities/project-snapshot.entity';
 import { ProjectResponse } from './response/project.response';
 import { S3Service } from '../../shared/modules/aws/s3/s3.service';
+import { ProjectsFiltersRequest } from './request/projects-filters.request';
+import { User } from '../../entities/user.entity';
 
 @Injectable()
 export class ProjectsService {
@@ -32,8 +34,17 @@ export class ProjectsService {
     return ProjectResponse.fromObject(savedProject);
   }
 
-  async findAll(): Promise<ProjectResponse[]> {
-    const projects = await this.projectRepository.find();
+  async findAll(filters: ProjectsFiltersRequest, user?: User): Promise<ProjectResponse[]> {
+    let projects;
+    const ormFilters = {
+      order: { [filters.sortBy || 'createdAt']: filters.sortOrder || 'DESC' },
+    }
+    if (user && filters.ownership === 'owned') {
+      ormFilters['where'] = { userId: user.id };
+    } else if (!user && filters.ownership === 'owned') {
+      throw new UnauthorizedException('User is required to filter by ownership');
+    }
+    projects = await this.projectRepository.find(ormFilters);
     return projects.map(ProjectResponse.fromObject);
   }
 

@@ -1,10 +1,11 @@
 import { Controller, Post, Body, UnauthorizedException, Get, Request } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiBearerAuth } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { SigninWalletDto } from '../dtos/signinWallet.dto';
 import { Public } from './decorator/public.decorator';
 import { RequestMessageDto } from '../dtos/requestMessage.dto';
 import { User } from 'src/entities/user.entity';
+import { ReferralsCountResponse } from './response/referrals-count.response';
 
 @Controller('auth')
 export class AuthController {
@@ -35,7 +36,7 @@ export class AuthController {
     description: 'Invalid credentials.',
   })
   async loginWithWallet(@Body() signin: SigninWalletDto) {
-    return this.authService.loginWithSolanaWallet(signin.walletAddress, signin.signedMessage, signin.nonce);
+    return this.authService.loginWithSolanaWallet(signin.walletAddress, signin.signedMessage, signin.nonce, signin.inviteCode);
   }
 
   @Public()
@@ -68,6 +69,7 @@ export class AuthController {
   }
 
   @Get('me')
+  @ApiBearerAuth()
   @ApiOperation({
     summary: "Get current user info",
   })
@@ -78,5 +80,19 @@ export class AuthController {
   })
   async userMe(@Request() request) {
     return this.authService.getMe(request.user.id);
+  }
+
+  @Get('referralsCount')
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: "Get current user referrals count",
+  })
+  @ApiResponse({
+    status: 200,
+    description: "User referrals count",
+    type: ReferralsCountResponse,
+  })
+  async getReferralsCount(@Request() request) {
+    return this.authService.getReferralsCount(request.user.id);
   }
 }
