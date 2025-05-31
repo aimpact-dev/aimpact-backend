@@ -3,6 +3,7 @@ import { UserService } from './user.service';
 import { Public } from '../auth/decorator/public.decorator';
 import { ApiContext } from '../auth/decorator/api-context.decorator';
 import { User } from 'src/entities/user.entity';
+import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 @Controller('user')
 export class UserController {
@@ -19,6 +20,18 @@ export class UserController {
   }
 
   @Post('request-messages')
+  @ApiOperation({
+    summary: "Request few free messages (can be used only once)"
+  })
+  @ApiBearerAuth()
+  @ApiResponse({
+    status: 200,
+    description: "Messages claimed",
+  })
+  @ApiResponse({
+    status: 400,
+    description: "You already claimed messages or total limit reached"
+  })
   async requestFreeMessages(@ApiContext() user: User) {
     return await this.usersService.requestFreeMessages(user);
   }
