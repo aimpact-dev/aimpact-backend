@@ -39,6 +39,12 @@ export class UserMeResponse {
   referralsRewards: number;
 
   @ApiProperty({
+    description: 'Total rewards earned by the user from referrals, in SOL',
+    example: 0.5,
+  })
+  totalEarnedRewards: number;
+
+  @ApiProperty({
     description: 'Whether the user has claimed their free messages',
     example: true,
   })

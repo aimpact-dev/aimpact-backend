@@ -41,6 +41,9 @@ export class User {
   @Column({ type: 'decimal', precision: 18, scale: 0, nullable: false, default: 0 })  // Store rewards in lamports
   referralsRewards: number;
 
+  @Column({ type: 'numeric', precision: 18, scale: 0, nullable: false, default: 0 })
+  totalEarnedRewards: number;
+
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
 
