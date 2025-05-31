@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
@@ -44,5 +44,16 @@ export class UserService {
     });
     const user = await this.userRepository.save(newUser);
     return user;
+  }
+
+  async requestFreeMessages(user: User) {
+    if (user.claimedFreeMessages) {
+      throw new BadRequestException('You already claimed free messages');
+    }
+
+    user.claimedFreeMessages = true;
+    
+
+    return;
   }
 }

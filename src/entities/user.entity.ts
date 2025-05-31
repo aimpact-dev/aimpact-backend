@@ -21,4 +21,7 @@ export class User {
 
   @OneToMany(() => FundsReceipt, (receipt) => receipt.user)
   receipts: FundsReceipt[];
+
+  @Column({ type: 'bool' })
+  claimedFreeMessages: boolean;
 }
