@@ -64,6 +64,7 @@ export class AuthService {
       inviteCode: user.inviteCode,
       discountPercent: user.discountPercent,
       referralsRewards: lamportsToSol(user.referralsRewards),
+      claimedFreeMessages: user.claimedFreeMessages,
     };
   }
 

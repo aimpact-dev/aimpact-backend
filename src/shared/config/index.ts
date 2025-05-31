@@ -14,6 +14,7 @@ export const ENV_NAMESPACE_KEYS = {
   HELIUS: 'helius',
   BILLING: 'billing',
   REFERRALS: 'referrals',
+  FREE_MESSAGES: 'free_messages',
 };
 
 export class Environment {
@@ -41,6 +42,11 @@ export class DatabaseEnvironment {
 
   @IsString()
   DATABASE_NAME: string = 'aimpact';
+}
+
+export class FreeMessagesEviroment {
+  @IsNumber()
+  MAX_FREE_MESSAGES_REQUESTS: number = 50;
 }
 
 export class JwtEnvironment {
@@ -152,3 +158,5 @@ export const billingEnvConfig = registerAs(ENV_NAMESPACE_KEYS.BILLING, createEnv
 export const cryptoEnvConfig = registerAs(ENV_NAMESPACE_KEYS.CRYPTO, createEnvValidationFunction(CryptoEnvironment));
 
 export const referralsEnvConfig = registerAs(ENV_NAMESPACE_KEYS.REFERRALS, createEnvValidationFunction(ReferralsEnvironment));
+
+export const freeMessagesEnvConfig = registerAs(ENV_NAMESPACE_KEYS.FREE_MESSAGES, createEnvValidationFunction(FreeMessagesEviroment));

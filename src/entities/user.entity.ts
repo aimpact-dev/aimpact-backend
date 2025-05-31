@@ -60,6 +60,9 @@ export class User {
   @OneToMany(() => FundsReceipt, (receipt) => receipt.user)
   receipts: FundsReceipt[];
 
+  @Column({ type: 'boolean', default: false })
+  claimedFreeMessages: boolean;
+
   @OneToMany(() => RewardsWithdrawalReceipt, (receipt) => receipt.user)
   withdraws: RewardsWithdrawalReceipt[];
 }

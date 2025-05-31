@@ -1,10 +1,10 @@
-import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
 import { validateSignedMessage } from '../utils/validSignMessage';
 import { generateMessage } from '../utils/generateMessage';
-import { referralsEnvConfig } from '../../shared/config';
+import { freeMessagesEnvConfig, heliusEnvConfig, referralsEnvConfig } from '../../shared/config';
 import { ConfigType } from '@nestjs/config';
 
 @Injectable()
@@ -12,7 +12,8 @@ export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-    @Inject(referralsEnvConfig.KEY) private readonly referralsConfig: ConfigType<typeof referralsEnvConfig>
+    @Inject(referralsEnvConfig.KEY) private readonly referralsConfig: ConfigType<typeof referralsEnvConfig>,
+    @Inject(freeMessagesEnvConfig.KEY) private readonly freeMessagesConfig: ConfigType<typeof freeMessagesEnvConfig>,
   ) {}
 
   async findByWalletAddress(wallet: string): Promise<User | null> {
@@ -59,6 +60,25 @@ export class UserService {
     }
     const user = await this.userRepository.save(newUser);
     return user;
+  }
+
+  async requestFreeMessages(user: User) {
+    if (user.claimedFreeMessages === true) {
+      throw new BadRequestException('You already claimed free messages');
+    }
+    
+    const usersWithFreeMessages = (await this.userRepository.find({ 
+      where: { claimedFreeMessages: true },
+    })).length;
+    if (usersWithFreeMessages >= this.freeMessagesConfig.MAX_FREE_MESSAGES_REQUESTS) {
+      throw new BadRequestException('Max amount of claimed free messages reached');
+    }
+
+    user.claimedFreeMessages = true;
+    user.messagesLeft += 3;
+    await this.userRepository.save(user);
+
+    return;
   }
 
   async countReferrals(userId: string): Promise<number> {
