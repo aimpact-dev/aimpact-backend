@@ -37,4 +37,10 @@ export class UserMeResponse {
     example: 0.01,
   })
   referralsRewards: number;
+
+  @ApiProperty({
+    description: 'Whether the user has claimed their free messages',
+    example: true,
+  })
+  claimedFreeMessages: boolean;
 }
