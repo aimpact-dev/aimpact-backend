@@ -8,6 +8,7 @@ import { jwtEnvConfig } from 'src/shared/config';
 import { ConfigType } from '@nestjs/config';
 import { NotFoundError } from 'rxjs';
 import { lamportsToSol } from '../utils/solanaConvert';
+import { UserMeResponse } from './response/user-me.response';
 
 @Injectable()
 export class AuthService {
@@ -52,7 +53,7 @@ export class AuthService {
     return { message, nonce: nonce.nonce };
   }
 
-  async getMe(userId: string) {
+  async getMe(userId: string): Promise<UserMeResponse> {
     const user = await this.usersService.findById(userId);
     if (!user) throw new NotFoundError('User not found');
 

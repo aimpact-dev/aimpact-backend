@@ -9,8 +9,9 @@ import { ProjectSnapshotRequest } from './request/project-snapshot.request';
 import { AuthAllowed, Public } from '../auth/decorator/public.decorator';
 import { ApiContext } from '../auth/decorator/api-context.decorator';
 import { User } from 'src/entities/user.entity';
-import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { ProjectsFiltersRequest } from './request/projects-filters.request';
+import { WithdrawalReceiptResponse } from '../billing/response/withdrawal-reciept.response';
 
 @Controller('projects')
 export class ProjectsController {
@@ -54,12 +55,22 @@ export class ProjectsController {
   }
 
   @Get(':id/snapshot')
+  @ApiResponse({
+    status: 200,
+    description: "Get project snapshot",
+    type: ProjectSnapshotResponse,
+  })
   @ApiBearerAuth()
   async getSnapshot(@ApiContext() user: User, @Param('id') id: string): Promise<ProjectSnapshotResponse | null> {
     return this.projectService.getSnapshot(id, user.id);
   }
 
   @Post(':id/snapshot')
+  @ApiResponse({
+    status: 200,
+    description: "Upsert project snapshot",
+    type: ProjectSnapshotResponse,
+  })
   @ApiBearerAuth()
   async upsertSnapshot(
     @ApiContext() user: User,

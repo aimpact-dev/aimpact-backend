@@ -1,4 +1,27 @@
-import { OmitType } from '@nestjs/swagger';
-import { FundsReceipt } from '../../../entities/funds-receipt.entity';
+import { ApiProperty } from '@nestjs/swagger';
 
-export class FundReceiptResponse extends OmitType(FundsReceipt, ['user', 'userId', 'updatedAt'] as const) {}
+export class FundReceiptResponse {
+  @ApiProperty({
+    description: 'The funds receipt uuid',
+    example: '123e4567-e89b-12d3-a456-426614174000',
+  })
+  id: string;
+
+  @ApiProperty({
+    description: 'Amount topped up by the user in solana',
+    example: '0.01',
+  })
+  amount: number;
+
+  @ApiProperty({
+    description: 'The transaction hash of the funds receipt',
+    example: '5K9z1d3f4g5h6i7j8k9l0m1n2o3p4q5r6s7t8u9v0w1x2y3z4a5b6c7d8e9f0g1h2i3j4k5l6m7n8o9p0q1r2s3t4u5v6w7x8y9z0',
+  })
+  transactionHash: string;
+
+  @ApiProperty({
+    description: 'The date when the funds receipt was created',
+    example: '2023-10-01T12:00:00Z',
+  })
+  createdAt: Date;
+}
