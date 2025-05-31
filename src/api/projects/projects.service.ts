@@ -15,6 +15,7 @@ import { ProjectResponse } from './response/project.response';
 import { S3Service } from '../../shared/modules/aws/s3/s3.service';
 import { ProjectsFiltersRequest } from './request/projects-filters.request';
 import { User } from '../../entities/user.entity';
+import { ProjectWithOwnerResponse } from './response/project-with-owner.response';
 
 @Injectable()
 export class ProjectsService {
@@ -48,12 +49,12 @@ export class ProjectsService {
     return projects.map(ProjectResponse.fromObject);
   }
 
-  async findOne(id: string): Promise<ProjectResponse> {
-    const project = await this.projectRepository.findOneBy({ id });
+  async findOne(id: string): Promise<ProjectWithOwnerResponse> {
+    const project = await this.projectRepository.findOne({ where: {id} , relations: ['user']});
     if (!project) {
       throw new NotFoundException(`Project with ID ${id} not found`);
     }
-    return ProjectResponse.fromObject(project);
+    return ProjectWithOwnerResponse.fromObject(project);
   }
 
   async getChat(projectId: string, userId: string): Promise<ProjectChatResponse> {
