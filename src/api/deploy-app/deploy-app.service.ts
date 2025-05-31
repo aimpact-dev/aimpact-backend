@@ -4,11 +4,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { DeployAppRequest } from 'src/entities/deploy-app-request.entity';
 import { Project } from 'src/entities/project.entity';
-import { GetDeployAppDto } from './dto/getDeployApp.dto';
 import { User } from 'src/entities/user.entity';
 import { ConfigService } from '@nestjs/config';
 import { deserializeSnapshot, FileMap } from './webcontainerSnapshotDeserializer';
 import { S3Service } from '../../shared/modules/aws/s3/s3.service';
+import { GetDeployAppRequest } from './request/get-deploy-app.request';
+import { DeployAppResponse } from './response/deploy-app.response';
 
 @Injectable()
 export class DeployAppService {
@@ -29,7 +30,7 @@ export class DeployAppService {
       this.vercelClient = new Vercel({ bearerToken: vercelToken });
     })();
   }
-  async requestDeployApp(user: User, dto: RequestDeployAppDto): Promise<DeployAppRequest> {
+  async requestDeployApp(user: User, dto: RequestDeployAppDto): Promise<DeployAppResponse> {
     // Deploy app to vercel
     const project = await this.projectRepository.findOne({
       where: { id: dto.projectId },
@@ -70,7 +71,7 @@ export class DeployAppService {
 
       return project.deployAppRequest;
     }
-    const deployRequest = await this.deployAppRequestRepository.create({
+    const deployRequest = this.deployAppRequestRepository.create({
       projectId: project.id,
       deploymentId: createResponse.id,
       status: createResponse.status,
@@ -81,7 +82,7 @@ export class DeployAppService {
     return deployRequest;
   }
 
-  async getDeployApp(user: User, dto: GetDeployAppDto): Promise<DeployAppRequest> {
+  async getDeployApp(user: User, dto: GetDeployAppRequest): Promise<DeployAppResponse> {
     const deployAppReq = await this.deployAppRequestRepository.findOne({
       where: { projectId: dto.projectId },
     });

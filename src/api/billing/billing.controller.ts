@@ -49,10 +49,10 @@ export class BillingController {
   @ApiBearerAuth()
   @ApiResponse({
     status: 200,
-    description: "User info",
-    type: RewardsWithdrawalReceipt,
+    description: "Withdraw rewards",
+    type: WithdrawalReceiptResponse,
   })
-  async withdrawRewards(@ApiContext() user: User): Promise<RewardsWithdrawalReceipt> {
+  async withdrawRewards(@ApiContext() user: User): Promise<WithdrawalReceiptResponse> {
     return this.billingService.withdrawRewards(user);
   }
 

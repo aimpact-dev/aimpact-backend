@@ -166,7 +166,7 @@ export class BillingService {
     }
   }
 
-  async withdrawRewards(user: User): Promise<RewardsWithdrawalReceipt> {
+  async withdrawRewards(user: User): Promise<WithdrawalReceiptResponse> {
     if (user.referralsRewards <= 0) {
       throw new BadRequestException('No rewards to withdraw');
     }
@@ -201,7 +201,12 @@ export class BillingService {
     await this.rewardsReceiptRepository.save(receipt);
     await this.userRepository.save(user);
 
-    return receipt;
+    return {
+      id: receipt.id,
+      amount: lamportsToSol(receipt.amount),
+      transactionHash: receipt.transactionHash,
+      createdAt: receipt.createdAt,
+    };
   }
 
   async getRewardsWithdrawalReceipts(user: User): Promise<WithdrawalReceiptResponse[]> {

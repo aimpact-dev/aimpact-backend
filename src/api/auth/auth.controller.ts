@@ -6,6 +6,7 @@ import { Public } from './decorator/public.decorator';
 import { RequestMessageDto } from '../dtos/requestMessage.dto';
 import { User } from 'src/entities/user.entity';
 import { ReferralsCountResponse } from './response/referrals-count.response';
+import { UserMeResponse } from './response/user-me.response';
 
 @Controller('auth')
 export class AuthController {
@@ -76,7 +77,7 @@ export class AuthController {
   @ApiResponse({
     status: 200,
     description: "User info",
-    type: User,
+    type: UserMeResponse,
   })
   async userMe(@Request() request) {
     return this.authService.getMe(request.user.id);

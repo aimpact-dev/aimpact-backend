@@ -10,9 +10,9 @@ import {
 import { Project } from './project.entity';
 
 
-type DeploymentStatus = "QUEUED" | "BUILDING" | "ERROR" | "INITIALIZING" | "READY" | "CANCELED";
+export type DeploymentStatus = "QUEUED" | "BUILDING" | "ERROR" | "INITIALIZING" | "READY" | "CANCELED";
 
-type DeploymentLog = {
+export type DeploymentLog = {
   type: string;
   message: string;
   timestamp: Date;
