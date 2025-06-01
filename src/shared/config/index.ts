@@ -1,7 +1,7 @@
 import { Logger } from '@nestjs/common';
 import { registerAs } from '@nestjs/config';
 import { plainToInstance, Transform } from 'class-transformer';
-import { IsNumber, IsString, validateSync } from 'class-validator';
+import { IsNumber, IsOptional, IsString, validateSync } from 'class-validator';
 import { ClassType } from '../../shared/types/class.type';
 
 export const ENV_NAMESPACE_KEYS = {
@@ -15,6 +15,7 @@ export const ENV_NAMESPACE_KEYS = {
   BILLING: 'billing',
   REFERRALS: 'referrals',
   FREE_MESSAGES: 'free_messages',
+  ANALYTICS: 'analytics',
 };
 
 export class Environment {
@@ -110,6 +111,20 @@ export class ReferralsEnvironment {
   MESSAGES_FOR_REWARDS_MULTIPLIER: number = 2;
 }
 
+export class AnalyticsEnviroment {
+  @IsString()
+  @IsOptional()
+  GOOGLE_SERVICE_ACCOUNT_KEY?: string;
+
+  @IsString()
+  @IsOptional()
+  GOOGLE_SHEET_ID?: string;
+
+  @IsString()
+  @IsOptional()
+  GOOGLE_SHEET_RANGE?: string = "Grades!A:C"
+}
+
 const logger = new Logger('ENV logger');
 let env: Record<string, any> = {};
 
@@ -160,3 +175,5 @@ export const cryptoEnvConfig = registerAs(ENV_NAMESPACE_KEYS.CRYPTO, createEnvVa
 export const referralsEnvConfig = registerAs(ENV_NAMESPACE_KEYS.REFERRALS, createEnvValidationFunction(ReferralsEnvironment));
 
 export const freeMessagesEnvConfig = registerAs(ENV_NAMESPACE_KEYS.FREE_MESSAGES, createEnvValidationFunction(FreeMessagesEviroment));
+
+export const analyticsEnvConfig = registerAs(ENV_NAMESPACE_KEYS.ANALYTICS, createEnvValidationFunction(AnalyticsEnviroment));

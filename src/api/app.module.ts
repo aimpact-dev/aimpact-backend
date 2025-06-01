@@ -14,6 +14,7 @@ import { APP_FILTER } from '@nestjs/core';
 import { DeployAppModule } from './deploy-app/deploy-app.module';
 import { BillingModule } from './billing/billing.module';
 import { ProxyModule } from './proxy/proxy.module';
+import { AnalyticsModule } from './analytics/analytics.module';
 const apiConfig = [baseEnvConfig];
 @Module({
   imports: [
@@ -34,6 +35,7 @@ const apiConfig = [baseEnvConfig];
     ProjectsModule,
     DeployAppModule,
     ProxyModule,
+    AnalyticsModule,
   ],
   controllers: [AppController],
   providers: [
