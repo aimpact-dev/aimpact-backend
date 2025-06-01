@@ -148,12 +148,14 @@ export class BillingService {
     });
   }
 
-  async buyMessagesForRewards(user: User, buyInfo: BuyForRewardsDto): Promise<MessagesLeftResponse> {
-    const lamportsAmount = solToLamports(buyInfo.amount);
+  async buyMessagesForRewards(user: User): Promise<MessagesLeftResponse> {
+    // const lamportsAmount = solToLamports(buyInfo.amount);
+    const amount = this.billingConfig.PRICE_PER_MESSAGE_IN_SOL * 10;
+    const lamportsAmount = solToLamports(amount);
     if (lamportsAmount > user.referralsRewards) {
       throw new BadRequestException('Not enough rewards to buy messages');
     }
-    const messagesPaid = Math.floor(buyInfo.amount / this.billingConfig.PRICE_PER_MESSAGE_IN_SOL * this.referralsConfig.MESSAGES_FOR_REWARDS_MULTIPLIER);
+    const messagesPaid = Math.floor(amount / this.billingConfig.PRICE_PER_MESSAGE_IN_SOL * this.referralsConfig.MESSAGES_FOR_REWARDS_MULTIPLIER);
     if (messagesPaid > 0) {
       user.messagesLeft += messagesPaid;
       user.referralsRewards -= lamportsAmount;
@@ -168,7 +170,7 @@ export class BillingService {
   }
 
   async withdrawRewards(user: User): Promise<WithdrawalReceiptResponse> {
-    if (user.referralsRewards <= 0) {
+    if (user.referralsRewards < solToLamports(this.billingConfig.PRICE_PER_MESSAGE_IN_SOL * 10)) {
       throw new BadRequestException('No rewards to withdraw');
     }
 
@@ -211,7 +213,7 @@ export class BillingService {
   }
 
   async getRewardsWithdrawalReceipts(user: User): Promise<WithdrawalReceiptResponse[]> {
-    return (await this.rewardsReceiptRepository.find({ where: { userId: user.id } })).map(receipt => {
+    return (await this.rewardsReceiptRepository.find({ where: { userId: user.id }, order: { createdAt: 'DESC' } })).map(receipt => {
       receipt.amount = lamportsToSol(receipt.amount);
       return {
         id: receipt.id,
