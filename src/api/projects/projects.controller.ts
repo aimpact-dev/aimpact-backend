@@ -12,6 +12,7 @@ import { User } from 'src/entities/user.entity';
 import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { ProjectsFiltersRequest } from './request/projects-filters.request';
 import { WithdrawalReceiptResponse } from '../billing/response/withdrawal-reciept.response';
+import { ProjectWithOwnerResponse } from './response/project-with-owner.response';
 
 @Controller('projects')
 export class ProjectsController {
@@ -34,7 +35,7 @@ export class ProjectsController {
 
   @Public()
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<ProjectResponse> {
+  async findOne(@Param('id') id: string): Promise<ProjectWithOwnerResponse> {
     return this.projectService.findOne(id);
   }
 

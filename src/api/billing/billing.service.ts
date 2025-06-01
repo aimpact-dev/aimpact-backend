@@ -81,8 +81,9 @@ export class BillingService {
     if (!referrer) {
       return;
     }
-    const referralReward = amount * this.referralsConfig.REFERRER_FEE * Math.pow(10, this.cryptoConfig.DECIMALS);
+    const referralReward = solToLamports(amount * this.referralsConfig.REFERRER_FEE);
     referrer.referralsRewards = parseFloat(referrer.referralsRewards.toString()) + referralReward;
+    referrer.totalEarnedRewards = parseFloat(referrer.totalEarnedRewards.toString()) + referralReward;
     this.logger.log(`Credited referral reward of ${referralReward} lamports to referrer ${referrer.id}`);
     await this.userRepository.save(referrer);
   }
