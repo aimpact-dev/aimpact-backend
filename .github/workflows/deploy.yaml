@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - dev
 
 jobs:
   build-and-push:
@@ -25,9 +26,17 @@ jobs:
         id: short-sha
         run: echo "SHORT_SHA=${GITHUB_SHA::8}" >> $GITHUB_ENV
 
+      - name: Set repository name based on branch
+        run: |
+          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            echo "REPO_NAME=vladfo01/aimpact" >> $GITHUB_ENV
+          else
+            echo "REPO_NAME=vladfo01/aimpact-stage" >> $GITHUB_ENV
+          fi
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
           context: .
           push: true
-          tags: vladfo01/aimpact:${{ env.SHORT_SHA }}
+          tags: ${{ env.REPO_NAME }}:${{ env.SHORT_SHA }}
