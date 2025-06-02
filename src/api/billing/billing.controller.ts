@@ -39,10 +39,10 @@ export class BillingController {
   @ApiBearerAuth()
   @ApiOperation({
     summary: 'Buy messages using rewards',
-    description: 'This endpoint allows users to buy messages using their referral rewards.',
+    description: 'This endpoint allows users to buy messages using their referral rewards. Always 10 * 2 messages are withdrawn.',
   })
-  async buyMessagesForRewards(@ApiContext() user: User, @Body() buyInfo: BuyForRewardsDto): Promise<MessagesLeftResponse> {
-    return this.billingService.buyMessagesForRewards(user, buyInfo);
+  async buyMessagesForRewards(@ApiContext() user: User): Promise<MessagesLeftResponse> {
+    return this.billingService.buyMessagesForRewards(user);
   }
 
   @Post('withdraw-rewards')
