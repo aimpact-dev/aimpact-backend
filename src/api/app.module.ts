@@ -14,6 +14,7 @@ import { APP_FILTER } from '@nestjs/core';
 import { DeployAppModule } from './deploy-app/deploy-app.module';
 import { BillingModule } from './billing/billing.module';
 import { ProxyModule } from './proxy/proxy.module';
+import { LoggerSharedModule } from 'src/shared/modules/logger/logger-shared.module';
 const apiConfig = [baseEnvConfig];
 @Module({
   imports: [
@@ -25,6 +26,7 @@ const apiConfig = [baseEnvConfig];
 
     // shared modules
     PostgresSharedModule,
+    LoggerSharedModule,
 
     // api modules
     NonceModule,
