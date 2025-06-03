@@ -1,8 +1,8 @@
 import { Logger } from '@nestjs/common';
 import { registerAs } from '@nestjs/config';
 import { plainToInstance, Transform } from 'class-transformer';
-import { IsNumber, IsString, validateSync } from 'class-validator';
-import { ClassType } from '../../shared/types/class.type';
+import { IsBoolean, IsNumber, IsString, Max, Min, ValidateIf, validateSync } from 'class-validator';
+import { ClassType } from '../types/class.type';
 
 export const ENV_NAMESPACE_KEYS = {
   API_SERVER: 'api_server',
@@ -15,6 +15,7 @@ export const ENV_NAMESPACE_KEYS = {
   BILLING: 'billing',
   REFERRALS: 'referrals',
   FREE_MESSAGES: 'free_messages',
+  SENTRY: 'sentry',
 };
 
 export class Environment {
@@ -110,6 +111,23 @@ export class ReferralsEnvironment {
   MESSAGES_FOR_REWARDS_MULTIPLIER: number = 2;
 }
 
+export class SentryEnvironment {
+  @IsString()
+  @ValidateIf((o: SentryEnvironment) => o.SENTRY_ENABLED)
+  SENTRY_DSN: string;
+
+  @IsNumber()
+  @Min(0)
+  @Max(1)
+  @ValidateIf((o: SentryEnvironment) => o.SENTRY_ENABLED)
+  @Transform(({ value }) => parseFloat(value) || 1)
+  SENTRY_SAMPLE_RATE = 0.25;
+
+  @IsBoolean()
+  @Transform(({ value }) => value === 'true')
+  SENTRY_ENABLED = false;
+}
+
 const logger = new Logger('ENV logger');
 let env: Record<string, any> = {};
 
@@ -157,6 +175,14 @@ export const billingEnvConfig = registerAs(ENV_NAMESPACE_KEYS.BILLING, createEnv
 
 export const cryptoEnvConfig = registerAs(ENV_NAMESPACE_KEYS.CRYPTO, createEnvValidationFunction(CryptoEnvironment));
 
-export const referralsEnvConfig = registerAs(ENV_NAMESPACE_KEYS.REFERRALS, createEnvValidationFunction(ReferralsEnvironment));
+export const referralsEnvConfig = registerAs(
+  ENV_NAMESPACE_KEYS.REFERRALS,
+  createEnvValidationFunction(ReferralsEnvironment),
+);
 
-export const freeMessagesEnvConfig = registerAs(ENV_NAMESPACE_KEYS.FREE_MESSAGES, createEnvValidationFunction(FreeMessagesEviroment));
+export const freeMessagesEnvConfig = registerAs(
+  ENV_NAMESPACE_KEYS.FREE_MESSAGES,
+  createEnvValidationFunction(FreeMessagesEviroment),
+);
+
+export const sentryEnvConfig = registerAs(ENV_NAMESPACE_KEYS.SENTRY, createEnvValidationFunction(SentryEnvironment));
