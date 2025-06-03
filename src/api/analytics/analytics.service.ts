@@ -59,12 +59,11 @@ export class AnalyticsService {
   }
 
   async writeUsersGrade(userId: string, dto: UserGradeDto) {
-    console.log(dto, userId)
     const userGrade = this.userGradeRepository.create({ 
       grade: dto.grade,
       userId,
     });
-    console.log(await this.userGradeRepository.save(userGrade));
+    await this.userGradeRepository.save(userGrade)
 
     return;
   }

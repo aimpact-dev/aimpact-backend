@@ -15,7 +15,9 @@ import { DeployAppModule } from './deploy-app/deploy-app.module';
 import { BillingModule } from './billing/billing.module';
 import { ProxyModule } from './proxy/proxy.module';
 import { AnalyticsModule } from './analytics/analytics.module';
+
 const apiConfig = [baseEnvConfig];
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -29,8 +31,8 @@ const apiConfig = [baseEnvConfig];
 
     // api modules
     NonceModule,
-    UserModule,
     AuthModule,
+    UserModule,
     BillingModule,
     ProjectsModule,
     DeployAppModule,

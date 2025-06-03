@@ -1,7 +1,7 @@
 import { Logger } from '@nestjs/common';
 import { registerAs } from '@nestjs/config';
 import { plainToInstance, Transform } from 'class-transformer';
-import { IsNumber, IsOptional, IsString, validateSync } from 'class-validator';
+import { IsNumber, IsOptional, IsString, Max, Min, validateSync } from 'class-validator';
 import { ClassType } from '../../shared/types/class.type';
 
 export const ENV_NAMESPACE_KEYS = {
@@ -48,6 +48,11 @@ export class DatabaseEnvironment {
 export class FreeMessagesEviroment {
   @IsNumber()
   MAX_FREE_MESSAGES_REQUESTS: number = 50;
+
+  @IsNumber()
+  @Min(0)
+  @Max(10)
+  FREE_MESSAGES_PER_REQUEST: number = 1;
 }
 
 export class JwtEnvironment {
