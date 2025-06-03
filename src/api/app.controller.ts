@@ -10,4 +10,10 @@ export class AppController {
   getHello(): string {
     return this.appService.getHello();
   }
+
+  @Public()
+  @Get('test-error')
+  testError() {
+    throw new Error('My first sentry error');
+  }
 }
