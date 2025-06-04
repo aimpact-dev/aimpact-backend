@@ -1,9 +1,7 @@
 import { Logger } from '@nestjs/common';
 import { registerAs } from '@nestjs/config';
 import { plainToInstance, Transform } from 'class-transformer';
-import { IsNumber, IsOptional, IsString, Max, Min, validateSync } from 'class-validator';
-import { ClassType } from '../../shared/types/class.type';
-import { IsBoolean, IsNumber, IsString, Max, Min, ValidateIf, validateSync } from 'class-validator';
+import { IsBoolean, IsNumber, IsOptional, IsString, Max, Min, ValidateIf, validateSync } from 'class-validator';
 import { ClassType } from '../types/class.type';
 
 export const ENV_NAMESPACE_KEYS = {
@@ -130,7 +128,8 @@ export class AnalyticsEnviroment {
 
   @IsString()
   @IsOptional()
-  GOOGLE_SHEET_RANGE?: string = "Grades!A:C"
+  GOOGLE_SHEET_RANGE?: string = 'Grades!A:C';
+}
 
 export class SentryEnvironment {
   @IsString()
@@ -206,8 +205,9 @@ export const freeMessagesEnvConfig = registerAs(
   createEnvValidationFunction(FreeMessagesEviroment),
 );
 
-export const freeMessagesEnvConfig = registerAs(ENV_NAMESPACE_KEYS.FREE_MESSAGES, createEnvValidationFunction(FreeMessagesEviroment));
-
-export const analyticsEnvConfig = registerAs(ENV_NAMESPACE_KEYS.ANALYTICS, createEnvValidationFunction(AnalyticsEnviroment));
+export const analyticsEnvConfig = registerAs(
+  ENV_NAMESPACE_KEYS.ANALYTICS,
+  createEnvValidationFunction(AnalyticsEnviroment),
+);
 
 export const sentryEnvConfig = registerAs(ENV_NAMESPACE_KEYS.SENTRY, createEnvValidationFunction(SentryEnvironment));
