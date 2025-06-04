@@ -3,6 +3,8 @@ import { registerAs } from '@nestjs/config';
 import { plainToInstance, Transform } from 'class-transformer';
 import { IsNumber, IsOptional, IsString, Max, Min, validateSync } from 'class-validator';
 import { ClassType } from '../../shared/types/class.type';
+import { IsBoolean, IsNumber, IsString, Max, Min, ValidateIf, validateSync } from 'class-validator';
+import { ClassType } from '../types/class.type';
 
 export const ENV_NAMESPACE_KEYS = {
   API_SERVER: 'api_server',
@@ -16,6 +18,7 @@ export const ENV_NAMESPACE_KEYS = {
   REFERRALS: 'referrals',
   FREE_MESSAGES: 'free_messages',
   ANALYTICS: 'analytics',
+  SENTRY: 'sentry',
 };
 
 export class Environment {
@@ -128,6 +131,22 @@ export class AnalyticsEnviroment {
   @IsString()
   @IsOptional()
   GOOGLE_SHEET_RANGE?: string = "Grades!A:C"
+
+export class SentryEnvironment {
+  @IsString()
+  @ValidateIf((o: SentryEnvironment) => o.SENTRY_ENABLED)
+  SENTRY_DSN: string;
+
+  @IsNumber()
+  @Min(0)
+  @Max(1)
+  @ValidateIf((o: SentryEnvironment) => o.SENTRY_ENABLED)
+  @Transform(({ value }) => parseFloat(value) || 1)
+  SENTRY_SAMPLE_RATE = 0.25;
+
+  @IsBoolean()
+  @Transform(({ value }) => value === 'true')
+  SENTRY_ENABLED = false;
 }
 
 const logger = new Logger('ENV logger');
@@ -177,8 +196,18 @@ export const billingEnvConfig = registerAs(ENV_NAMESPACE_KEYS.BILLING, createEnv
 
 export const cryptoEnvConfig = registerAs(ENV_NAMESPACE_KEYS.CRYPTO, createEnvValidationFunction(CryptoEnvironment));
 
-export const referralsEnvConfig = registerAs(ENV_NAMESPACE_KEYS.REFERRALS, createEnvValidationFunction(ReferralsEnvironment));
+export const referralsEnvConfig = registerAs(
+  ENV_NAMESPACE_KEYS.REFERRALS,
+  createEnvValidationFunction(ReferralsEnvironment),
+);
+
+export const freeMessagesEnvConfig = registerAs(
+  ENV_NAMESPACE_KEYS.FREE_MESSAGES,
+  createEnvValidationFunction(FreeMessagesEviroment),
+);
 
 export const freeMessagesEnvConfig = registerAs(ENV_NAMESPACE_KEYS.FREE_MESSAGES, createEnvValidationFunction(FreeMessagesEviroment));
 
 export const analyticsEnvConfig = registerAs(ENV_NAMESPACE_KEYS.ANALYTICS, createEnvValidationFunction(AnalyticsEnviroment));
+
+export const sentryEnvConfig = registerAs(ENV_NAMESPACE_KEYS.SENTRY, createEnvValidationFunction(SentryEnvironment));
