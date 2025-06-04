@@ -37,7 +37,6 @@
     "@nestjs/swagger": "^11.2.0",
     "@nestjs/typeorm": "^11.0.0",
     "@sentry/node": "^9.25.1",
-    "@sentry/profiling-node": "^9.25.1",
     "@solana/web3.js": "^1.98.2",
     "@vercel/sdk": "^1.7.3",
     "bs58": "^6.0.0",

@@ -2,7 +2,6 @@ import { Global, Inject, Logger, Module, OnModuleInit } from '@nestjs/common';
 import { ConfigModule, ConfigType } from '@nestjs/config';
 import { sentryEnvConfig, baseEnvConfig } from 'src/shared/config';
 import * as Sentry from '@sentry/node';
-import { nodeProfilingIntegration } from '@sentry/profiling-node';
 
 @Global()
 @Module({
@@ -29,7 +28,6 @@ export class LoggerSharedModule implements OnModuleInit {
       enabled: this.sconfig.SENTRY_ENABLED,
       environment: this.baseConfig.NODE_ENV,
       sampleRate: this.sconfig.SENTRY_SAMPLE_RATE,
-      integrations: [nodeProfilingIntegration()],
       skipOpenTelemetrySetup: true,
       tracesSampleRate: 0.2,
       // Set sampling rate for profiling - this is relative to tracesSampleRate
