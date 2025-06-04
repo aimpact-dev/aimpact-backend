@@ -1,4 +1,4 @@
-import { BadRequestException, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
@@ -6,12 +6,18 @@ import { validateSignedMessage } from '../utils/validSignMessage';
 import { generateMessage } from '../utils/generateMessage';
 import { freeMessagesEnvConfig, heliusEnvConfig, referralsEnvConfig } from '../../shared/config';
 import { ConfigType } from '@nestjs/config';
+import { RequestFreeMessagesRequest } from './request/request-free-messages.request';
+import { FreeMessagesRequest } from 'src/entities/free-messages-request.entity';
 
 @Injectable()
 export class UserService {
+  private readonly logger = new Logger(UserService.name);
+  
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    @InjectRepository(FreeMessagesRequest)
+    private readonly freeMessagesRequestRepository: Repository<FreeMessagesRequest>,
     @Inject(referralsEnvConfig.KEY) private readonly referralsConfig: ConfigType<typeof referralsEnvConfig>,
     @Inject(freeMessagesEnvConfig.KEY) private readonly freeMessagesConfig: ConfigType<typeof freeMessagesEnvConfig>,
   ) {}
@@ -62,11 +68,45 @@ export class UserService {
     return user;
   }
 
-  async requestFreeMessages(user: User) {
+  async requestFreeMessages(user: User, dto: RequestFreeMessagesRequest) {
     if (user.claimedFreeMessages === true) {
       throw new BadRequestException('You already claimed free messages');
     }
-    
+    const alreadyExistsHandle = await this.freeMessagesRequestRepository.findOne({
+      where: { twitterHandle: dto.twitterHandle },
+    });
+    const alreadyExistsUser = await this.freeMessagesRequestRepository.findOne({
+      where: { user: { wallet: user.wallet } },
+      relations: ['user'],
+    })
+    if (alreadyExistsHandle) {
+      throw new BadRequestException('This twitter handle already used.');
+    }
+    if (alreadyExistsUser) {
+      throw new BadRequestException('You alredy requestsed messages.')
+    }
+
+    const freeMessagesRequest = this.freeMessagesRequestRepository.create({
+      twitterHandle: dto.twitterHandle,
+      userId: user.id,
+      messages: this.freeMessagesConfig.FREE_MESSAGES_PER_REQUEST,
+    });
+    console.log(freeMessagesRequest);
+    console.log(await this.freeMessagesRequestRepository.save(freeMessagesRequest))
+
+    return;
+  }
+
+  async isUserHaveRequest(user: User) {
+    const alreadyExists = await this.freeMessagesRequestRepository.find({
+      where: { userId: user.id }
+    });
+    return {
+      userHaveRequest: alreadyExists.length > 0,
+    }
+  }
+
+  async adminRequestFreeMessages(user: User) {
     const usersWithFreeMessages = (await this.userRepository.find({ 
       where: { claimedFreeMessages: true },
     })).length;
@@ -75,10 +115,8 @@ export class UserService {
     }
 
     user.claimedFreeMessages = true;
-    user.messagesLeft += 3;
+    user.messagesLeft += this.freeMessagesConfig.FREE_MESSAGES_PER_REQUEST;
     await this.userRepository.save(user);
-
-    return;
   }
 
   async countReferrals(userId: string): Promise<number> {
