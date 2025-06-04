@@ -12,7 +12,7 @@ import { FreeMessagesRequest } from 'src/entities/free-messages-request.entity';
 @Injectable()
 export class UserService {
   private readonly logger = new Logger(UserService.name);
-  
+
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
@@ -46,12 +46,10 @@ export class UserService {
       where: { wallet },
     });
     if (existingUser) {
-      throw new UnauthorizedException(
-        'User with such wallet address already exist',
-      );
+      throw new UnauthorizedException('User with such wallet address already exist');
     }
     const newUser = this.userRepository.create({
-      wallet, messagesLeft: 0
+      wallet,
     });
     if (inviteCode) {
       const referrer = await this.userRepository.findOne({
@@ -78,12 +76,12 @@ export class UserService {
     const alreadyExistsUser = await this.freeMessagesRequestRepository.findOne({
       where: { user: { wallet: user.wallet } },
       relations: ['user'],
-    })
+    });
     if (alreadyExistsHandle) {
       throw new BadRequestException('This twitter handle already used.');
     }
     if (alreadyExistsUser) {
-      throw new BadRequestException('You alredy requestsed messages.')
+      throw new BadRequestException('You alredy requestsed messages.');
     }
 
     const freeMessagesRequest = this.freeMessagesRequestRepository.create({
@@ -92,24 +90,26 @@ export class UserService {
       messages: this.freeMessagesConfig.FREE_MESSAGES_PER_REQUEST,
     });
     console.log(freeMessagesRequest);
-    console.log(await this.freeMessagesRequestRepository.save(freeMessagesRequest))
+    console.log(await this.freeMessagesRequestRepository.save(freeMessagesRequest));
 
     return;
   }
 
   async isUserHaveRequest(user: User) {
     const alreadyExists = await this.freeMessagesRequestRepository.find({
-      where: { userId: user.id }
+      where: { userId: user.id },
     });
     return {
       userHaveRequest: alreadyExists.length > 0,
-    }
+    };
   }
 
   async adminRequestFreeMessages(user: User) {
-    const usersWithFreeMessages = (await this.userRepository.find({ 
-      where: { claimedFreeMessages: true },
-    })).length;
+    const usersWithFreeMessages = (
+      await this.userRepository.find({
+        where: { claimedFreeMessages: true },
+      })
+    ).length;
     if (usersWithFreeMessages >= this.freeMessagesConfig.MAX_FREE_MESSAGES_REQUESTS) {
       throw new BadRequestException('Max amount of claimed free messages reached');
     }
