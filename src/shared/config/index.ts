@@ -1,6 +1,8 @@
 import { Logger } from '@nestjs/common';
 import { registerAs } from '@nestjs/config';
 import { plainToInstance, Transform } from 'class-transformer';
+import { IsNumber, IsOptional, IsString, Max, Min, validateSync } from 'class-validator';
+import { ClassType } from '../../shared/types/class.type';
 import { IsBoolean, IsNumber, IsString, Max, Min, ValidateIf, validateSync } from 'class-validator';
 import { ClassType } from '../types/class.type';
 
@@ -15,6 +17,7 @@ export const ENV_NAMESPACE_KEYS = {
   BILLING: 'billing',
   REFERRALS: 'referrals',
   FREE_MESSAGES: 'free_messages',
+  ANALYTICS: 'analytics',
   SENTRY: 'sentry',
 };
 
@@ -48,6 +51,11 @@ export class DatabaseEnvironment {
 export class FreeMessagesEviroment {
   @IsNumber()
   MAX_FREE_MESSAGES_REQUESTS: number = 50;
+
+  @IsNumber()
+  @Min(0)
+  @Max(10)
+  FREE_MESSAGES_PER_REQUEST: number = 1;
 }
 
 export class JwtEnvironment {
@@ -110,6 +118,19 @@ export class ReferralsEnvironment {
   @IsNumber()
   MESSAGES_FOR_REWARDS_MULTIPLIER: number = 2;
 }
+
+export class AnalyticsEnviroment {
+  @IsString()
+  @IsOptional()
+  GOOGLE_SERVICE_ACCOUNT_KEY?: string;
+
+  @IsString()
+  @IsOptional()
+  GOOGLE_SHEET_ID?: string;
+
+  @IsString()
+  @IsOptional()
+  GOOGLE_SHEET_RANGE?: string = "Grades!A:C"
 
 export class SentryEnvironment {
   @IsString()
@@ -184,5 +205,9 @@ export const freeMessagesEnvConfig = registerAs(
   ENV_NAMESPACE_KEYS.FREE_MESSAGES,
   createEnvValidationFunction(FreeMessagesEviroment),
 );
+
+export const freeMessagesEnvConfig = registerAs(ENV_NAMESPACE_KEYS.FREE_MESSAGES, createEnvValidationFunction(FreeMessagesEviroment));
+
+export const analyticsEnvConfig = registerAs(ENV_NAMESPACE_KEYS.ANALYTICS, createEnvValidationFunction(AnalyticsEnviroment));
 
 export const sentryEnvConfig = registerAs(ENV_NAMESPACE_KEYS.SENTRY, createEnvValidationFunction(SentryEnvironment));
