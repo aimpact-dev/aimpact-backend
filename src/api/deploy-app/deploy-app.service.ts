@@ -1,15 +1,18 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { RequestDeployAppDto } from './dto/requestDeployApp.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { DeployAppRequest } from 'src/entities/deploy-app-request.entity';
 import { Project } from 'src/entities/project.entity';
 import { User } from 'src/entities/user.entity';
-import { ConfigService } from '@nestjs/config';
-import { deserializeSnapshot, FileMap } from './webcontainerSnapshotDeserializer';
+import { ConfigService, ConfigType } from '@nestjs/config';
+import { deserializeDistSnapshot, deserializeSnapshot, FileMap } from './webcontainerSnapshotDeserializer';
 import { S3Service } from '../../shared/modules/aws/s3/s3.service';
 import { GetDeployAppRequest } from './request/get-deploy-app.request';
 import { DeployAppResponse } from './response/deploy-app.response';
+import { S3Deployment } from '../../entities/deploy-s3.entity';
+import { deploymentConfig } from '../../shared/config';
+import { S3DeploymentResponse } from './response/s3-deployment.response';
 
 @Injectable()
 export class DeployAppService {
@@ -17,10 +20,13 @@ export class DeployAppService {
   constructor(
     private readonly configService: ConfigService,
     private readonly s3Client: S3Service,
+    @Inject(deploymentConfig.KEY) private readonly deploymentEnvironment: ConfigType<typeof deploymentConfig>,
     @InjectRepository(DeployAppRequest)
     private readonly deployAppRequestRepository: Repository<DeployAppRequest>,
     @InjectRepository(Project)
     private readonly projectRepository: Repository<Project>,
+    @InjectRepository(S3Deployment)
+    private readonly s3DeploymentRepository: Repository<S3Deployment>,
   ) {
     const vercelToken = this.configService.get<string>('VERCEL_API_KEY');
     if (!vercelToken) throw new Error('Vercel API key is not set');
@@ -133,5 +139,56 @@ export class DeployAppService {
     await this.deployAppRequestRepository.save(deployAppReqToSave);
 
     return deployAppReqToSave;
+  }
+
+  async upsertS3Deployment(
+    projectId: string,
+    userId: string,
+    snapshot: object,
+  ): Promise<S3DeploymentResponse> {
+    const project = await this.projectRepository.findOne({where: {id: projectId}})
+    if (!project) {
+      throw new NotFoundException('Project not found');
+    }
+    if (project.userId !== userId) {
+      throw new ForbiddenException('You are not allowed to deploy this project');
+    }
+
+    const files = deserializeDistSnapshot(snapshot as FileMap);
+    await this.s3Client.uploadProjectBuild(projectId, files.map((file) => ({
+      fileName: file.file, content: file.data
+    })));
+    const deploymentUrl = `https://${projectId}${this.deploymentEnvironment.DEPLOYMENT_DOMAIN_POSTFIX}`;
+
+    const existingS3Deployment = await this.s3DeploymentRepository.findOne({
+      where: {projectId: projectId}
+    });
+    if (existingS3Deployment) {
+      existingS3Deployment.url = deploymentUrl;
+      await this.s3DeploymentRepository.save(existingS3Deployment);
+    } else {
+      const s3Deployment = this.s3DeploymentRepository.create(
+        {
+          projectId: projectId,
+          url: deploymentUrl
+        }
+      );
+      await this.s3DeploymentRepository.save(s3Deployment);
+    }
+    return {
+      url: deploymentUrl
+    };
+  }
+
+  async getS3DeploymentUrl(projectId: string) {
+    const s3Deployment = await this.s3DeploymentRepository.findOne(
+      { where: {projectId: projectId }}
+    );
+    if (!s3Deployment) {
+      throw new NotFoundException("Project not found or is not deployed yet");
+    }
+    return {
+      url: s3Deployment.url
+    };
   }
 }
