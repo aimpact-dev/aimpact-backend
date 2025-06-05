@@ -17,6 +17,7 @@ export const ENV_NAMESPACE_KEYS = {
   FREE_MESSAGES: 'free_messages',
   ANALYTICS: 'analytics',
   SENTRY: 'sentry',
+  DEPLOYMENT: 'deployment',
 };
 
 export class Environment {
@@ -104,6 +105,14 @@ export class AWSEnvironment {
 
   @IsString()
   AWS_BUCKET_NAME: string;
+
+  @IsString()
+  AWS_DEPLOYMENTS_BUCKET_NAME: string;
+}
+
+export class DeploymentEnvironment {
+  @IsString()
+  DEPLOYMENT_DOMAIN_POSTFIX: string;
 }
 
 export class ReferralsEnvironment {
@@ -190,6 +199,8 @@ export const jwtEnvConfig = registerAs(ENV_NAMESPACE_KEYS.JWT, createEnvValidati
 export const heliusEnvConfig = registerAs(ENV_NAMESPACE_KEYS.HELIUS, createEnvValidationFunction(HeliusEnvironment));
 
 export const awsEnvConfig = registerAs(ENV_NAMESPACE_KEYS.AWS, createEnvValidationFunction(AWSEnvironment));
+
+export const deploymentConfig = registerAs(ENV_NAMESPACE_KEYS.DEPLOYMENT, createEnvValidationFunction(DeploymentEnvironment))
 
 export const billingEnvConfig = registerAs(ENV_NAMESPACE_KEYS.BILLING, createEnvValidationFunction(BillingEnvironment));
 

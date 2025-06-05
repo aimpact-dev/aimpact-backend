@@ -12,6 +12,7 @@ import { ProjectChat } from './project-chat.entity';
 import { ProjectSnapshot } from './project-snapshot.entity';
 import { DeployAppRequest } from './deploy-app-request.entity';
 import { User } from './user.entity';
+import { S3Deployment } from './deploy-s3.entity';
 @Entity('project')
 export class Project {
   @PrimaryGeneratedColumn('uuid')
@@ -46,6 +47,9 @@ export class Project {
 
   @OneToOne(() => DeployAppRequest, (deployAppRequest) => deployAppRequest.project)
   deployAppRequest?: DeployAppRequest;
+
+  @OneToOne(() => S3Deployment, (s3Deployment) => s3Deployment.project)
+  s3Deployment?: S3Deployment;
 
   @ManyToOne(() => User, (user) => user.projects)
   @JoinColumn({ name: 'userId' })

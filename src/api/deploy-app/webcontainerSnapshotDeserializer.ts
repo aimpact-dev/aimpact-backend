@@ -25,18 +25,41 @@ export type FileMap = Record<string, Dirent | undefined>;
 
 const WORK_DIR_NAME = 'project';
 const WORK_DIR = `/home/${WORK_DIR_NAME}`;
+const DIST_DIR = `${WORK_DIR}/dist`;
 
 const regex = new RegExp(`^${WORK_DIR}\/`);
 
 function extractRelativePath(filePath: string) {
   return filePath.replace(regex, '');
 }
+
+function extractDistRelativePath(filePath: string) {
+  return filePath.replace(`${DIST_DIR}/`, '');
+}
+
 export function deserializeSnapshot(snapshot: FileMap) {
   const files: Array<InlinedFile> = [];
 
   for (const [filePath, dirent] of Object.entries(snapshot)) {
     if (dirent?.type === 'file' && !dirent.isBinary) {
       const relativePath = extractRelativePath(filePath);
+
+      // split the path into segments
+      files.push({
+        data: dirent.content,
+        file: relativePath,
+      });
+    }
+  }
+  return files;
+}
+
+export function deserializeDistSnapshot(snapshot: FileMap) {
+  const files: Array<InlinedFile> = [];
+
+  for (const [filePath, dirent] of Object.entries(snapshot)) {
+    if (dirent?.type === 'file') {
+      const relativePath = extractDistRelativePath(filePath);
 
       // split the path into segments
       files.push({
