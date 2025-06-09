@@ -181,8 +181,11 @@ export class DeployAppService {
   }
 
   async getS3DeploymentUrl(projectId: string) {
+    if (!projectId) {
+      throw new NotFoundException("Project ID is required");
+    }
     const s3Deployment = await this.s3DeploymentRepository.findOne(
-      { where: {projectId: projectId }}
+      { where: { projectId: projectId }}
     );
     if (!s3Deployment) {
       throw new NotFoundException("Project not found or is not deployed yet");
