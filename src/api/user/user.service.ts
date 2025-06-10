@@ -89,8 +89,7 @@ export class UserService {
       userId: user.id,
       messages: this.freeMessagesConfig.FREE_MESSAGES_PER_REQUEST,
     });
-    console.log(freeMessagesRequest);
-    console.log(await this.freeMessagesRequestRepository.save(freeMessagesRequest));
+    await this.freeMessagesRequestRepository.save(freeMessagesRequest);
 
     return;
   }

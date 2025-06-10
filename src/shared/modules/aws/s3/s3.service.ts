@@ -25,7 +25,12 @@ export class S3Service {
     this.deploymentsBucketName = awsConfig.AWS_DEPLOYMENTS_BUCKET_NAME || this.bucketName;
   }
 
-  async uploadTextFile(fileName: string, fileContent: string, bucketName?: string, acl?: ObjectCannedACL | undefined): Promise<void> {
+  async uploadTextFile(
+    fileName: string,
+    fileContent: string,
+    bucketName?: string,
+    acl?: ObjectCannedACL | undefined,
+  ): Promise<void> {
     const uploadBucketName = bucketName || this.bucketName;
     // Define content type based on file extension
     if (!fileName || !fileContent) {
@@ -33,7 +38,7 @@ export class S3Service {
     }
 
     const contentType = mime.lookup(fileName);
-    console.log(contentType);
+
     const command = new PutObjectCommand({
       Bucket: uploadBucketName,
       Key: fileName,
@@ -60,7 +65,7 @@ export class S3Service {
     return JSON.parse(fileContent);
   }
 
-  async uploadProjectBuild(projectId: string, files: {fileName: string, content: string}[]): Promise<void> {
+  async uploadProjectBuild(projectId: string, files: { fileName: string; content: string }[]): Promise<void> {
     const uploadPromises = files.map((file) => {
       const fullPath = `${projectId}/${file.fileName}`;
       return this.uploadTextFile(fullPath, file.content, this.deploymentsBucketName, 'public-read');

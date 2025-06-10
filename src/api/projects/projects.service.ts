@@ -39,7 +39,7 @@ export class ProjectsService {
     let projects;
     const ormFilters = {
       order: { [filters.sortBy || 'createdAt']: filters.sortOrder || 'DESC' },
-    }
+    };
     if (user && filters.ownership === 'owned') {
       ormFilters['where'] = { userId: user.id };
     } else if (!user && filters.ownership === 'owned') {
@@ -50,7 +50,7 @@ export class ProjectsService {
   }
 
   async findOne(id: string): Promise<ProjectWithOwnerResponse> {
-    const project = await this.projectRepository.findOne({ where: {id} , relations: ['user']});
+    const project = await this.projectRepository.findOne({ where: { id }, relations: ['user'] });
     if (!project) {
       throw new NotFoundException(`Project with ID ${id} not found`);
     }
@@ -59,7 +59,7 @@ export class ProjectsService {
 
   async getChat(projectId: string, userId: string): Promise<ProjectChatResponse> {
     const project = await this.projectRepository.findOne({
-      where: { id: projectId, userId },
+      where: { id: projectId /*userId*/ },
       relations: ['projectChat'],
     });
 
@@ -112,7 +112,7 @@ export class ProjectsService {
 
   async getSnapshot(projectId: string, userId: string): Promise<ProjectSnapshotResponse | null> {
     const project = await this.projectRepository.findOne({
-      where: { id: projectId, userId },
+      where: { id: projectId /* userId */ },
       relations: ['projectSnapshot', 'projectChat'],
     });
 
@@ -136,7 +136,10 @@ export class ProjectsService {
       throw new NotFoundException(`Project with ID ${projectId} has no snapshot`);
     }
 
-    return ProjectSnapshotResponse.fromObject({...(project.projectSnapshot as Omit<ProjectSnapshot, 'filesPath'>), files: files});
+    return ProjectSnapshotResponse.fromObject({
+      ...(project.projectSnapshot as Omit<ProjectSnapshot, 'filesPath'>),
+      files: files,
+    });
   }
 
   async upsertSnapshot(
@@ -172,7 +175,10 @@ export class ProjectsService {
         summary: dto.summary,
       });
 
-      return ProjectSnapshotResponse.fromObject({...(newSnapshot as Omit<ProjectSnapshot, 'filesPath'>), files: dto.files});
+      return ProjectSnapshotResponse.fromObject({
+        ...(newSnapshot as Omit<ProjectSnapshot, 'filesPath'>),
+        files: dto.files,
+      });
     }
 
     const snapshot = project.projectSnapshot;
@@ -190,6 +196,9 @@ export class ProjectsService {
 
     const updatedSnapshot = await this.projectSnapshotRepository.save(updatedSnapshotObject);
 
-    return ProjectSnapshotResponse.fromObject({...(updatedSnapshot as Omit<ProjectSnapshot, 'filesPath'>), files: dto.files});
+    return ProjectSnapshotResponse.fromObject({
+      ...(updatedSnapshot as Omit<ProjectSnapshot, 'filesPath'>),
+      files: dto.files,
+    });
   }
 }

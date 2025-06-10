@@ -34,8 +34,7 @@ export class NonceService {
       .andWhere('nonce.nonce = :nonce', { nonce })
       .andWhere('nonce.dateOfUsage IS NOT NULL')
       .getOne();
-    console.log(nonceEntity, typeof nonceEntity, !!nonceEntity, "return false");
-    return !!nonceEntity
+    return !!nonceEntity;
   }
 
   async createNewNonce(address: string): Promise<Nonce> {
