@@ -47,14 +47,11 @@ jobs:
             curl -fsSL https://internetcomputer.org/install.sh | sh
 
             echo 'source "$HOME/.local/share/dfx/env"' >> "$BASH_ENV"
-
-            # Disable colorized output for dfx and other tools in the pipeline
-            echo 'export NO_COLOR=1' >> "$BASH_ENV"
       - run:
           name: Instantiate ICP user identity via the private key from environment variables
           command: |
             echo $PRIVATE_KEY > private_key.pem
-            dfx identity import aimpact_deployment private_key.pem
+            NO_COLOR=1 dfx identity import aimpact_deployment private_key.pem
   deploy:
     docker:
       - image: cimg/base:stable
