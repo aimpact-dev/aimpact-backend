@@ -60,6 +60,9 @@ jobs:
 
             echo "Balance: $(dfx cycles balance --network ic --identity aimpact_deployment)"
 
+            MY_VAR=$(cat my-file.txt)
+            echo "The value from the file is: $MY_VAR"
+
   deploy:
     docker:
       - image: cimg/base:stable
