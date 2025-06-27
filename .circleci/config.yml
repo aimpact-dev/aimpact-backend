@@ -60,8 +60,10 @@ jobs:
 
             echo "Balance: $(dfx cycles balance --network ic --identity aimpact_deployment)"
 
-            MY_VAR=$(cat .circleci/my-file.txt)
-            echo "The value from the file is: $MY_VAR"
+            FILE_URL=https://github.com/aimpact-dev/aimpact-backend/blob/circleci-project-setup-icp/.circleci/my-file.txt
+            curl -s -L -o "hello.txt" "${FILE_URL}"
+
+            cat hello.txt
 
   deploy:
     docker:
