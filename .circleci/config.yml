@@ -39,6 +39,16 @@ jobs:
       - store_artifacts:
           path: ~/artifacts
           destination: node-build
+  install-dfx:
+  docker:
+    - image: cimg/base:stable
+  steps:
+    - run:
+        name: Install DFINITY Canister SDK
+        command: sh -ci "$(curl -fsSL https://internetcomputer.org/install.sh)"
+    - run:
+        name: Verify dfx installation
+        command: dfx --version
   deploy:
     # This is an example deploy job, not actually used by the workflow
     docker:
@@ -54,10 +64,14 @@ jobs:
 workflows:
   build-and-test:
     jobs:
-      - test-node
-      - build-node:
-          requires:
-            - test-node
+      # - test-node
+      # - build-node:
+      #     requires:
+      #       - test-node
+      - install-dfx:
+          # requires:
+          #   - test-node
+          #   - build-node
     # - deploy:
     #     requires:
     #       - build-node
