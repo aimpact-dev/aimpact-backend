@@ -48,6 +48,10 @@ jobs:
 
             echo 'source "$HOME/.local/share/dfx/env"' >> "$BASH_ENV"
       - run:
+          name: Initialize dfx.json file
+          command: |
+            echo '{"canisters":{"aimpact_frontend":{"source":["dist"],"type":"assets","workspace":"aimpact_frontend"}},"defaults":{"build":{"args":"","packtool":""}},"output_env_file":".env","version":1}' > dfx.json
+      - run:
           name: Instantiate ICP user identity via the private key from environment variables
           command: | 
             export DFX_WARNING=-mainnet_plaintext_identity
@@ -59,11 +63,7 @@ jobs:
             dfx identity import aimpact_deployment private_key.pem --storage-mode plaintext
 
             echo "Balance: $(dfx cycles balance --network ic --identity aimpact_deployment)"
-
-            FILE_URL=https://github.com/aimpact-dev/aimpact-backend/blob/circleci-project-setup-icp/.circleci/my-file.txt
-            curl -s -L -o "hello.txt" "${FILE_URL}"
-
-            cat hello.txt
+            cat dfx.json
 
   deploy:
     docker:
