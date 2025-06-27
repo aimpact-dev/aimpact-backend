@@ -60,7 +60,7 @@ jobs:
 
             echo "Balance: $(dfx cycles balance --network ic --identity aimpact_deployment)"
 
-            MY_VAR=$(cat my-file.txt)
+            MY_VAR=$(cat .circleci/my-file.txt)
             echo "The value from the file is: $MY_VAR"
 
   deploy:
