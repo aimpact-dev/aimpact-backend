@@ -58,12 +58,12 @@ workflows:
   build-and-test:
     jobs:
       - test-node
-      - build-node:
-          requires:
-            - test-node
-      - install-dfx:
-          requires:
-            - build-node
-      - deploy:
-          requires:
-            - build-node
+      # - build-node:
+      #     requires:
+      #       - test-node
+      - install-dfx #:
+          # requires:
+          #   - build-node
+      # - deploy:
+      #     requires:
+      #       - build-node
