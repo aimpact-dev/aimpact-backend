@@ -39,7 +39,7 @@ jobs:
       - image: cimg/node:22.10.0
     steps:
       - run:
-          name: Install DFINITY Canister SDK
+          name: Install DFX and update PATH
           command: |
             # Set the environment variable for non-interactive installation
             export DFXVM_INIT_YES=true
@@ -47,6 +47,9 @@ jobs:
             curl -fsSL https://internetcomputer.org/install.sh | sh
 
             echo 'source "$HOME/.local/share/dfx/env"' >> "$BASH_ENV"
+
+            # Disable colorized output for dfx and other tools in the pipeline
+            echo 'export NO_COLOR=1' >> "$BASH_ENV"
       - run:
           name: Instantiate ICP user identity via the private key from environment variables
           command: |
