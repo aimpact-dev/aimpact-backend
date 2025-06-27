@@ -68,7 +68,7 @@ workflows:
       # - build-node:
       #     requires:
       #       - test-node
-      - install-dfx:
+      - install-dfx
           # requires:
           #   - test-node
           #   - build-node
