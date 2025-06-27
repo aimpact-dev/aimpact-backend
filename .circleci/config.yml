@@ -67,7 +67,7 @@ workflows:
       # - build-node:
       #     requires:
       #       - test-node
-      - install-dfx #:
+      - deploy-icp #:
           # requires:
           #   - build-node
       # - deploy:
