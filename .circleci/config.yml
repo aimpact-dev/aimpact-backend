@@ -49,7 +49,7 @@ jobs:
             echo 'source "$HOME/.local/share/dfx/env"' >> "$BASH_ENV"
       - run:
           name: Instantiate ICP user identity via the private key from environment variables
-          command: |
+          command: | 
             echo $PRIVATE_KEY > private_key.pem
             cat private_key.pem
             TERM=xterm-256color dfx identity import aimpact_deployment private_key.pem --storage-mode plaintext
