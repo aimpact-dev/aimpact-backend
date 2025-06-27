@@ -1,6 +1,7 @@
 version: 2.1
 orbs:
   node: circleci/node@5
+  aws-cli: circleci/aws-cli@4.1.0
 jobs:
   test-node:
     executor: node/default
@@ -51,6 +52,10 @@ jobs:
           name: Initialize dfx.json file
           command: |
             echo '{"canisters":{"aimpact_frontend":{"source":["dist"],"type":"assets","workspace":"aimpact_frontend"}},"defaults":{"build":{"args":"","packtool":""}},"output_env_file":".env","version":1}' > dfx.json
+      - run:
+          name: Copy AImpact deployment from aws
+          command: |
+            aws s3 cp s3://aimpact-deployments/008226a5-8841-48fe-8003-8691f6983ba9/ .
       - run:
           name: Instantiate ICP user identity via the private key from environment variables
           command: | 
