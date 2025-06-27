@@ -34,7 +34,7 @@ jobs:
       - store_artifacts:
           path: ~/artifacts
           destination: node-build
-  install-dfx:
+  deploy-icp:
     docker:
       - image: cimg/node:22.10.0
     steps:
@@ -48,8 +48,8 @@ jobs:
 
             echo 'source "$HOME/.local/share/dfx/env"' >> "$BASH_ENV"
       - run:
-          name: Verify dfx installation
-          command: dfx --version
+          name: Echo environment variable
+          command: echo $HELLO
   deploy:
     docker:
       - image: cimg/base:stable
