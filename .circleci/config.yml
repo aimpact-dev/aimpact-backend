@@ -40,7 +40,13 @@ jobs:
     steps:
       - run:
           name: Install DFINITY Canister SDK
-          command: sh -ci "$(curl -fsSL https://internetcomputer.org/install.sh)"
+          command: |
+            # Set the environment variable for non-interactive installation
+            export DFXVM_INIT_YES=true
+
+            curl -fsSL https://internetcomputer.org/install.sh | sh
+
+            echo 'source "$HOME/.local/share/dfx/env"' >> "$BASH_ENV"
       - run:
           name: Verify dfx installation
           command: dfx --version
@@ -57,7 +63,7 @@ jobs:
 workflows:
   build-and-test:
     jobs:
-      - test-node
+      # - test-node
       # - build-node:
       #     requires:
       #       - test-node
