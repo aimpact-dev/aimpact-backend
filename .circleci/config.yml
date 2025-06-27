@@ -36,6 +36,7 @@ jobs:
           path: ~/artifacts
           destination: node-build
   deploy-icp:
+    executor: aws-cli/default
     docker:
       - image: cimg/node:22.10.0
     steps:
