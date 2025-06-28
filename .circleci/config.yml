@@ -68,9 +68,9 @@ jobs:
           name: Deploy AImpact on ICP
           command: |
             export TERM=xterm-256color
-            dfx canister create aimpact_frontend
+            dfx canister create aimpact_frontend --network ic
             dfx build
-            dfx canister install -m reinstall aimpact_frontend
+            dfx canister install -m reinstall aimpact_frontend --network ic
 
   deploy:
     docker:
