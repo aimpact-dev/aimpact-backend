@@ -70,8 +70,14 @@ jobs:
           command: |
             export DFX_WARNING=-mainnet_plaintext_identity
             export TERM=xterm-256color
+
+            echo "Creating canister"
             dfx canister create aimpact_frontend --network ic
+
+            echo "Building canister"
             dfx build
+
+            echo "Deploying canister"
             dfx canister install -m reinstall aimpact_frontend --network ic
 
   deploy:
