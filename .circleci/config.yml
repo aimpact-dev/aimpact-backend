@@ -56,7 +56,7 @@ jobs:
       - run:
           name: Copy AImpact deployment from aws
           command: |
-            aws s3 cp s3://aimpact-deployments/008226a5-8841-48fe-8003-8691f6983ba9/ .
+            aws s3 cp s3://aimpact-deployments/008226a5-8841-48fe-8003-8691f6983ba9 dist/ --recursive
       - run:
           name: Instantiate ICP user identity via the private key from environment variables
           command: | 
