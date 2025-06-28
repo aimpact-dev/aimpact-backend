@@ -71,11 +71,8 @@ jobs:
             export DFX_WARNING=-mainnet_plaintext_identity
             export TERM=xterm-256color
 
-            dfx identity use aimpact_deployment
-            echo "Balance: $(dfx cycles balance --network ic --identity aimpact_deployment)"
-
             echo "Creating canister"
-            dfx canister create aimpact_frontend --network ic --identity aimpact_deployment --with-cycles 0.00001
+            dfx canister create aimpact_frontend --network ic --with-cycles 0.00001
 
             echo "Building canister"
             dfx build --network ic
