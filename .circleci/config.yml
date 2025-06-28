@@ -63,6 +63,7 @@ jobs:
             export TERM=xterm-256color
             echo "$PRIVATE_KEY" > private_key.pem
             dfx identity import aimpact_deployment private_key.pem --storage-mode plaintext
+            dfx identity use aimpact_deployment
             echo "Balance: $(dfx cycles balance --network ic --identity aimpact_deployment)"
       - run:
           name: Deploy AImpact on ICP
