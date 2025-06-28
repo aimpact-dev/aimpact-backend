@@ -67,6 +67,7 @@ jobs:
       - run:
           name: Deploy AImpact on ICP
           command: |
+            export TERM=xterm-256color
             dfx canister create aimpact_frontend
             dfx build
             dfx canister install -m reinstall aimpact_frontend
