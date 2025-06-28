@@ -71,12 +71,8 @@ jobs:
             export DFX_WARNING=-mainnet_plaintext_identity
             export TERM=xterm-256color
 
-            dfx identity set-wallet aimpact_deployment
-
-            dfx identity --network ic get-wallet
-
             echo "Creating canister"
-            dfx canister create aimpact_frontend --network ic --with-cycles 100000
+            dfx canister create aimpact_frontend --network ic --with-cycles 10000
 
             echo "Building canister"
             dfx build --network ic
