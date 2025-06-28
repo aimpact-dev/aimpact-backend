@@ -76,7 +76,7 @@ jobs:
 
           dfx build
 
-          dfx canister install aimpact_frontend
+          dfx canister install -m reinstall aimpact_frontend
 
   deploy:
     docker:
