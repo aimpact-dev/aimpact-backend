@@ -59,6 +59,7 @@ jobs:
       - run:
           name: Instantiate ICP user identity via the private key
           command: |
+            export DFXVM_INIT_YES=true
             export DFX_WARNING=-mainnet_plaintext_identity
             export TERM=xterm-256color
             echo "$PRIVATE_KEY" > private_key.pem
@@ -72,13 +73,13 @@ jobs:
             export TERM=xterm-256color
 
             echo "Creating canister"
-            dfx canister create aimpact_frontend --network ic --with-cycles 500000000000
 
             echo "Building canister"
             dfx build --network ic
 
             echo "Deploying canister"
             dfx canister install -m reinstall aimpact_frontend --network ic
+# dfx canister create aimpact_frontend --network ic --with-cycles 500000000000
 
   deploy:
     docker:
