@@ -75,7 +75,7 @@ jobs:
             echo "Creating canister"
 
             echo "Building canister"
-            dfx build --network ic --canister_name aimpact_frontend
+            dfx build aimpact_frontend --network ic
 
             echo "Deploying canister"
             dfx canister install -m reinstall aimpact_frontend --network ic
