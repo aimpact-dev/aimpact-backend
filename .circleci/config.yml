@@ -69,7 +69,14 @@ jobs:
             dfx identity import aimpact_deployment private_key.pem --storage-mode plaintext
 
             echo "Balance: $(dfx cycles balance --network ic --identity aimpact_deployment)"
-            cat dfx.json
+      - run:
+        name: Deploy AImpact on ICP
+        command: |
+          dfx canister create aimpact_frontend
+
+          dfx build
+
+          dfx canister install aimpact_frontend
 
   deploy:
     docker:
@@ -90,6 +97,7 @@ workflows:
       #       - test-node
       - deploy-icp #:
           # requires:
+          #   - test-node
           #   - build-node
       # - deploy:
       #     requires:
