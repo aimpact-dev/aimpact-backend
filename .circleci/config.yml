@@ -78,7 +78,7 @@ jobs:
             export TERM=xterm-256color
 
             echo "Creating canister"
-            dfx canister create aimpact_frontend --network ic --with-cycles 500000000000
+            dfx canister create aimpact_frontend --network ic --with-cycles 5787575530
             
 
             echo "Building canister"
