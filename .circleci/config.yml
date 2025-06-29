@@ -85,7 +85,7 @@ jobs:
             dfx build aimpact_frontend --network ic
 
             echo "Deploying canister"
-            dfx canister install -m reinstall aimpact_frontend --network ic
+            dfx canister install -m reinstall aimpact_frontend --network ic -y
 
   deploy:
     docker:
