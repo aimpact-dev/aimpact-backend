@@ -6,6 +6,7 @@ orbs:
 parameters:
   project_s3_url:
     type: string
+    default: ""
 
 jobs:
   test-node:
