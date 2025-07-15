@@ -11,7 +11,6 @@ import { RewardsWithdrawalReceipt } from '../../entities/rewards-withdrawal-rece
 import { WithdrawalReceiptResponse } from './response/withdrawal-reciept.response';
 import { FundReceiptResponse } from './response/fund-receipt.response';
 
-
 // type WithdrawalReceiptResponse = Omit<RewardsWithdrawalReceipt, 'user' | 'userId'>;
 
 @Controller('billing')
@@ -39,7 +38,8 @@ export class BillingController {
   @ApiBearerAuth()
   @ApiOperation({
     summary: 'Buy messages using rewards',
-    description: 'This endpoint allows users to buy messages using their referral rewards. Always 10 * 2 messages are withdrawn.',
+    description:
+      'This endpoint allows users to buy messages using their referral rewards. Always 10 * 2 messages are withdrawn.',
   })
   async buyMessagesForRewards(@ApiContext() user: User): Promise<MessagesLeftResponse> {
     return this.billingService.buyMessagesForRewards(user);
@@ -49,7 +49,7 @@ export class BillingController {
   @ApiBearerAuth()
   @ApiResponse({
     status: 200,
-    description: "Withdraw rewards",
+    description: 'Withdraw rewards',
     type: WithdrawalReceiptResponse,
   })
   async withdrawRewards(@ApiContext() user: User): Promise<WithdrawalReceiptResponse> {

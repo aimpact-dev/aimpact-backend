@@ -3,7 +3,7 @@ import { IsArray, IsNotEmpty, IsObject, IsOptional, IsString, Max, Min, Length }
 
 export class RequestFreeMessagesRequest {
   @ApiProperty({
-    description: "Twitter handle for subscription verification",
+    description: 'Twitter handle for subscription verification',
   })
   @IsString()
   @Length(4, 15)

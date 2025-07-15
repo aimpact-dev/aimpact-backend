@@ -33,6 +33,9 @@ export class Project {
   @Column({ type: 'uuid' })
   userId: string;
 
+  @Column({ type: 'integer', default: 0 })
+  views: number;
+
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
 

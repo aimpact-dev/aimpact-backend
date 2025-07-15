@@ -9,8 +9,7 @@ import {
 } from 'typeorm';
 import { Project } from './project.entity';
 
-
-export type DeploymentStatus = "QUEUED" | "BUILDING" | "ERROR" | "INITIALIZING" | "READY" | "CANCELED";
+export type DeploymentStatus = 'QUEUED' | 'BUILDING' | 'ERROR' | 'INITIALIZING' | 'READY' | 'CANCELED';
 
 export type DeploymentLog = {
   type: string;
@@ -27,7 +26,7 @@ export class DeployAppRequest {
   @Column({ type: 'varchar', nullable: false })
   deploymentId: string;
 
-  @Column({type: 'varchar', nullable: false })
+  @Column({ type: 'varchar', nullable: false })
   status: DeploymentStatus;
 
   @Column({ type: 'boolean', default: false })

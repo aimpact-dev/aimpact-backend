@@ -37,15 +37,19 @@ export class AuthController {
     description: 'Invalid credentials.',
   })
   async loginWithWallet(@Body() signin: SigninWalletDto) {
-    return this.authService.loginWithSolanaWallet(signin.walletAddress, signin.signedMessage, signin.nonce, signin.inviteCode);
+    return this.authService.loginWithSolanaWallet(
+      signin.walletAddress,
+      signin.signedMessage,
+      signin.nonce,
+      signin.inviteCode,
+    );
   }
 
   @Public()
   @Post('requestMessage')
   @ApiOperation({
     summary: 'Request message and nonce from backend',
-    description:
-      'User get this message and must sign it to be authorized',
+    description: 'User get this message and must sign it to be authorized',
   })
   @ApiBody({
     type: RequestMessageDto,
@@ -72,11 +76,11 @@ export class AuthController {
   @Get('me')
   @ApiBearerAuth()
   @ApiOperation({
-    summary: "Get current user info",
+    summary: 'Get current user info',
   })
   @ApiResponse({
     status: 200,
-    description: "User info",
+    description: 'User info',
     type: UserMeResponse,
   })
   async userMe(@Request() request) {
@@ -86,11 +90,11 @@ export class AuthController {
   @Get('referralsCount')
   @ApiBearerAuth()
   @ApiOperation({
-    summary: "Get current user referrals count",
+    summary: 'Get current user referrals count',
   })
   @ApiResponse({
     status: 200,
-    description: "User referrals count",
+    description: 'User referrals count',
     type: ReferralsCountResponse,
   })
   async getReferralsCount(@Request() request) {

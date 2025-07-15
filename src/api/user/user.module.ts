@@ -6,9 +6,14 @@ import { User } from 'src/entities/user.entity';
 import { ConfigModule } from '@nestjs/config';
 import { freeMessagesEnvConfig, referralsEnvConfig } from 'src/shared/config';
 import { FreeMessagesRequest } from 'src/entities/free-messages-request.entity';
+import { Leaderboard } from 'src/entities/leaderboard.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, FreeMessagesRequest]), ConfigModule.forFeature(freeMessagesEnvConfig), ConfigModule.forFeature(referralsEnvConfig)],
+  imports: [
+    TypeOrmModule.forFeature([User, FreeMessagesRequest, Leaderboard]),
+    ConfigModule.forFeature(freeMessagesEnvConfig),
+    ConfigModule.forFeature(referralsEnvConfig),
+  ],
   providers: [UserService],
   controllers: [UserController],
   exports: [UserService],

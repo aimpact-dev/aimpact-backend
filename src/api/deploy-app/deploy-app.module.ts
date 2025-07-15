@@ -10,7 +10,11 @@ import { ConfigModule } from '@nestjs/config';
 import { deploymentConfig } from '../../shared/config';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([DeployAppRequest, Project, S3Deployment]), AwsS3SharedModule, ConfigModule.forFeature(deploymentConfig)],
+  imports: [
+    TypeOrmModule.forFeature([DeployAppRequest, Project, S3Deployment]),
+    AwsS3SharedModule,
+    ConfigModule.forFeature(deploymentConfig),
+  ],
   providers: [DeployAppService],
   controllers: [DeployAppController],
 })

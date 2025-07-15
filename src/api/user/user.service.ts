@@ -8,6 +8,7 @@ import { freeMessagesEnvConfig, heliusEnvConfig, referralsEnvConfig } from '../.
 import { ConfigType } from '@nestjs/config';
 import { RequestFreeMessagesRequest } from './request/request-free-messages.request';
 import { FreeMessagesRequest } from 'src/entities/free-messages-request.entity';
+import { Leaderboard } from 'src/entities/leaderboard.entity';
 
 @Injectable()
 export class UserService {
@@ -18,6 +19,8 @@ export class UserService {
     private readonly userRepository: Repository<User>,
     @InjectRepository(FreeMessagesRequest)
     private readonly freeMessagesRequestRepository: Repository<FreeMessagesRequest>,
+    @InjectRepository(Leaderboard)
+    private readonly leaderboardRepository: Repository<Leaderboard>,
     @Inject(referralsEnvConfig.KEY) private readonly referralsConfig: ConfigType<typeof referralsEnvConfig>,
     @Inject(freeMessagesEnvConfig.KEY) private readonly freeMessagesConfig: ConfigType<typeof freeMessagesEnvConfig>,
   ) {}
@@ -34,7 +37,7 @@ export class UserService {
     wallet: string,
     signature: string,
     nonce: string,
-    inviteCode?: string | null | undefined,
+    inviteCode?: string | null,
   ): Promise<User> {
     const message = generateMessage(nonce);
     const isValid = validateSignedMessage(wallet, message, signature);
@@ -63,6 +66,12 @@ export class UserService {
       }
     }
     const user = await this.userRepository.save(newUser);
+
+    const newLeaderboard = this.leaderboardRepository.create({
+      userId: user.id,
+      points: 0,
+    });
+    await this.leaderboardRepository.save(newLeaderboard);
     return user;
   }
 

@@ -23,16 +23,16 @@ export class UserController {
 
   @Post('request-messages')
   @ApiOperation({
-    summary: "Request few free messages (can be used only once)",
+    summary: 'Request few free messages (can be used only once)',
   })
   @ApiBearerAuth()
   @ApiResponse({
     status: 201,
-    description: "Messages claimed",
+    description: 'Messages claimed',
   })
   @ApiResponse({
     status: 400,
-    description: "You already claimed messages or total limit reached"
+    description: 'You already claimed messages or total limit reached',
   })
   async requestFreeMessages(@ApiContext() user: User, @Body() dto: RequestFreeMessagesRequest) {
     return await this.usersService.requestFreeMessages(user, dto);
@@ -40,7 +40,7 @@ export class UserController {
 
   @Get('request-messages')
   @ApiOperation({
-    summary: "Is user has a free messages request previously",
+    summary: 'Is user has a free messages request previously',
   })
   @ApiBearerAuth()
   @ApiResponse({

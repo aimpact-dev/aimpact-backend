@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-
 export class UserMeResponse {
   @ApiProperty({
     description: 'The user uuid',

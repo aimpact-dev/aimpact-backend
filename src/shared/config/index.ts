@@ -200,7 +200,10 @@ export const heliusEnvConfig = registerAs(ENV_NAMESPACE_KEYS.HELIUS, createEnvVa
 
 export const awsEnvConfig = registerAs(ENV_NAMESPACE_KEYS.AWS, createEnvValidationFunction(AWSEnvironment));
 
-export const deploymentConfig = registerAs(ENV_NAMESPACE_KEYS.DEPLOYMENT, createEnvValidationFunction(DeploymentEnvironment))
+export const deploymentConfig = registerAs(
+  ENV_NAMESPACE_KEYS.DEPLOYMENT,
+  createEnvValidationFunction(DeploymentEnvironment),
+);
 
 export const billingEnvConfig = registerAs(ENV_NAMESPACE_KEYS.BILLING, createEnvValidationFunction(BillingEnvironment));
 

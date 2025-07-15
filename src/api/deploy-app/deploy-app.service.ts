@@ -115,12 +115,12 @@ export class DeployAppService {
         // Get build logs for more detailed error information
         const buildLogsResponse = (await this.vercelClient.deployments.getDeploymentEvents({
           idOrUrl: deploymentId,
-          direction: 'forward'
+          direction: 'forward',
         })) as Array<any>;
 
         // Add basic error message
         if (deploymentStatusResponse.errorMessage) {
-          deployAppReqToSave.message = deploymentStatusResponse.errorMessage || 'Unknown error'
+          deployAppReqToSave.message = deploymentStatusResponse.errorMessage || 'Unknown error';
         }
 
         // Add build error logs
@@ -130,7 +130,6 @@ export class DeployAppService {
           type: log.type,
           level: log.level || null,
         }));
-
       } catch (logError) {
         console.error('Failed to retrieve deployment logs:', logError);
         deployAppReqToSave.message = deploymentStatusResponse.errorMessage || 'Unknown error - logs unavailable';
@@ -141,12 +140,8 @@ export class DeployAppService {
     return deployAppReqToSave;
   }
 
-  async upsertS3Deployment(
-    projectId: string,
-    userId: string,
-    snapshot: object,
-  ): Promise<S3DeploymentResponse> {
-    const project = await this.projectRepository.findOne({where: {id: projectId}})
+  async upsertS3Deployment(projectId: string, userId: string, snapshot: object): Promise<S3DeploymentResponse> {
+    const project = await this.projectRepository.findOne({ where: { id: projectId } });
     if (!project) {
       throw new NotFoundException('Project not found');
     }
@@ -155,43 +150,43 @@ export class DeployAppService {
     }
 
     const files = deserializeDistSnapshot(snapshot as FileMap);
-    await this.s3Client.uploadProjectBuild(projectId, files.map((file) => ({
-      fileName: file.file, content: file.data
-    })));
+    await this.s3Client.uploadProjectBuild(
+      projectId,
+      files.map((file) => ({
+        fileName: file.file,
+        content: file.data,
+      })),
+    );
     const deploymentUrl = `https://${projectId}${this.deploymentEnvironment.DEPLOYMENT_DOMAIN_POSTFIX}`;
 
     const existingS3Deployment = await this.s3DeploymentRepository.findOne({
-      where: {projectId: projectId}
+      where: { projectId: projectId },
     });
     if (existingS3Deployment) {
       existingS3Deployment.url = deploymentUrl;
       await this.s3DeploymentRepository.save(existingS3Deployment);
     } else {
-      const s3Deployment = this.s3DeploymentRepository.create(
-        {
-          projectId: projectId,
-          url: deploymentUrl
-        }
-      );
+      const s3Deployment = this.s3DeploymentRepository.create({
+        projectId: projectId,
+        url: deploymentUrl,
+      });
       await this.s3DeploymentRepository.save(s3Deployment);
     }
     return {
-      url: deploymentUrl
+      url: deploymentUrl,
     };
   }
 
   async getS3DeploymentUrl(projectId: string) {
     if (!projectId) {
-      throw new NotFoundException("Project ID is required");
+      throw new NotFoundException('Project ID is required');
     }
-    const s3Deployment = await this.s3DeploymentRepository.findOne(
-      { where: { projectId: projectId }}
-    );
+    const s3Deployment = await this.s3DeploymentRepository.findOne({ where: { projectId: projectId } });
     if (!s3Deployment) {
-      throw new NotFoundException("Project not found or is not deployed yet");
+      throw new NotFoundException('Project not found or is not deployed yet');
     }
     return {
-      url: s3Deployment.url
+      url: s3Deployment.url,
     };
   }
 }

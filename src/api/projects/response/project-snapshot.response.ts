@@ -17,7 +17,7 @@ export class ProjectSnapshotResponse {
   @ApiProperty({ type: Date })
   updatedAt: Date;
 
-  static fromObject(projectSnapshot: Omit<ProjectSnapshot, 'filesPath'> & {files: object}): ProjectSnapshotResponse {
+  static fromObject(projectSnapshot: Omit<ProjectSnapshot, 'filesPath'> & { files: object }): ProjectSnapshotResponse {
     return {
       projectId: projectSnapshot.projectId,
       files: projectSnapshot.files,

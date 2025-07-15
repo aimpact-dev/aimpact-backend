@@ -29,7 +29,10 @@ export class ProjectsController {
   @Get()
   @ApiOperation({ summary: 'Get all projects' })
   @ApiBearerAuth()
-  async findAll(@Query() filters: ProjectsFiltersRequest, @ApiContext({ required: false }) user?: User): Promise<ProjectResponse[]> {
+  async findAll(
+    @Query() filters: ProjectsFiltersRequest,
+    @ApiContext({ required: false }) user?: User,
+  ): Promise<ProjectResponse[]> {
     return this.projectService.findAll(filters, user);
   }
 
@@ -58,7 +61,7 @@ export class ProjectsController {
   @Get(':id/snapshot')
   @ApiResponse({
     status: 200,
-    description: "Get project snapshot",
+    description: 'Get project snapshot',
     type: ProjectSnapshotResponse,
   })
   @ApiBearerAuth()
@@ -69,7 +72,7 @@ export class ProjectsController {
   @Post(':id/snapshot')
   @ApiResponse({
     status: 200,
-    description: "Upsert project snapshot",
+    description: 'Upsert project snapshot',
     type: ProjectSnapshotResponse,
   })
   @ApiBearerAuth()
