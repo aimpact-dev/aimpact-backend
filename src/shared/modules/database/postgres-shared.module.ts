@@ -3,16 +3,11 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { databaseEnvConfig } from 'src/shared/config';
 import { DataSource } from 'typeorm';
-import {
-  addTransactionalDataSource,
-  getDataSourceByName,
-  initializeTransactionalContext,
-} from 'typeorm-transactional';
+import { addTransactionalDataSource, getDataSourceByName, initializeTransactionalContext } from 'typeorm-transactional';
 import { PostgresConfigFactory } from './postgres-config.factory';
 
 initializeTransactionalContext();
 
-// eslint-disable-next-line no-console
 console.log('Transactional context initialized');
 
 @Module({

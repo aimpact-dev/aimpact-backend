@@ -6,7 +6,7 @@ export class ProjectSnapshot {
   @PrimaryColumn({ type: 'uuid' })
   projectId: string;
 
-  @Column({ type: 'varchar'})
+  @Column({ type: 'varchar' })
   filesPath: string;
 
   @Column({ type: 'varchar' })

@@ -16,4 +16,4 @@ export const rankingPoints: Record<RankTypes, number | number[]> = {
   [RankTypes.HACKATON_PARTICIPANT]: 300,
   [RankTypes.HACKATON_WINNER]: 2500,
   [RankTypes.CUSTOM]: [0, 99999],
-}
+};

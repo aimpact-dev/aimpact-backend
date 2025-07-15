@@ -36,9 +36,10 @@ export class LeaderboardService {
     leaderboard = await this.leaderboardRepository.findOne({
       where: {
         user,
-      }
+      },
     });
-    if (!leaderboard) { // Create if not exists
+    if (!leaderboard) {
+      // Create if not exists
       leaderboard = this.leaderboardRepository.create({
         points: pointsToAdd,
         user,
@@ -46,39 +47,42 @@ export class LeaderboardService {
       await this.leaderboardRepository.save(leaderboard);
     }
 
-    await this.leaderboardRepository.update({
-      userId: leaderboard.userId,
-    }, {
-      points: leaderboard.points + dto.points,
-    });
+    await this.leaderboardRepository.update(
+      {
+        userId: leaderboard.userId,
+      },
+      {
+        points: leaderboard.points + dto.points,
+      },
+    );
 
     return {
       points: leaderboard.points + dto.points,
-    }
+    };
   }
 
   async getTop100Leaderboard() {
     const top100positions = await this.leaderboardRepository.findAndCount({
       order: { points: 'DESC' },
       take: 100,
-      relations: ['user']
+      relations: ['user'],
     });
 
-    const filteredTop100Positions = top100positions[0].map(obj => ({
+    const filteredTop100Positions = top100positions[0].map((obj) => ({
       points: obj.points,
       user: {
         id: obj.user.id,
         wallet: obj.user.wallet,
       },
     }));
-    const top100PointsOnly = top100positions[0].map(val => val.points);
+    const top100PointsOnly = top100positions[0].map((val) => val.points);
     const pointsInTop = top100PointsOnly.reduce((prev, curr) => prev + curr);
     return {
       positions: filteredTop100Positions,
       meta: {
         pointsInTop,
         totalCount: top100positions[1],
-      }
+      },
     };
   }
 
@@ -87,7 +91,7 @@ export class LeaderboardService {
       where: { userId },
       select: ['points'],
     });
-    console.log(userId, leadeboardPosition)
+    console.log(userId, leadeboardPosition);
     if (!leadeboardPosition) {
       throw new NotFoundException('User not found');
     }
@@ -97,7 +101,7 @@ export class LeaderboardService {
     return {
       points: leadeboardPosition.points,
       position: higherCount + 1,
-    }
+    };
   }
 
   async addViewForProject(projectId: string) {
@@ -111,7 +115,7 @@ export class LeaderboardService {
     if (updatedProject.affected === 0) {
       throw new NotFoundException('Project not found');
     }
-    console.log(projectId, updatedProject.raw[0])
+    console.log(projectId, updatedProject.raw[0]);
     const pointsToAdd = rankingPoints[RankTypes.PROJECT_VIEW];
     const userId = updatedProject.raw[0].userId;
     const updatedLeaderboardPosition = await this.leaderboardRepository
@@ -123,17 +127,16 @@ export class LeaderboardService {
       .returning(['points', 'user_id'])
       .execute();
 
-    console.log(updatedLeaderboardPosition)
-    if (typeof updatedLeaderboardPosition.raw !== "object"
-        && (updatedLeaderboardPosition.raw as any[]).length === 0) {
-      throw new NotFoundException("Leaderboard position not found");
+    console.log(updatedLeaderboardPosition);
+    if (typeof updatedLeaderboardPosition.raw !== 'object' && (updatedLeaderboardPosition.raw as any[]).length === 0) {
+      throw new NotFoundException('Leaderboard position not found');
     }
     return {
       views: updatedProject.raw[0].views,
       points: updatedLeaderboardPosition.raw[0].points,
       projectId,
       userId,
-    }
+    };
   }
 
   createForUser(userId: string, data: string | null = null) {

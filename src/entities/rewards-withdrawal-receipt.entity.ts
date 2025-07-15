@@ -12,7 +12,8 @@ import { User } from './user.entity';
 @Entity('rewards_withdrawal_receipts')
 export class RewardsWithdrawalReceipt {
   @PrimaryGeneratedColumn('uuid')
-  id: string;RewardsWithdrawalReceipt
+  id: string;
+  RewardsWithdrawalReceipt;
 
   @Column({ type: 'uuid' })
   userId: string;

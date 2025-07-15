@@ -2,14 +2,10 @@ import { DeploymentLog, DeploymentStatus } from '../../../entities/deploy-app-re
 import { ApiProperty } from '@nestjs/swagger';
 
 export class DeployAppResponse {
-  @ApiProperty(
-    { description: 'Unique identifier for the project', example: '123e4567-e89b-12d3-a456-426614174000' }
-  )
+  @ApiProperty({ description: 'Unique identifier for the project', example: '123e4567-e89b-12d3-a456-426614174000' })
   projectId: string;
 
-  @ApiProperty(
-    { description: 'Unique identifier for the deployment', example: '123e4567-e89b-12d3-a456-426614174001' }
-  )
+  @ApiProperty({ description: 'Unique identifier for the deployment', example: '123e4567-e89b-12d3-a456-426614174001' })
   deploymentId: string;
 
   @ApiProperty({

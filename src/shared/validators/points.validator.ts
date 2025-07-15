@@ -1,12 +1,8 @@
-import {
-  registerDecorator,
-  ValidationOptions,
-  ValidationArguments
-} from 'class-validator';
+import { registerDecorator, ValidationOptions, ValidationArguments } from 'class-validator';
 import { rankingPoints } from 'src/api/leaderboard/utils/rank-system';
 
 export function PointsValid(opts?: ValidationOptions) {
-  return function(target: any, propertyName: string) {
+  return function (target: any, propertyName: string) {
     registerDecorator({
       name: 'PointsValid',
       target: target.constructor,
@@ -21,11 +17,7 @@ export function PointsValid(opts?: ValidationOptions) {
             return value == null;
           }
           const [min, max] = rule as number[];
-          return (
-            typeof value === 'number' &&
-            value >= min &&
-            value <= max
-          );
+          return typeof value === 'number' && value >= min && value <= max;
         },
         defaultMessage(args: ValidationArguments) {
           const obj = args.object as any;
@@ -35,8 +27,8 @@ export function PointsValid(opts?: ValidationOptions) {
           }
           const [min, max] = rule as number[];
           return `points must be between ${min} and ${max}`;
-        }
-      }
+        },
+      },
     });
   };
 }

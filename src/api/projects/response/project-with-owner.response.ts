@@ -30,7 +30,6 @@ export class ProjectWithOwnerResponse {
   @ApiProperty({ type: number })
   views: number;
 
-
   static fromObject(project: Project): ProjectWithOwnerResponse {
     return {
       id: project.id,

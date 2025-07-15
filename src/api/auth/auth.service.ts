@@ -20,12 +20,12 @@ export class AuthService {
     @Inject(jwtEnvConfig.KEY) private readonly jwtConfig: ConfigType<typeof jwtEnvConfig>,
   ) {}
 
-  async loginWithSolanaWallet(address: string, signature: string, nonce: string, inviteCode?: string | null | undefined) {
+  async loginWithSolanaWallet(address: string, signature: string, nonce: string, inviteCode?: string | null) {
     let user = await this.usersService.findByWalletAddress(address);
     if (!user) {
       user = await this.usersService.createUserWithSolanaWallet(address, signature, nonce, inviteCode);
     }
-    let isNonceUsed = await this.nonceService.isNonceUsed(address, nonce);
+    const isNonceUsed = await this.nonceService.isNonceUsed(address, nonce);
     if (isNonceUsed) {
       throw new HttpException(
         `User with wallet address ${address} have already used the nonce ${nonce}`,
@@ -73,7 +73,7 @@ export class AuthService {
     const referralsCount = await this.usersService.countReferrals(userId);
 
     return {
-      referralsCount
+      referralsCount,
     };
   }
 }

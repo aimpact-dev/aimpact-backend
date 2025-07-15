@@ -1,8 +1,8 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty } from '@nestjs/swagger';
 
 export class UserHaveRequests {
   @ApiProperty({
-    description: "Is user have free messages reuqest"
+    description: 'Is user have free messages reuqest',
   })
   userHaveRequest: boolean;
 }

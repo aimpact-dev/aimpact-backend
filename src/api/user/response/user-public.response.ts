@@ -1,14 +1,14 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { User } from "src/entities/user.entity";
+import { ApiProperty } from '@nestjs/swagger';
+import { User } from 'src/entities/user.entity';
 
 export type PublicUser = {
   id: string;
   wallet: string;
-}
+};
 
 export class UserPublicResponse {
   @ApiProperty()
-  id: string
+  id: string;
 
   @ApiProperty()
   wallet: string;
@@ -17,6 +17,6 @@ export class UserPublicResponse {
     return Object.assign(new UserPublicResponse(), {
       id: user.id,
       wallet: user.wallet,
-    })
+    });
   }
 }

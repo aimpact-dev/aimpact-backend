@@ -8,15 +8,11 @@ import { envLoad } from 'src/shared/config';
 
 async function bootstrap() {
   await envLoad();
-  
+
   const app = await NestFactory.createApplicationContext(AppModule);
 
-  const userRepo: Repository<User> = app.get(
-    getRepositoryToken(User),
-  );
-  const lbRepo: Repository<Leaderboard> = app.get(
-    getRepositoryToken(Leaderboard),
-  );
+  const userRepo: Repository<User> = app.get(getRepositoryToken(User));
+  const lbRepo: Repository<Leaderboard> = app.get(getRepositoryToken(Leaderboard));
 
   const users = await userRepo.find();
   const rows = users.map((u) =>

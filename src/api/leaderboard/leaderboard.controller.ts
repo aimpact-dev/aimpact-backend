@@ -15,9 +15,7 @@ import { ViewProjectResponseDto } from './response/view-project.response';
 
 @Controller('leaderboard')
 export class LeaderboardController {
-  constructor(
-    private readonly leaderboardService: LeaderboardService,
-  ) {}
+  constructor(private readonly leaderboardService: LeaderboardService) {}
 
   @Public()
   @UseGuards(TokenGuard)
@@ -30,9 +28,7 @@ export class LeaderboardController {
     description: 'New total points',
     type: AddPointsResponseDto,
   })
-  addPoinst(
-    @Body() dto: AddPointsRequest,
-  ) {
+  addPoinst(@Body() dto: AddPointsRequest) {
     return this.leaderboardService.addPoints(dto);
   }
 
@@ -42,19 +38,19 @@ export class LeaderboardController {
   @ApiResponse({
     status: 200,
     description: 'Top 100 with metadata',
-    type: LeaderboardTopResponseDto
+    type: LeaderboardTopResponseDto,
   })
   getLeaderboardTop() {
     return this.leaderboardService.getTop100Leaderboard();
   }
-  
+
   @ApiBearerAuth()
   @Get()
   @ApiOperation({ summary: 'Get current user position and points' })
   @ApiResponse({
     status: 200,
     description: 'User leaderboard position',
-    type: LeaderboardPositionResponseDto
+    type: LeaderboardPositionResponseDto,
   })
   getLeaderboardPosition(@ApiContext() user: User) {
     return this.leaderboardService.getUserPosition(user.id);
@@ -65,22 +61,22 @@ export class LeaderboardController {
   @Post('projects/:projectId/view')
   @ApiBearerAuth()
   @ApiOperation({
-    summary: 'Increment project view count and award points'
+    summary: 'Increment project view count and award points',
   })
   @ApiParam({
     name: 'projectId',
     description: 'Project UUID',
     type: 'string',
-    format: 'uuid'
+    format: 'uuid',
   })
   @ApiResponse({
     status: 200,
     description: 'Updated view count and points',
-    type: ViewProjectResponseDto
+    type: ViewProjectResponseDto,
   })
   viewProject(@Param('projectId') projectId: string) {
     if (!projectId || !isUUID(projectId)) {
-      throw new BadRequestException("ProjectId is not valid.")
+      throw new BadRequestException('ProjectId is not valid.');
     }
     return this.leaderboardService.addViewForProject(projectId);
   }

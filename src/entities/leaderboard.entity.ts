@@ -12,9 +12,7 @@ import { User } from './user.entity';
 import { ApiProperty } from '@nestjs/swagger';
 
 @Entity('leaderboard')
-@Index('idx_leaderboard_points_desc', ['points'], {
-  
-})
+@Index('idx_leaderboard_points_desc', ['points'], {})
 export class Leaderboard {
   @PrimaryColumn('uuid', { name: 'user_id' })
   userId: string;

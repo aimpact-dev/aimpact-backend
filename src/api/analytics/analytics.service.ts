@@ -19,12 +19,10 @@ export class AnalyticsService {
   ) {
     // this.initializeGoogleSheets();
   }
-  
+
   private async initializeGoogleSheets() {
     try {
-      const credentials = JSON.parse(
-        this.analyticsConfig.GOOGLE_SERVICE_ACCOUNT_KEY || "",
-      );
+      const credentials = JSON.parse(this.analyticsConfig.GOOGLE_SERVICE_ACCOUNT_KEY || '');
 
       const auth = new google.auth.GoogleAuth({
         credentials,
@@ -59,11 +57,11 @@ export class AnalyticsService {
   }
 
   async writeUsersGrade(userId: string, dto: UserGradeDto) {
-    const userGrade = this.userGradeRepository.create({ 
+    const userGrade = this.userGradeRepository.create({
       grade: dto.grade,
       userId,
     });
-    await this.userGradeRepository.save(userGrade)
+    await this.userGradeRepository.save(userGrade);
 
     return;
   }

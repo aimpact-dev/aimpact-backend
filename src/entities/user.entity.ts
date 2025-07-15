@@ -5,19 +5,20 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-  ManyToOne, JoinColumn, Unique,
-  OneToOne
+  ManyToOne,
+  JoinColumn,
+  Unique,
+  OneToOne,
 } from 'typeorm';
 import { Project } from './project.entity';
 import { FundsReceipt } from './funds-receipt.entity';
 import { RewardsWithdrawalReceipt } from './rewards-withdrawal-receipt.entity';
 import { Leaderboard } from './leaderboard.entity';
 
-
 const randomInviteCode = () => {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   return Array.from({ length: 6 }, () => chars.charAt(Math.floor(Math.random() * chars.length))).join('');
-}
+};
 
 @Entity('user')
 export class User {
@@ -40,7 +41,7 @@ export class User {
   @Column({ type: 'integer', nullable: false, default: 0 })
   discountPercent: number;
 
-  @Column({ type: 'decimal', precision: 18, scale: 0, nullable: false, default: 0 })  // Store rewards in lamports
+  @Column({ type: 'decimal', precision: 18, scale: 0, nullable: false, default: 0 }) // Store rewards in lamports
   referralsRewards: number;
 
   @Column({ type: 'numeric', precision: 18, scale: 0, nullable: false, default: 0 })
@@ -59,7 +60,7 @@ export class User {
   referrals: User[];
 
   @ManyToOne(() => User, (user) => user.referrals, { onDelete: 'SET NULL' })
-  @JoinColumn({ name: 'referrerId', foreignKeyConstraintName: 'fk_referrerId', })
+  @JoinColumn({ name: 'referrerId', foreignKeyConstraintName: 'fk_referrerId' })
   referrer?: User;
 
   @OneToMany(() => FundsReceipt, (receipt) => receipt.user)

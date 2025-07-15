@@ -37,7 +37,7 @@ export class UserService {
     wallet: string,
     signature: string,
     nonce: string,
-    inviteCode?: string | null | undefined,
+    inviteCode?: string | null,
   ): Promise<User> {
     const message = generateMessage(nonce);
     const isValid = validateSignedMessage(wallet, message, signature);
@@ -71,7 +71,7 @@ export class UserService {
       userId: user.id,
       points: 0,
     });
-    await this.leaderboardRepository.save(newLeaderboard)
+    await this.leaderboardRepository.save(newLeaderboard);
     return user;
   }
 

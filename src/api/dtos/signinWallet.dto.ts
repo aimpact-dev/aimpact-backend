@@ -27,5 +27,4 @@ export class SigninWalletDto {
   @IsOptional()
   @IsString()
   inviteCode?: string;
-
 }

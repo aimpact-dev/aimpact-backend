@@ -129,13 +129,16 @@ export class BillingService {
     }
 
     const discount = user.discountPercent / 100;
-    const pricePerMessageWithDiscount = this.billingConfig.PRICE_PER_MESSAGE_IN_SOL - (this.billingConfig.PRICE_PER_MESSAGE_IN_SOL * discount);
+    const pricePerMessageWithDiscount =
+      this.billingConfig.PRICE_PER_MESSAGE_IN_SOL - this.billingConfig.PRICE_PER_MESSAGE_IN_SOL * discount;
     if (pricePerMessageWithDiscount == 0) {
-      throw new InternalServerErrorException("Price per message with discount cannot be zero. Seems like user has 100% discount.");
+      throw new InternalServerErrorException(
+        'Price per message with discount cannot be zero. Seems like user has 100% discount.',
+      );
     }
     const messagesPaid = Math.floor(solAmountPaid / pricePerMessageWithDiscount);
     user.messagesLeft += messagesPaid;
-    user.discountPercent = 0;  // Reset discount after payment
+    user.discountPercent = 0; // Reset discount after payment
 
     await this.userRepository.save(user);
 
@@ -155,18 +158,19 @@ export class BillingService {
     if (lamportsAmount > user.referralsRewards) {
       throw new BadRequestException('Not enough rewards to buy messages');
     }
-    const messagesPaid = Math.floor(amount / this.billingConfig.PRICE_PER_MESSAGE_IN_SOL * this.referralsConfig.MESSAGES_FOR_REWARDS_MULTIPLIER);
+    const messagesPaid = Math.floor(
+      (amount / this.billingConfig.PRICE_PER_MESSAGE_IN_SOL) * this.referralsConfig.MESSAGES_FOR_REWARDS_MULTIPLIER,
+    );
     if (messagesPaid > 0) {
       user.messagesLeft += messagesPaid;
       user.referralsRewards -= lamportsAmount;
       await this.userRepository.save(user);
-    }
-    else {
+    } else {
       throw new BadRequestException('Not enough rewards to buy messages');
     }
     return {
-      messagesLeft: user.messagesLeft
-    }
+      messagesLeft: user.messagesLeft,
+    };
   }
 
   async withdrawRewards(user: User): Promise<WithdrawalReceiptResponse> {
@@ -177,20 +181,16 @@ export class BillingService {
     const privateKey = bs58.decode(this.cryptoConfig.WALLET_PRIVATE_KEY);
 
     const connection = new Connection(this.cryptoConfig.HTTP_RPC_URL, 'confirmed');
-    const fromAccount = Keypair.fromSecretKey(privateKey)
+    const fromAccount = Keypair.fromSecretKey(privateKey);
     const transaction = new Transaction().add(
       SystemProgram.transfer({
         fromPubkey: fromAccount.publicKey,
         toPubkey: new PublicKey(user.wallet),
-        lamports: user.referralsRewards  // Already in lamports
+        lamports: user.referralsRewards, // Already in lamports
       }),
     );
 
-    const signature = await sendAndConfirmTransaction(
-      connection,
-      transaction,
-      [fromAccount],
-    );
+    const signature = await sendAndConfirmTransaction(connection, transaction, [fromAccount]);
     this.logger.log(`Transaction sent with signature: ${signature}`);
     // Create a receipt for the withdrawal
     const receipt = this.rewardsReceiptRepository.create({
@@ -213,19 +213,21 @@ export class BillingService {
   }
 
   async getRewardsWithdrawalReceipts(user: User): Promise<WithdrawalReceiptResponse[]> {
-    return (await this.rewardsReceiptRepository.find({ where: { userId: user.id }, order: { createdAt: 'DESC' } })).map(receipt => {
-      receipt.amount = lamportsToSol(receipt.amount);
-      return {
-        id: receipt.id,
-        amount: receipt.amount,
-        transactionHash: receipt.transactionHash,
-        createdAt: receipt.createdAt,
-      };
-    });
+    return (await this.rewardsReceiptRepository.find({ where: { userId: user.id }, order: { createdAt: 'DESC' } })).map(
+      (receipt) => {
+        receipt.amount = lamportsToSol(receipt.amount);
+        return {
+          id: receipt.id,
+          amount: receipt.amount,
+          transactionHash: receipt.transactionHash,
+          createdAt: receipt.createdAt,
+        };
+      },
+    );
   }
 
   async getFundsReceipts(user: User): Promise<FundReceiptResponse[]> {
-    return (await this.receiptRepository.find({ where: { userId: user.id } })).map(receipt => {
+    return (await this.receiptRepository.find({ where: { userId: user.id } })).map((receipt) => {
       return {
         id: receipt.id,
         amount: parseFloat(receipt.amount as unknown as string),

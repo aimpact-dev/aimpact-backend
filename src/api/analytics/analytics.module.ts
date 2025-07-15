@@ -9,9 +9,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 @Module({
   providers: [AnalyticsService],
   controllers: [AnalyticsController],
-  imports: [
-    ConfigModule.forFeature(analyticsEnvConfig),
-    TypeOrmModule.forFeature([UserGrade]),
-  ]
+  imports: [ConfigModule.forFeature(analyticsEnvConfig), TypeOrmModule.forFeature([UserGrade])],
 })
 export class AnalyticsModule {}
