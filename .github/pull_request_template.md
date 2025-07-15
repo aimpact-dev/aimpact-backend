@@ -37,7 +37,7 @@ Attach testing results (screenshots, console output, etc.) here.
 
 ## 🚀 Future steps
 
-Please write a plan and tag people for future steps that are neccessary for delivering the feature or fixing a bug.
+Please write a plan and tag people for future steps that are necessary for delivering the feature or fixing a bug.
 
 ---
 
