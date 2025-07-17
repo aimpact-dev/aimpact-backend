@@ -60,8 +60,9 @@ jobs:
             echo '{"canisters":{"aimpact_frontend":{"source":["dist"],"type":"assets","workspace":"aimpact_frontend"}},"defaults":{"build":{"args":"","packtool":""}},"output_env_file":".env","version":1}' > dfx.json
       - run:
           name: Copy AImpact deployment from AWS
-          command: aws s3 cp "<< pipeline.parameters.project_s3_url >>" dist/ --recursive
-          command: aws s3 cp "<< pipeline.parameters.project_s3_url >>" canister_ids.json 
+          command: | 
+            aws s3 cp "<< pipeline.parameters.project_s3_url >>" dist/ --recursive
+            aws s3 cp "<< pipeline.parameters.project_s3_url >>" canister_ids.json 
       - run:
           name: Instantiate ICP user identity via the private key
           command: |
