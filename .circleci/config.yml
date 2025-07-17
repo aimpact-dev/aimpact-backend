@@ -79,7 +79,8 @@ jobs:
 
             dfx identity get-principal
 
-            dfx canister status aimpact_frontend --network ic
+            cat dfx.json
+            # dfx canister status aimpact_frontend --network ic
 
             # if [ ! -f "dfx.json" ] || [ ! -d "dist" ]; then
             #   echo "Canister of this project already exists. Reusing it"
