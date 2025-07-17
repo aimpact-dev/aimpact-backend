@@ -83,7 +83,7 @@ jobs:
 
             ls
 
-            if [ ! -d "dist" ]; then
+            if [ -d "dist" ]; then
               echo "Canister of this project already exists. Reusing it"
             else
              echo "Creating canister"
