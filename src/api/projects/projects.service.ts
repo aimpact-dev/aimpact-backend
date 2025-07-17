@@ -164,7 +164,7 @@ export class ProjectsService {
       // dto.files is a json string with has to be saved to s3 object
 
       const files = JSON.stringify(dto.files);
-      await this.s3Client.uploadTextFile(filesPath, files);
+      await this.s3Client.uploadFile(filesPath, files);
       const newSnapshot = await this.projectSnapshotRepository.save({
         projectId: project.id,
         filesPath: filesPath,
@@ -181,7 +181,7 @@ export class ProjectsService {
     }
     const filesPath = snapshot.filesPath;
     const files = JSON.stringify(dto.files);
-    await this.s3Client.uploadTextFile(filesPath, files);
+    await this.s3Client.uploadFile(filesPath, files);
 
     const updatedSnapshotObject = cloneEntityWithNewProps(snapshot, {
       chatIndex: dto.chatIndex,
