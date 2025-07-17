@@ -81,6 +81,8 @@ jobs:
             export TERM=xterm-256color
 
             dfx identity get-principal --network ic
+
+            cd dist
             dfx canister stop --all --network ic
             dfx canister delete --all --network ic
 
