@@ -77,17 +77,20 @@ jobs:
             export DFX_WARNING=-mainnet_plaintext_identity
             export TERM=xterm-256color
 
-            ls
-            # dfx identity get-principal
+            dfx identity get-principal
 
-            # echo "Creating canister"
-            # dfx canister create aimpact_frontend --network ic --with-cycles 1000000000000
+            if [ ! -f "dfx.json" ] || [ ! -d "dist" ]; then
+              echo "Canister of this project already exists. Reusing it"
+            else
+              echo "Creating canister"
+              dfx canister create aimpact_frontend --network ic --with-cycles 1000000000000
+            fi
 
-            # echo "Building canister"
-            # dfx build aimpact_frontend --network ic
+            echo "Building canister"
+            dfx build aimpact_frontend --network ic
 
-            # echo "Deploying canister"
-            # dfx canister install -m reinstall aimpact_frontend --network ic -y
+            echo "Deploying canister"
+            dfx canister install -m reinstall aimpact_frontend --network ic -y
 
   deploy:
     docker:
