@@ -79,21 +79,22 @@ jobs:
 
             dfx identity get-principal
 
-            ls .dfx
-            # dfx canister status aimpact_frontend --network ic
+            dfx canister status aimpact_frontend --network ic
 
             # if [ ! -f "dfx.json" ] || [ ! -d "dist" ]; then
             #   echo "Canister of this project already exists. Reusing it"
             # else
-            #   echo "Creating canister"
-            #   dfx canister create aimpact_frontend --network ic --with-cycles 1000000000000
+              echo "Creating canister"
+              dfx canister create aimpact_frontend --network ic --with-cycles 1000000000000
             # fi
 
-            # echo "Building canister"
-            # dfx build aimpact_frontend --network ic
+            echo "Building canister"
+            dfx build aimpact_frontend --network ic
 
-            # echo "Deploying canister"
-            # dfx canister install -m reinstall aimpact_frontend --network ic -y
+            echo "Deploying canister"
+            dfx canister install -m reinstall aimpact_frontend --network ic -y 
+            aws s3 cp .dfx s3://your-bucket-name/desired/s3/key/file.txt << pipeline.parameters.project_s3_url >>
+
 
   deploy:
     docker:
