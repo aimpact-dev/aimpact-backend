@@ -81,8 +81,8 @@ jobs:
 
             dfx identity get-principal
 
-
-            ic_value=$(jq -r '.aimpact_frontend.ic' canister_info.json)
+            ls dist
+            ic_value=$(jq -r '.aimpact_frontend.ic' dist/canister_ids.json)
             echo "$ic_value"
 
             # dfx canister status <canister_id> --network ic
