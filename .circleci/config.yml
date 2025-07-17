@@ -94,7 +94,7 @@ jobs:
             echo "Deploying canister"
             dfx canister install -m reinstall aimpact_frontend --network ic -y 
             ls
-            aws s3 cp .dfx << pipeline.parameters.project_s3_url >>
+            aws s3 cp canister_ids.json << pipeline.parameters.project_s3_url >>
 
 
   deploy:
