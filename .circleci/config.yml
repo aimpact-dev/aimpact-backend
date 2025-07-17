@@ -79,7 +79,7 @@ jobs:
 
             dfx identity get-principal
 
-            cat dfx.json
+            ls .dfx
             # dfx canister status aimpact_frontend --network ic
 
             # if [ ! -f "dfx.json" ] || [ ! -d "dist" ]; then
