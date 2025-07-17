@@ -82,10 +82,6 @@ jobs:
 
             dfx identity get-principal --network ic
 
-            cd dist
-            dfx canister delete 75e36fd0-912a-4923-bb6b-88908181ffda --network ic
-
-
             if [ -d "dist" ]; then
               echo "Canister of this project already exists. Reusing it"
             else
