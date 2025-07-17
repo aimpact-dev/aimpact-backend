@@ -76,13 +76,18 @@ jobs:
       - run:
           name: Deploy AImpact on ICP
           command: |
-
             export DFX_WARNING=-mainnet_plaintext_identity
             export TERM=xterm-256color
 
-            dfx identity get-principal --network ic
+            dfx identity get-principal
 
-            if [ -d "dist" ]; then
+            ic_value=$(jq -r '.aimpact_frontend.ic' dist/canister_ids.json)
+
+            export AIMPACT_FRONTEND_CANISTER_ID="$ic_value"
+
+            # dfx canister status aimpact_frontend --network ic
+
+            if [  -d "dist" ]; then
               echo "Canister of this project already exists. Reusing it"
             else
              echo "Creating canister"
@@ -94,7 +99,8 @@ jobs:
 
             echo "Deploying canister"
             dfx canister install -m reinstall aimpact_frontend --network ic -y 
-            aws s3 cp canister_ids.json << pipeline.parameters.project_s3_url >>
+            # ls
+            # aws s3 cp canister_ids.json << pipeline.parameters.project_s3_url >>
 
 
   deploy:
