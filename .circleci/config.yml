@@ -62,7 +62,7 @@ jobs:
           name: Copy AImpact deployment from AWS
           command: | 
             aws s3 cp "<< pipeline.parameters.project_s3_url >>" dist/ --recursive
-            aws s3 cp "<< pipeline.parameters.project_s3_url >>" canister_ids.json 
+            # aws s3 cp "<< pipeline.parameters.project_s3_url >>" canister_ids.json 
       - run:
           name: Instantiate ICP user identity via the private key
           command: |
@@ -82,7 +82,7 @@ jobs:
             dfx identity get-principal
 
 
-            cat canister_ids.json
+            cat dist/canister_ids.json
 
             # dfx canister status aimpact_frontend --network ic
 
