@@ -79,18 +79,20 @@ jobs:
 
             dfx identity get-principal
 
-            if [ ! -f "dfx.json" ] || [ ! -d "dist" ]; then
-              echo "Canister of this project already exists. Reusing it"
-            else
-              echo "Creating canister"
-              dfx canister create aimpact_frontend --network ic --with-cycles 1000000000000
-            fi
+            dfx canister status aimpact_frontend
 
-            echo "Building canister"
-            dfx build aimpact_frontend --network ic
+            # if [ ! -f "dfx.json" ] || [ ! -d "dist" ]; then
+            #   echo "Canister of this project already exists. Reusing it"
+            # else
+            #   echo "Creating canister"
+            #   dfx canister create aimpact_frontend --network ic --with-cycles 1000000000000
+            # fi
 
-            echo "Deploying canister"
-            dfx canister install -m reinstall aimpact_frontend --network ic -y
+            # echo "Building canister"
+            # dfx build aimpact_frontend --network ic
+
+            # echo "Deploying canister"
+            # dfx canister install -m reinstall aimpact_frontend --network ic -y
 
   deploy:
     docker:
