@@ -64,9 +64,9 @@ jobs:
             # aws s3 cp "s3://aimpact-deployments/75e36fd0-912a-4923-bb6b-88908181ffda/" dist/ --recursive
             # aws s3 cp "s3://aimpact-deployments/75e36fd0-912a-4923-bb6b-88908181ffda/" .dfx/ --recursive
             # aws s3 cp "s3://aimpact-deployments/75e36fd0-912a-4923-bb6b-88908181ffda/" .env
-
+            pwd
             aws s3 cp "s3://aimpact-deployments/75e36fd0-912a-4923-bb6b-88908181ffda/" project --recursive
-
+            pwd
             # aws s3 cp "s3://aimpact-deployments/75e36fd0-912a-4923-bb6b-88908181ffda/" dfx.json
       - run:
           name: Instantiate ICP user identity via the private key
@@ -78,6 +78,7 @@ jobs:
             dfx identity import aimpact_deployment --seed-file private_key.pem --storage-mode plaintext
             dfx identity use aimpact_deployment
             echo "Balance: $(dfx cycles balance --network ic --identity aimpact_deployment)"
+            pwd
       - run:
           name: Deploy AImpact on ICP
           command: |
@@ -86,6 +87,7 @@ jobs:
 
             dfx identity get-principal
             dfx start --background
+            pwd
             cd project
             ls -la
 
