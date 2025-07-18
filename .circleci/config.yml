@@ -108,6 +108,7 @@ jobs:
 
 
             cat .dfx/local/canister_ids.json
+            cat .env
 
             echo "Building canister"
             dfx build aimpact_frontend #--network ic
