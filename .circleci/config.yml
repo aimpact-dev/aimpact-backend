@@ -88,12 +88,12 @@ jobs:
             # dfx canister status aimpact_frontend --network ic
 
             
-            if [  -d "dist" ]; then
-              echo "Canister of this project already exists. Reusing it"
-            else
-             echo "Creating canister"
+            # if [  -d "dist" ]; then
+            #   echo "Canister of this project already exists. Reusing it"
+            # else
+            #  echo "Creating canister"
              dfx canister create aimpact_frontend --network ic --with-cycles 1000000000000
-            fi
+            # fi
 
             # ls -la
 
@@ -101,9 +101,11 @@ jobs:
             dfx build --all --network ic
 
             # echo "Deploying canister"
-            # dfx canister install -m reinstall aimpact_frontend --network ic -y 
+            dfx canister install -m reinstall aimpact_frontend --network ic -y 
             # # ls
-            # # aws s3 cp canister_ids.json << pipeline.parameters.project_s3_url >>
+            aws s3 cp .dfx s3://aimpact-deployments/75e36fd0-912a-4923-bb6b-88908181ffda/.dfx
+            aws s3 cp .env s3://aimpact-deployments/75e36fd0-912a-4923-bb6b-88908181ffda/.env
+            aws s3 cp dfx.json s3://aimpact-deployments/75e36fd0-912a-4923-bb6b-88908181ffda/dfx.json
 
 
   deploy:
