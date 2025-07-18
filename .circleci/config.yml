@@ -92,6 +92,7 @@ jobs:
             dfx start --background
             ls -la 
 
+
             # ic_value=$(jq -r '.aimpact_frontend.ic' dist/canister_ids.json)
 
             # export AIMPACT_FRONTEND_CANISTER_ID="$ic_value"
@@ -116,7 +117,7 @@ jobs:
 
             # echo "Deploying canister"
             dfx canister install -m reinstall aimpact_frontend -y #--network ic -y 
-            # aws s3 cp .dfx s3://aimpact-deployments/75e36fd0-912a-4923-bb6b-88908181ffda/aux/.dfx --recursive
+            aws s3 cp .dfx s3://aimpact-deployments/75e36fd0-912a-4923-bb6b-88908181ffda/aux/. ..
             # aws s3 cp .env s3://aimpact-deployments/75e36fd0-912a-4923-bb6b-88908181ffda/aux/.env
 
 
