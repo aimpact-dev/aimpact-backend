@@ -91,7 +91,7 @@ jobs:
             mkdir .dfx/ic
             mv .dfx/canister_ids.json .dfx/ic/canister_ids.json
             ls .dfx/ic
-            cat .dfx/ic/canister_ids.json
+            cat dist/dfx.json
             if [  -d "dist" ]; then
               echo "Canister of this project already exists. Reusing it"
             else
