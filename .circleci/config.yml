@@ -106,7 +106,8 @@ jobs:
             #  dfx canister create aimpact_frontend #--network ic --with-cycles 1000000000000
             # fi
 
-
+            ls .dfx/local
+            ls /home/circleci/project/.dfx/local/canisters/aimpact_frontend
             cat .dfx/local/canister_ids.json
             cat .env
 
