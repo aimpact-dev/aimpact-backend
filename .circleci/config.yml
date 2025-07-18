@@ -81,9 +81,10 @@ jobs:
 
             dfx identity get-principal
 
-            ic_value=$(jq -r '.aimpact_frontend.ic' dist/canister_ids.json)
+            aws mv dist/canister_ids.json .dfx/ic/canister_ids.json
+            # ic_value=$(jq -r '.aimpact_frontend.ic' dist/canister_ids.json)
 
-            export AIMPACT_FRONTEND_CANISTER_ID="$ic_value"
+            # export AIMPACT_FRONTEND_CANISTER_ID="$ic_value"
 
             # dfx canister status aimpact_frontend --network ic
 
