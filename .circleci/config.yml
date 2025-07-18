@@ -60,18 +60,7 @@ jobs:
             echo '{"canisters":{"aimpact_frontend":{"source":["dist"],"type":"assets","workspace":"aimpact_frontend"}},"defaults":{"build":{"args":"","packtool":""}},"output_env_file":".env","version":1}' > dfx.json
       - run:
           name: Copy AImpact deployment from AWS
-          command: | 
-            # aws s3 rm s3://aimpact-deployments/75e36fd0-912a-4923-bb6b-88908181ffda/.dfx --recursive
-            # aws s3 rm s3://aimpact-deployments/75e36fd0-912a-4923-bb6b-88908181ffda/.env
-            # aws s3 cp "s3://aimpact-deployments/75e36fd0-912a-4923-bb6b-88908181ffda/" dist/ --recursive
-            # aws s3 cp "s3://aimpact-deployments/75e36fd0-912a-4923-bb6b-88908181ffda/" .dfx/ --recursive
-            # aws s3 cp "s3://aimpact-deployments/75e36fd0-912a-4923-bb6b-88908181ffda/" .env
-            aws s3 cp "s3://aimpact-deployments/75e36fd0-912a-4923-bb6b-88908181ffda/" dist --recursive
-            ls -la dist
-            mv dist/aux/.dfx dist/aux/.env .
-            ls -la 
-
-            # aws s3 cp "s3://aimpact-deployments/75e36fd0-912a-4923-bb6b-88908181ffda/" dfx.json
+          command: aws s3 cp "<< pipeline.parameters.project_s3_url >>" dist/ --recursive
       - run:
           name: Instantiate ICP user identity via the private key
           command: |
@@ -89,36 +78,15 @@ jobs:
             export TERM=xterm-256color
 
             dfx identity get-principal
-            dfx start --background
-            ls -la 
 
-            # ic_value=$(jq -r '.aimpact_frontend.ic' dist/canister_ids.json)
-
-            # export AIMPACT_FRONTEND_CANISTER_ID="$ic_value"
-
-            # dfx canister status aimpact_frontend --network ic
-
-            
-            # if [  -d "dist" ]; then
-            #   echo "Canister of this project already exists. Reusing it"
-            # else
-            #  echo "Creating canister"
-            #  dfx canister create aimpact_frontend #--network ic --with-cycles 1000000000000
-            # fi
-
-            ls .dfx/local
-            ls /home/circleci/project/.dfx/local/canisters/aimpact_frontend
-            cat .dfx/local/canister_ids.json
-            cat .env
+            echo "Creating canister"
+            dfx canister create aimpact_frontend --network ic --with-cycles 1000000000000
 
             echo "Building canister"
-            dfx build aimpact_frontend #--network ic
+            dfx build aimpact_frontend --network ic
 
-            # echo "Deploying canister"
-            dfx canister install -m reinstall aimpact_frontend -y #--network ic -y 
-            aws s3 cp .dfx s3://aimpact-deployments/75e36fd0-912a-4923-bb6b-88908181ffda/aux/. ..
-            # aws s3 cp .env s3://aimpact-deployments/75e36fd0-912a-4923-bb6b-88908181ffda/aux/.env
-
+            echo "Deploying canister"
+            dfx canister install -m reinstall aimpact_frontend --network ic -y
 
   deploy:
     docker:
