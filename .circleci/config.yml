@@ -67,8 +67,8 @@ jobs:
             # aws s3 cp "s3://aimpact-deployments/75e36fd0-912a-4923-bb6b-88908181ffda/" .dfx/ --recursive
             # aws s3 cp "s3://aimpact-deployments/75e36fd0-912a-4923-bb6b-88908181ffda/" .env
             aws s3 cp "s3://aimpact-deployments/75e36fd0-912a-4923-bb6b-88908181ffda/" dist --recursive
-            ls dist
-            mv dist/aux . 
+            # ls -la dist
+            # mv dist/aux . 
             # aws s3 cp "s3://aimpact-deployments/75e36fd0-912a-4923-bb6b-88908181ffda/" dfx.json
       - run:
           name: Instantiate ICP user identity via the private key
