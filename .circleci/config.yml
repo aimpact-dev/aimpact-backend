@@ -88,6 +88,7 @@ jobs:
 
             # dfx canister status aimpact_frontend --network ic
 
+            mkdir .dfx/ic
             mv .dfx/canister_ids.json .dfx/ic/canister_ids.json
             ls .dfx/ic
 
