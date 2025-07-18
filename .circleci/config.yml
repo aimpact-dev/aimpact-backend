@@ -102,7 +102,7 @@ jobs:
             # ls -la
 
             # echo "Building canister"
-            dfx build aimpact_frontend --network ic
+            dfx build --all --network ic
 
             # echo "Deploying canister"
             # dfx canister install -m reinstall aimpact_frontend --network ic -y 
