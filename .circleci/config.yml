@@ -88,6 +88,9 @@ jobs:
 
             # dfx canister status aimpact_frontend --network ic
 
+            mv .dfx/canister_ids.json .dfx/ic/canister_ids.json
+            ls .dfx/ic
+
             if [  -d "dist" ]; then
               echo "Canister of this project already exists. Reusing it"
             else
