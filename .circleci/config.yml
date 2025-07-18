@@ -88,17 +88,17 @@ jobs:
 
             # dfx canister status aimpact_frontend --network ic
 
-            # if [  -d "dist" ]; then
-            #   echo "Canister of this project already exists. Reusing it"
-            # else
-            #  echo "Creating canister"
-            #  dfx canister create aimpact_frontend --network ic --with-cycles 1000000000000
-            # fi
+            if [  -d "dist" ]; then
+              echo "Canister of this project already exists. Reusing it"
+            else
+             echo "Creating canister"
+             dfx canister create aimpact_frontend --network ic --with-cycles 1000000000000
+            fi
 
             # ls -la
 
             # echo "Building canister"
-            # dfx build aimpact_frontend --network ic
+            dfx build aimpact_frontend --network ic
 
             # echo "Deploying canister"
             # dfx canister install -m reinstall aimpact_frontend --network ic -y 
