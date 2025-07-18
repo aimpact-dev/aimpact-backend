@@ -103,7 +103,7 @@ jobs:
             #   echo "Canister of this project already exists. Reusing it"
             # else
             #  echo "Creating canister"
-             dfx canister create aimpact_frontend #--network ic --with-cycles 1000000000000
+            #  dfx canister create aimpact_frontend #--network ic --with-cycles 1000000000000
             # fi
 
             # ls -la
