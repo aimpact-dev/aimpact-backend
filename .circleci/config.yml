@@ -104,7 +104,7 @@ jobs:
             # echo "Deploying canister"
             dfx canister install -m reinstall aimpact_frontend -y #--network ic -y 
             ls -la
-            # aws s3 cp .dfx s3://aimpact-deployments/75e36fd0-912a-4923-bb6b-88908181ffda/.dfx
+            aws s3 cp .dfx s3://aimpact-deployments/75e36fd0-912a-4923-bb6b-88908181ffda/.dfx --recursive
             aws s3 cp dfx.json s3://aimpact-deployments/75e36fd0-912a-4923-bb6b-88908181ffda/dfx.json
             aws s3 cp .env s3://aimpact-deployments/75e36fd0-912a-4923-bb6b-88908181ffda/.env
 
