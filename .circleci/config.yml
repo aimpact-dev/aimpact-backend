@@ -86,7 +86,7 @@ jobs:
 
             dfx identity get-principal
             dfx start --background
-            ls -la project
+            cd project
 
             # ic_value=$(jq -r '.aimpact_frontend.ic' dist/canister_ids.json)
 
