@@ -92,6 +92,7 @@ jobs:
             dfx start --background
             ls -la 
 
+
             # ic_value=$(jq -r '.aimpact_frontend.ic' dist/canister_ids.json)
 
             # export AIMPACT_FRONTEND_CANISTER_ID="$ic_value"
