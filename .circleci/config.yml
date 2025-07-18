@@ -81,7 +81,7 @@ jobs:
 
             dfx identity get-principal
 
-            aws s3 mv << pipeline.parameters.project_s3_url >>/dist/canister_ids.json << pipeline.parameters.project_s3_url >>/.dfx/ic/canister_ids.json
+            aws s3 cp dist/canister_ids.json << pipeline.parameters.project_s3_url >>/.dfx/ic/canister_ids.json
             # ic_value=$(jq -r '.aimpact_frontend.ic' dist/canister_ids.json)
 
             # export AIMPACT_FRONTEND_CANISTER_ID="$ic_value"
