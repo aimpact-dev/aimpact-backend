@@ -106,7 +106,7 @@ jobs:
             #  dfx canister create aimpact_frontend #--network ic --with-cycles 1000000000000
             # fi
 
-            # ls -la
+            ls -la .dfx
 
             echo "Building canister"
             dfx build --all #--network ic
