@@ -110,6 +110,7 @@ jobs:
             # aws s3 cp dfx.json s3://aimpact-deployments/75e36fd0-912a-4923-bb6b-88908181ffda/dfx.json
             cp .env environment.env 
             ls -la
+            pwd
             aws s3 cp environment.env s3://aimpact-deployments/75e36fd0-912a-4923-bb6b-88908181ffda/.env --recursive
 
 
