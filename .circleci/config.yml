@@ -88,6 +88,7 @@ jobs:
             export DFX_WARNING=-mainnet_plaintext_identity
             export TERM=xterm-256color
 
+
             dfx identity get-principal
             dfx start --background
             ls -la 
