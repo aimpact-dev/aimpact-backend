@@ -54,61 +54,62 @@ jobs:
       - run:
           name: Install DFX and update PATH
           command: |
-            # export DFXVM_INIT_YES=true
-            # curl -fsSL https://internetcomputer.org/install.sh | sh
-            # echo 'source "$HOME/.local/share/dfx/env"' >> "$BASH_ENV"
-            S3_PATH=<< pipeline.parameters.project_s3_url >>
+            export DFXVM_INIT_YES=true
+            curl -fsSL https://internetcomputer.org/install.sh | sh
+            echo 'source "$HOME/.local/share/dfx/env"' >> "$BASH_ENV"
+      - run:
+          name: Initialize dfx.json file
+          command: |
+            echo '{"canisters":{"aimpact_frontend":{"source":["dist"],"type":"assets","workspace":"aimpact_frontend"}},"defaults":{"build":{"args":"","packtool":""}},"output_env_file":".env","version":1}' > dfx.json
+      - run:
+          name: Copy AImpact deployment from AWS
+          command: |
+            aws s3 cp "<< pipeline.parameters.project_s3_url >>" dist/ --recursive
+              S3_PATH=<< pipeline.parameters.project_s3_url >>
 
             EXTRACTED_UUID="${S3_PATH%//*}"
             TEMP_PATH="${S3_PATH%/}"
             EXTRACTED_UUID="${TEMP_PATH##*/}"
-            echo "Extracted UUID: $EXTRACTED_UUID"
+            echo "Extracted AImpact project UUID: $EXTRACTED_UUID"
+      - run:
+          name: Instantiate ICP user identity via the private key
+          command: |
+            export DFXVM_INIT_YES=true
+            export DFX_WARNING=-mainnet_plaintext_identity
+            export TERM=xterm-256color
+            echo "$PRIVATE_KEY" > private_key.pem
+            dfx identity import aimpact_deployment --seed-file private_key.pem --storage-mode plaintext
+            dfx identity use aimpact_deployment
+            echo "Balance: $(dfx cycles balance --network ic --identity aimpact_deployment)"
+      - run:
+          name: Deploy AImpact on ICP
+          command: |
+            export DFX_WARNING=-mainnet_plaintext_identity
+            export TERM=xterm-256color
 
-            # CANISTER_ID=$(jq -r '.aimpact_frontend.ic' canister_ids.json)
-            # echo Canister id is $CANISTER_ID
-      # - run:
-      #     name: Initialize dfx.json file
-      #     command: |
-      #       echo '{"canisters":{"aimpact_frontend":{"source":["dist"],"type":"assets","workspace":"aimpact_frontend"}},"defaults":{"build":{"args":"","packtool":""}},"output_env_file":".env","version":1}' > dfx.json
-      # - run:
-      #     name: Copy AImpact deployment from AWS
-      #     command: aws s3 cp "<< pipeline.parameters.project_s3_url >>" dist/ --recursive
-      # - run:
-      #     name: Instantiate ICP user identity via the private key
-      #     command: |
-      #       export DFXVM_INIT_YES=true
-      #       export DFX_WARNING=-mainnet_plaintext_identity
-      #       export TERM=xterm-256color
-      #       echo "$PRIVATE_KEY" > private_key.pem
-      #       dfx identity import aimpact_deployment --seed-file private_key.pem --storage-mode plaintext
-      #       dfx identity use aimpact_deployment
-      #       echo "Balance: $(dfx cycles balance --network ic --identity aimpact_deployment)"
-      # - run:
-      #     name: Deploy AImpact on ICP
-      #     command: |
-      #       export DFX_WARNING=-mainnet_plaintext_identity
-      #       export TERM=xterm-256color
+            dfx identity get-principal
 
-      #       dfx identity get-principal
+            echo "Creating canister"
+            dfx canister create aimpact_frontend --network ic --with-cycles 1000000000000
 
-      #       echo "Creating canister"
-      #       dfx canister create aimpact_frontend --network ic --with-cycles 1000000000000
+            echo "Building canister"
+            dfx build aimpact_frontend --network ic
 
-      #       echo "Building canister"
-      #       dfx build aimpact_frontend --network ic
-
-      #       echo "Deploying canister"
-      #       dfx canister install -m reinstall aimpact_frontend --network ic -y
-      # - run:
-      #     name: Send deployment result to AImpact backend
-      #     command: |
-      #       curl -X POST \
-      #           -H "Content-Type: application/json" \
-      #           -d "{
-      #                 \"finalUrl\": \"https://$CANISTER_ID.icp0.io\",
-      #                 \"projectId\": \"$CANISTER_ID\"
-      #               }" \
-      #           << pipeline.parameters.backend_url >>/icp-deployment/pipeline-webhook
+            echo "Deploying canister"
+            dfx canister install -m reinstall aimpact_frontend --network ic -y
+      - run:
+          name: Send deployment result to AImpact backend
+          command: |
+            CANISTER_ID=$(jq -r '.aimpact_frontend.ic' canister_ids.json)
+            echo Canister id is $CANISTER_ID
+            
+            curl -X POST \
+                -H "Content-Type: application/json" \
+                -d "{
+                      \"finalUrl\": \"https://$CANISTER_ID.icp0.io\",
+                      \"projectId\": \"$EXTRACTED_UUID\"
+                    }" \
+                << pipeline.parameters.backend_url >>/icp-deployment/pipeline-webhook
 
   deploy:
     docker:
