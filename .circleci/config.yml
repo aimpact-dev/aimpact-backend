@@ -82,7 +82,6 @@ jobs:
             export TERM=xterm-256color
 
             dfx identity get-principal
-            dfx ledger balance --network ic
 
             echo "Creating canister"
             dfx canister create aimpact_frontend --network ic --with-cycles 1000000000000
