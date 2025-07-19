@@ -98,12 +98,12 @@ jobs:
             echo Canister id is $CANISTER_ID
             
             curl -X POST \
-            -H "Content-Type: application/json" \
-            -d '{
-                  "finalUrl": "https://$CANISTER_ID.icp0.io",
-                  "projectId": "my-awesome-project-123"
-                }' \
-            https://65d178abb1e7.ngrok-free.app/icp-deployment/pipeline-webhook
+                -H "Content-Type: application/json" \
+                -d "{
+                      \"finalUrl\": \"https://$CANISTER_ID.icp0.io\",
+                      \"projectId\": \"my-awesome-project-123\"
+                    }" \
+                https://65d178abb1e7.ngrok-free.app/icp-deployment/pipeline-webhook
 
   deploy:
     docker:
