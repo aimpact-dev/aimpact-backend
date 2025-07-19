@@ -96,8 +96,6 @@ jobs:
             #xmjkp-xqaaa-aaaah-qqdbq-cai
             dfx identity get-principal
 
-            dfx wallet redeem-faucet-coupon DD865-A7EA5-8D4D9 --network ic -y
-
             dfx canister --network ic delete sdjeu-oqaaa-aaaao-qkddq-cai -y
 
             # dfx start --background
