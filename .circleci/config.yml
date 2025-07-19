@@ -102,6 +102,7 @@ jobs:
           command: |
             CANISTER_ID=$(jq -r '.aimpact_frontend.ic' canister_ids.json)
             echo Canister id is $CANISTER_ID
+            echo "AImpact project UUID: $EXTRACTED_UUID"
             
             curl -X POST \
                 -H "Content-Type: application/json" \
