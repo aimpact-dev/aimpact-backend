@@ -82,14 +82,7 @@ jobs:
 
             dfx identity get-principal
 
-            dfx canister --network ic delete z7mhb-caaaa-aaaad-aawfa-cai -y
-            dfx canister --network ic delete qmbyc-pyaaa-aaaae-qfd4q-cai -y
-            dfx canister --network ic delete seica-diaaa-aaaao-qkdda-cai -y
-            dfx canister --network ic delete f5jm3-ryaaa-aaaaj-a2dja-cai -y
-            dfx canister --network ic delete zmnt2-myaaa-aaaai-q3y4q-cai -y
-            dfx canister --network ic delete 3auyf-5aaaa-aaaac-az42a-cai -y
-            dfx canister --network ic delete 3hv6r-qyaaa-aaaac-az42q-cai -y
-            dfx canister --network ic delete dzgly-siaaa-aaaab-qb2xq-cai -y
+            dfx ledger --network ic balance
 
             # dfx start --background
             # echo "Creating canister"
