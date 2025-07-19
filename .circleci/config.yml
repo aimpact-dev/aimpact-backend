@@ -69,7 +69,7 @@ jobs:
 
             EXTRACTED_UUID="${S3_PATH%//*}"
             TEMP_PATH="${S3_PATH%/}"
-            EXTRACTED_UUID="${TEMP_PATH##*/}"
+            export EXTRACTED_UUID="${TEMP_PATH##*/}"
             echo "Extracted AImpact project UUID: $EXTRACTED_UUID"
       - run:
           name: Instantiate ICP user identity via the private key
