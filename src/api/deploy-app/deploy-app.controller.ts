@@ -10,6 +10,7 @@ import { DeployToS3Dto } from './dto/deployToS3.dto';
 import { S3DeploymentResponse } from './response/s3-deployment.response';
 import { Public } from '../auth/decorator/public.decorator';
 import { DeployToICPDto } from './dto/deployToICP.dto';
+import { Internal } from '../auth/decorator/internal.decorator';
 
 @Controller('deploy-app')
 @ApiBearerAuth()
@@ -90,6 +91,7 @@ export class DeployAppController {
   }
 
 
+  @Internal()
   @Post('icp-deployment/pipeline-webhook')
   @ApiResponse(
     {
@@ -99,6 +101,6 @@ export class DeployAppController {
     },
   )
   updateIcpDeploymentUrl(@Body() dto: {finalUrl: string, projectId: string}) {
-    // return this.deployAppService.initICPDeploymentPipeline(dto.pipelineWebhookUrl, dto.projectS3Url);
+    return this.deployAppService.updateIcpDeploymentUrl(dto.projectId, dto.finalUrl);
   }
 }

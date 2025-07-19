@@ -120,6 +120,9 @@ export class DeploymentEnvironment {
 
   @IsString()
   CIRCLECI_AUTH_TOKEN: string;
+
+  @IsString()
+  ICP_DEPLOYMENT_WEBHOOK: string
 }
 
 export class ReferralsEnvironment {

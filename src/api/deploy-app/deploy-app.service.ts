@@ -13,7 +13,7 @@ import { DeployAppResponse } from './response/deploy-app.response';
 import { S3Deployment } from '../../entities/deploy-s3.entity';
 import { deploymentConfig } from '../../shared/config';
 import { S3DeploymentResponse } from './response/s3-deployment.response';
-import { initICPDeploymentPipeline } from './icpDeploymentPipeline';
+import { CircleCiClient } from '../../shared/modules/circleci/circleciClient';
 
 @Injectable()
 export class DeployAppService {
@@ -22,6 +22,7 @@ export class DeployAppService {
     private readonly configService: ConfigService,
     private readonly s3Client: S3Service,
     @Inject(deploymentConfig.KEY) private readonly deploymentEnvironment: ConfigType<typeof deploymentConfig>,
+    private readonly circleCiClient: CircleCiClient,
     @InjectRepository(DeployAppRequest)
     private readonly deployAppRequestRepository: Repository<DeployAppRequest>,
     @InjectRepository(Project)
@@ -211,8 +212,7 @@ export class DeployAppService {
       fileName: file.file, content: file.data
     })));
 
-    const pipelineId = await initICPDeploymentPipeline(
-      this.deploymentEnvironment.DEPLOYMENT_PIPELINE_TRIGGER_WEBHOOK,
+    const pipelineId = await this.circleCiClient.initICPDeploymentPipeline(
       `s3://${this.s3Client.deploymentsBucketName}/${projectId}/`,
     )
 
@@ -259,5 +259,29 @@ export class DeployAppService {
     }
 
     return DeployAppResponse.fromEntity(deployAppReq);
+  }
+
+  /**
+   * Updates final URL of ICP deployment once pipeline notifies webhook
+   */
+  async updateIcpDeploymentUrl(projectId: string, finalUrl: string): Promise<DeployAppResponse> {
+    if (!projectId) {
+      throw new NotFoundException('Project ID is required');
+    }
+
+    const deployReq = await this.deployAppRequestRepository.findOne({ where: { projectId } });
+
+    if (!deployReq) {
+      throw new NotFoundException('Deployment request not found');
+    }
+
+    // Update deployment data
+    deployReq.finalUrl = finalUrl;
+    deployReq.status = 'READY';
+    deployReq.isDeployed = true;
+
+    await this.deployAppRequestRepository.save(deployReq);
+
+    return DeployAppResponse.fromEntity(deployReq);
   }
 }

@@ -8,4 +8,4 @@ import { CircleCiClient } from './circleciClient';
   providers: [CircleCiClient],
   exports: [CircleCiClient],
 })
-export class AwsS3SharedModule {}
+export class CircleCiSharedModule {}
