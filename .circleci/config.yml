@@ -82,7 +82,7 @@ jobs:
 
             dfx identity get-principal
 
-            dfx ledger --network ic balance
+            dfx identity --network ic get-wallet
             dfx ledger account-id
 
             # dfx start --background
