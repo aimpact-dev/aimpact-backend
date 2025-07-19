@@ -18,6 +18,7 @@ export const ENV_NAMESPACE_KEYS = {
   ANALYTICS: 'analytics',
   SENTRY: 'sentry',
   DEPLOYMENT: 'deployment',
+  SERVICES: 'services',
 };
 
 export class Environment {
@@ -113,6 +114,15 @@ export class AWSEnvironment {
 export class DeploymentEnvironment {
   @IsString()
   DEPLOYMENT_DOMAIN_POSTFIX: string;
+
+  @IsString()
+  DEPLOYMENT_PIPELINE_TRIGGER_WEBHOOK: string;
+
+  @IsString()
+  CIRCLECI_AUTH_TOKEN: string;
+
+  @IsString()
+  ICP_DEPLOYMENT_WEBHOOK: string
 }
 
 export class ReferralsEnvironment {
@@ -155,6 +165,11 @@ export class SentryEnvironment {
   @IsBoolean()
   @Transform(({ value }) => value === 'true')
   SENTRY_ENABLED = false;
+}
+
+export class ServicesEnvironment {
+  @IsString()
+  INTERNAL_API_KEY: string;
 }
 
 const logger = new Logger('ENV logger');
@@ -222,3 +237,5 @@ export const analyticsEnvConfig = registerAs(
 );
 
 export const sentryEnvConfig = registerAs(ENV_NAMESPACE_KEYS.SENTRY, createEnvValidationFunction(SentryEnvironment));
+
+export const servicesEnvConfig = registerAs(ENV_NAMESPACE_KEYS.SERVICES, createEnvValidationFunction(ServicesEnvironment));
