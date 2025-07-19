@@ -1,4 +1,9 @@
-import { DeploymentLog, DeploymentStatus } from '../../../entities/deploy-app-request.entity';
+import {
+  DeployAppRequest,
+  DeploymentLog,
+  DeploymentStatus,
+  Provider,
+} from '../../../entities/deploy-app-request.entity';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class DeployAppResponse {
@@ -44,11 +49,31 @@ export class DeployAppResponse {
     example: 'https://123e4567-e89b-12d3-a456-426614174001.vercel.app',
     required: false,
   })
-  finalUrl?: string;
+  finalUrl?: string | null;
+
+  @ApiProperty({
+    description: 'Provider used for deployment',
+    example: 'Vercel',
+  })
+  provider: Provider;
 
   @ApiProperty({
     description: 'Timestamp when the deployment request was created',
     example: '2023-10-01T12:00:00Z',
   })
   createdAt: Date;
+
+  public static fromEntity(deployAppRequest: DeployAppRequest): DeployAppResponse {
+    return {
+      projectId: deployAppRequest.projectId,
+      deploymentId: deployAppRequest.deploymentId,
+      status: deployAppRequest.status,
+      isDeployed: deployAppRequest.isDeployed,
+      message: deployAppRequest.message,
+      logs: deployAppRequest.logs,
+      finalUrl: deployAppRequest.finalUrl,
+      provider: deployAppRequest.provider,
+      createdAt: deployAppRequest.createdAt
+    }
+  }
 }

@@ -19,6 +19,8 @@ export type DeploymentLog = {
   level?: string | null;
 };
 
+export type Provider = 'Vercel' | 'ICP';
+
 @Entity('deploy_app_request')
 export class DeployAppRequest {
   @PrimaryGeneratedColumn('uuid')
@@ -40,7 +42,10 @@ export class DeployAppRequest {
   logs?: Array<DeploymentLog>;
 
   @Column({ type: 'varchar', nullable: true })
-  finalUrl?: string;
+  finalUrl?: string | null;
+
+  @Column({ type: 'varchar', nullable: false, default: 'Vercel' })
+  provider: Provider;
 
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;

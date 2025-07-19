@@ -1,4 +1,4 @@
-import { Inject, Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+import { ForbiddenException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { RequestDeployAppDto } from './dto/requestDeployApp.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -13,6 +13,7 @@ import { DeployAppResponse } from './response/deploy-app.response';
 import { S3Deployment } from '../../entities/deploy-s3.entity';
 import { deploymentConfig } from '../../shared/config';
 import { S3DeploymentResponse } from './response/s3-deployment.response';
+import { initICPDeploymentPipeline } from './icpDeploymentPipeline';
 
 @Injectable()
 export class DeployAppService {
@@ -83,6 +84,7 @@ export class DeployAppService {
       status: createResponse.status,
       isDeployed: false,
       finalUrl: createResponse.url,
+      provider: 'Vercel',
     });
     await this.deployAppRequestRepository.save(deployRequest);
     return deployRequest;
@@ -193,5 +195,69 @@ export class DeployAppService {
     return {
       url: s3Deployment.url
     };
+  }
+
+  async upsertIcpDeployment(projectId: string, userId: string, snapshot: object): Promise<DeployAppResponse> {
+    const project = await this.projectRepository.findOne({where: {id: projectId}})
+    if (!project) {
+      throw new NotFoundException('Project not found');
+    }
+    if (project.userId !== userId) {
+      throw new ForbiddenException('You are not allowed to deploy this project');
+    }
+
+    const files = deserializeDistSnapshot(snapshot as FileMap);
+    await this.s3Client.uploadProjectBuild(projectId, files.map((file) => ({
+      fileName: file.file, content: file.data
+    })));
+
+    const pipelineId = await initICPDeploymentPipeline(
+      this.deploymentEnvironment.DEPLOYMENT_PIPELINE_TRIGGER_WEBHOOK,
+      `s3://${this.s3Client.deploymentsBucketName}/${projectId}/`,
+    )
+
+    const insertResponse = await this.deployAppRequestRepository.upsert({
+      projectId: project.id,
+      deploymentId: pipelineId,
+      status: 'INITIALIZING',
+      isDeployed: false,
+      finalUrl: null,
+      provider: 'ICP',
+    }, {
+      conflictPaths: ['projectId'],
+    });
+    return {
+      projectId: project.id,
+      deploymentId: pipelineId,
+      status: 'INITIALIZING',
+      isDeployed: false,
+      finalUrl: null,
+      provider: insertResponse.identifiers[0].provider,
+      createdAt: insertResponse.identifiers[0].createdAt,
+    };
+  }
+
+  async getIcpDeployment(projectId: string, userId: string) {
+    if (!projectId) {
+      throw new NotFoundException("Project ID is required");
+    }
+    const project = await this.projectRepository.findOne({where: {id: projectId}})
+    if (!project) {
+      throw new NotFoundException("Project not found or is not deployed yet");
+    }
+    if (project.userId !== userId) {
+      throw new ForbiddenException('You are not allowed to deploy this project');
+    }
+
+    const deployAppReq = await this.deployAppRequestRepository.findOne({where: {projectId: projectId}})
+    if (!deployAppReq) {
+      throw new NotFoundException("Project not found or is not deployed yet");
+    }
+
+    if (deployAppReq.provider !== 'ICP') {
+      throw new ForbiddenException('This method if for ICP deployments only');
+    }
+
+    return DeployAppResponse.fromEntity(deployAppReq);
   }
 }
