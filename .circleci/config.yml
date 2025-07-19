@@ -60,9 +60,10 @@ jobs:
             EXTRACTED_UUID="${<< pipeline.parameters.project_s3_url >>%//*}"
             TEMP_PATH="${S3_PATH%/}"
             EXTRACTED_UUID="${TEMP_PATH##*/}"
+            echo "Extracted UUID: $EXTRACTED_UUID"
 
-            CANISTER_ID=$(jq -r '.aimpact_frontend.ic' canister_ids.json)
-            echo Canister id is $CANISTER_ID
+            # CANISTER_ID=$(jq -r '.aimpact_frontend.ic' canister_ids.json)
+            # echo Canister id is $CANISTER_ID
       # - run:
       #     name: Initialize dfx.json file
       #     command: |
