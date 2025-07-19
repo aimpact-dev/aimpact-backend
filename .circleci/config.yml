@@ -90,11 +90,17 @@ jobs:
 
             echo "Deploying canister"
             dfx canister install -m reinstall aimpact_frontend -y #--network ic -y
+      - run:
+          name: Send deployment result to AImpact backend
+          command: |
 
+            CANISTER_ID=$(jq -r '.aimpact_frontend.local' text.json)
+            echo Canister id is $CANISTER_ID
+            
             curl -X POST \
             -H "Content-Type: application/json" \
             -d '{
-                  "finalUrl": "https://example.com/my-deployed-app",
+                  "finalUrl": "https://$CANISTER_ID.icp0.io",
                   "projectId": "my-awesome-project-123"
                 }' \
             https://65d178abb1e7.ngrok-free.app/icp-deployment/pipeline-webhook
