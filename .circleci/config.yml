@@ -80,22 +80,16 @@ jobs:
             export DFX_WARNING=-mainnet_plaintext_identity
             export TERM=xterm-256color
 
-            #z7mhb-caaaa-aaaad-aawfa-cai
-            #qmbyc-pyaaa-aaaae-qfd4q-cai
-            #seica-diaaa-aaaao-qkdda-cai
-            #f5jm3-ryaaa-aaaaj-a2dja-cai
-            #zmnt2-myaaa-aaaai-q3y4q-cai
-            #3auyf-5aaaa-aaaac-az42a-cai
-            #3hv6r-qyaaa-aaaac-az42q-cai
-            #dzgly-siaaa-aaaab-qb2xq-cai
             dfx identity get-principal
 
-            dfx canister --network ic delete qp73l-2aaaa-aaaam-qdxza-cai -y
-            dfx canister --network ic delete qfct6-zqaaa-aaaae-qfd5a-cai -y
-            dfx canister --network ic delete w3pp7-lqaaa-aaaal-qspuq-cai -y
-            dfx canister --network ic delete v4xrm-yiaaa-aaaaf-qat6q-cai -y
-            dfx canister --network ic delete xlim3-2iaaa-aaaah-qqdba-cai -y
-            dfx canister --network ic delete xmjkp-xqaaa-aaaah-qqdbq-cai -y
+            dfx canister --network ic delete z7mhb-caaaa-aaaad-aawfa-cai -y
+            dfx canister --network ic delete qmbyc-pyaaa-aaaae-qfd4q-cai -y
+            dfx canister --network ic delete seica-diaaa-aaaao-qkdda-cai -y
+            dfx canister --network ic delete f5jm3-ryaaa-aaaaj-a2dja-cai -y
+            dfx canister --network ic delete zmnt2-myaaa-aaaai-q3y4q-cai -y
+            dfx canister --network ic delete 3auyf-5aaaa-aaaac-az42a-cai -y
+            dfx canister --network ic delete 3hv6r-qyaaa-aaaac-az42q-cai -y
+            dfx canister --network ic delete dzgly-siaaa-aaaab-qb2xq-cai -y
 
             # dfx start --background
             # echo "Creating canister"
