@@ -94,12 +94,11 @@ jobs:
             #v4xrm-yiaaa-aaaaf-qat6q-cai
             #xlim3-2iaaa-aaaah-qqdba-cai
             #xmjkp-xqaaa-aaaah-qqdbq-cai
-            #sdjeu-oqaaa-aaaao-qkddq-cai
             dfx identity get-principal
 
-            dfx wallet redeem-faucet-coupon DD865-A7EA5-8D4D9
+            dfx wallet redeem-faucet-coupon DD865-A7EA5-8D4D9 --network ic
 
-            dfx canister --network ic delete sdjeu-oqaaa-aaaao-qkddq-cai -y
+            dfx canister --network ic delete  -y
 
             # dfx start --background
             # echo "Creating canister"
