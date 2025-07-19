@@ -16,6 +16,7 @@ export class CircleCiClient {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Circle-Token': this.deploymentEnvironment.CIRCLECI_AUTH_TOKEN,
       },
       body: JSON.stringify({
         definition_id: '9e3f55c7-0729-40ac-9d7d-11e5e9093542',
