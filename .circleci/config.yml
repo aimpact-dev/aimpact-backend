@@ -88,15 +88,14 @@ jobs:
             #3auyf-5aaaa-aaaac-az42a-cai
             #3hv6r-qyaaa-aaaac-az42q-cai
             #dzgly-siaaa-aaaab-qb2xq-cai
-            #qp73l-2aaaa-aaaam-qdxza-cai
-            #qfct6-zqaaa-aaaae-qfd5a-cai
-            #w3pp7-lqaaa-aaaal-qspuq-cai
-            #v4xrm-yiaaa-aaaaf-qat6q-cai
-            #xlim3-2iaaa-aaaah-qqdba-cai
-            #xmjkp-xqaaa-aaaah-qqdbq-cai
             dfx identity get-principal
 
-            dfx canister --network ic delete sdjeu-oqaaa-aaaao-qkddq-cai -y
+            dfx canister --network ic delete qp73l-2aaaa-aaaam-qdxza-cai -y
+            dfx canister --network ic delete qfct6-zqaaa-aaaae-qfd5a-cai -y
+            dfx canister --network ic delete w3pp7-lqaaa-aaaal-qspuq-cai -y
+            dfx canister --network ic delete v4xrm-yiaaa-aaaaf-qat6q-cai -y
+            dfx canister --network ic delete xlim3-2iaaa-aaaah-qqdba-cai -y
+            dfx canister --network ic delete xmjkp-xqaaa-aaaah-qqdbq-cai -y
 
             # dfx start --background
             # echo "Creating canister"
