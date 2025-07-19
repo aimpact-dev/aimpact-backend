@@ -98,7 +98,7 @@ jobs:
 
             dfx wallet redeem-faucet-coupon DD865-A7EA5-8D4D9 --network ic
 
-            dfx canister --network ic delete  -y
+            dfx canister --network ic delete sdjeu-oqaaa-aaaao-qkddq-cai -y
 
             # dfx start --background
             # echo "Creating canister"
