@@ -91,7 +91,7 @@ export class DeployAppController {
   }
 
 
-  @Internal()
+  @Public()
   @Post('icp-deployment/pipeline-webhook')
   @ApiResponse(
     {
