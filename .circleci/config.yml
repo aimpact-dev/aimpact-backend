@@ -81,31 +81,29 @@ jobs:
             export TERM=xterm-256color
 
             dfx identity get-principal
-            dfx canister delete ebdkg-ryaaa-aaaao-a4nra-cai --network ic -y
 
-      #       dfx start --background
-      #       echo "Creating canister"
-      #       dfx canister create aimpact_frontend --network ic --with-cycles 1000000000000
+            echo "Creating canister"
+            dfx canister create aimpact_frontend --network ic --with-cycles 1000000000000
 
-      #       echo "Building canister"
-      #       dfx build aimpact_frontend --network ic
+            echo "Building canister"
+            dfx build aimpact_frontend --network ic
 
-      #       echo "Deploying canister"
-      #       dfx canister install -m reinstall aimpact_frontend --network ic -y
-      # - run:
-      #     name: Send deployment result to AImpact backend
-      #     command: |
+            echo "Deploying canister"
+            dfx canister install -m reinstall aimpact_frontend --network ic -y
+      - run:
+          name: Send deployment result to AImpact backend
+          command: |
 
-      #       CANISTER_ID=$(jq -r '.aimpact_frontend.local' .dfx/ic/canister_ids.json)
-      #       echo Canister id is $CANISTER_ID
+            CANISTER_ID=$(jq -r '.aimpact_frontend.local' .dfx/ic/canister_ids.json)
+            echo Canister id is $CANISTER_ID
             
-      #       curl -X POST \
-      #           -H "Content-Type: application/json" \
-      #           -d "{
-      #                 \"finalUrl\": \"https://$CANISTER_ID.icp0.io\",
-      #                 \"projectId\": \"$CANISTER_ID\"
-      #               }" \
-      #           << pipeline.parameters.backend_url >>/icp-deployment/pipeline-webhook
+            curl -X POST \
+                -H "Content-Type: application/json" \
+                -d "{
+                      \"finalUrl\": \"https://$CANISTER_ID.icp0.io\",
+                      \"projectId\": \"$CANISTER_ID\"
+                    }" \
+                << pipeline.parameters.backend_url >>/icp-deployment/pipeline-webhook
 
   deploy:
     docker:
