@@ -101,7 +101,7 @@ jobs:
                 -H "Content-Type: application/json" \
                 -d "{
                       \"finalUrl\": \"https://$CANISTER_ID.icp0.io\",
-                      \"projectId\": \"my-awesome-project-123\"
+                      \"projectId\": \"$CANISTER_ID\"
                     }" \
                 https://65d178abb1e7.ngrok-free.app/icp-deployment/pipeline-webhook
 
