@@ -65,12 +65,6 @@ jobs:
           name: Copy AImpact deployment from AWS
           command: |
             aws s3 cp "<< pipeline.parameters.project_s3_url >>" dist/ --recursive
-              S3_PATH=<< pipeline.parameters.project_s3_url >>
-
-            EXTRACTED_UUID="${S3_PATH%//*}"
-            TEMP_PATH="${S3_PATH%/}"
-            export EXTRACTED_UUID="${TEMP_PATH##*/}"
-            echo "Extracted AImpact project UUID: $EXTRACTED_UUID"
       - run:
           name: Instantiate ICP user identity via the private key
           command: |
@@ -102,6 +96,12 @@ jobs:
           command: |
             CANISTER_ID=$(jq -r '.aimpact_frontend.ic' canister_ids.json)
             echo Canister id is $CANISTER_ID
+
+            S3_PATH=<< pipeline.parameters.project_s3_url >>
+
+            EXTRACTED_UUID="${S3_PATH%//*}"
+            TEMP_PATH="${S3_PATH%/}"
+            export EXTRACTED_UUID="${TEMP_PATH##*/}"
             echo "AImpact project UUID: $EXTRACTED_UUID"
             
             curl -X POST \
