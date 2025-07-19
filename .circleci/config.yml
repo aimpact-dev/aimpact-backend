@@ -57,7 +57,9 @@ jobs:
             # export DFXVM_INIT_YES=true
             # curl -fsSL https://internetcomputer.org/install.sh | sh
             # echo 'source "$HOME/.local/share/dfx/env"' >> "$BASH_ENV"
-            EXTRACTED_UUID="${<< pipeline.parameters.project_s3_url >>%//*}"
+            S3_PATH=<< pipeline.parameters.project_s3_url >>
+
+            EXTRACTED_UUID="${S3_PATH%//*}"
             TEMP_PATH="${S3_PATH%/}"
             EXTRACTED_UUID="${TEMP_PATH##*/}"
             echo "Extracted UUID: $EXTRACTED_UUID"
