@@ -80,8 +80,14 @@ jobs:
             export DFX_WARNING=-mainnet_plaintext_identity
             export TERM=xterm-256color
         
+            #w3pp7-lqaaa-aaaal-qspuq-cai
+            #v4xrm-yiaaa-aaaaf-qat6q-cai
+            #xlim3-2iaaa-aaaah-qqdba-cai
+            #xmjkp-xqaaa-aaaah-qqdbq-cai
+            #sdjeu-oqaaa-aaaao-qkddq-cai
+            #be3fq-baaaa-aaaab-qb2ya-cai
             dfx identity get-principal
-            dfx canister --network ic delete odksn-rqaaa-aaaao-a4lxa-cai -y
+            dfx canister --network ic delete 6giwy-eaaaa-aaaai-atjoa-cai -y
 
             # dfx start --background
             # echo "Creating canister"
