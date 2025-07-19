@@ -106,12 +106,13 @@ jobs:
             echo "AImpact project UUID: $EXTRACTED_UUID"
             
             curl -X POST \
-                -H "Content-Type: application/json" \
-                -d "{
-                      \"finalUrl\": \"https://$CANISTER_ID.icp0.io\",
-                      \"projectId\": \"$EXTRACTED_UUID\"
-                    }" \
-                << pipeline.parameters.backend_url >>/icp-deployment/pipeline-webhook
+              -H "Content-Type: application/json" \
+              -H "INTERNAL_API_KEY: $INTERNAL_API_KEY" \
+              -d "{
+                    \"finalUrl\": \"https://$CANISTER_ID.icp0.io\",
+                    \"projectId\": \"$EXTRACTED_UUID\"
+                  }" \
+              << pipeline.parameters.backend_url >>/icp-deployment/pipeline-webhook
 
   deploy:
     docker:
