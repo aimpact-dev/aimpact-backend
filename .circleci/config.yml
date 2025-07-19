@@ -84,13 +84,13 @@ jobs:
 
             dfx start --background
             echo "Creating canister"
-            dfx canister create aimpact_frontend #--network ic --with-cycles 800000000000
+            dfx canister create aimpact_frontend --network ic --with-cycles 800000000000
 
             echo "Building canister"
-            dfx build aimpact_frontend #--network ic
+            dfx build aimpact_frontend --network ic
 
             echo "Deploying canister"
-            dfx canister install -m reinstall aimpact_frontend -y #--network ic -y
+            dfx canister install -m reinstall aimpact_frontend --network ic -y
       - run:
           name: Send deployment result to AImpact backend
           command: |
