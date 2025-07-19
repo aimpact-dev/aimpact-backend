@@ -94,7 +94,8 @@ jobs:
           name: Send deployment result to AImpact backend
           command: |
             ls -la
-            CANISTER_ID=$(jq -r '.aimpact_frontend.local' .dfx/ic/canister_ids.json)
+            ls .dfx
+            CANISTER_ID=$(jq -r '.aimpact_frontend.local' canister_ids.json)
             echo Canister id is $CANISTER_ID
             
             curl -X POST \
