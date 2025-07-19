@@ -79,15 +79,24 @@ jobs:
           command: |
             export DFX_WARNING=-mainnet_plaintext_identity
             export TERM=xterm-256color
-        
+
+            #z7mhb-caaaa-aaaad-aawfa-cai
+            #qmbyc-pyaaa-aaaae-qfd4q-cai
+            #seica-diaaa-aaaao-qkdda-cai
+            #f5jm3-ryaaa-aaaaj-a2dja-cai
+            #zmnt2-myaaa-aaaai-q3y4q-cai
+            #3auyf-5aaaa-aaaac-az42a-cai
+            #3hv6r-qyaaa-aaaac-az42q-cai
+            #dzgly-siaaa-aaaab-qb2xq-cai
+            #qp73l-2aaaa-aaaam-qdxza-cai
+            #qfct6-zqaaa-aaaae-qfd5a-cai
             #w3pp7-lqaaa-aaaal-qspuq-cai
             #v4xrm-yiaaa-aaaaf-qat6q-cai
             #xlim3-2iaaa-aaaah-qqdba-cai
             #xmjkp-xqaaa-aaaah-qqdbq-cai
             #sdjeu-oqaaa-aaaao-qkddq-cai
-            #be3fq-baaaa-aaaab-qb2ya-cai
             dfx identity get-principal
-            dfx canister --network ic delete 6giwy-eaaaa-aaaai-atjoa-cai -y
+            dfx canister --network ic delete be3fq-baaaa-aaaab-qb2ya-cai -y
 
             # dfx start --background
             # echo "Creating canister"
