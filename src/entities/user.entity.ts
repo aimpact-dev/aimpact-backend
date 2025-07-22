@@ -5,11 +5,13 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-  ManyToOne, JoinColumn, Unique
+  ManyToOne, JoinColumn, Unique,
+  OneToOne
 } from 'typeorm';
 import { Project } from './project.entity';
 import { FundsReceipt } from './funds-receipt.entity';
 import { RewardsWithdrawalReceipt } from './rewards-withdrawal-receipt.entity';
+import { Leaderboard } from './leaderboard.entity';
 
 
 const randomInviteCode = () => {
@@ -68,4 +70,7 @@ export class User {
 
   @OneToMany(() => RewardsWithdrawalReceipt, (receipt) => receipt.user)
   withdraws: RewardsWithdrawalReceipt[];
+
+  @OneToOne(() => Leaderboard, (lb) => lb.user)
+  leaderboard: Leaderboard;
 }

@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Project } from 'src/entities/project.entity';
+import { number } from 'zod/v4';
 
 export class ProjectWithOwnerResponse {
   @ApiProperty()
@@ -26,6 +27,9 @@ export class ProjectWithOwnerResponse {
   @ApiProperty({ type: String, example: '7HmYsWHYZzixB3px79Y9sx91puwvLtv4ikLB9evx1vX4' })
   projectOwnerAddress: string;
 
+  @ApiProperty({ type: number })
+  views: number;
+
 
   static fromObject(project: Project): ProjectWithOwnerResponse {
     return {
@@ -37,6 +41,7 @@ export class ProjectWithOwnerResponse {
       createdAt: project.createdAt,
       updatedAt: project.updatedAt,
       projectOwnerAddress: project.user.wallet,
+      views: project.views,
     };
   }
 }

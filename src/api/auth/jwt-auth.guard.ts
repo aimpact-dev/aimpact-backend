@@ -10,7 +10,6 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
   }
 
   canActivate(context: ExecutionContext) {
-    // Check if the route is marked as public
     const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
       context.getHandler(),
       context.getClass(),
@@ -21,7 +20,6 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     ]);
 
     if (isPublic && isAuthAllowed) {
-      // If the route is public and allows auth, we check for the presence of a Bearer token and check if it is valid
       const request = context.switchToHttp().getRequest();
       const authHeader = request.header('Authorization') || '';
       if (authHeader.split(' ')[0] === 'Bearer') {
@@ -31,7 +29,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     } else if (isPublic) {
       return true;
     }
-    // Otherwise, enforce the JWT guard
+
     return super.canActivate(context);
   }
 }
