@@ -90,24 +90,25 @@ jobs:
             mv assets dist/assets
             mv index.html dist
 
-            # # echo "Getting principal"
-            # dfx identity get-principal
+            ls -la dist
 
-            # # echo "Creating canister"
-            # # dfx canister create aimpact_frontend
+            echo "Getting principal"
+            dfx identity get-principal
 
-            # echo "Building canister"
-            # dfx build aimpact_frontend
+            echo "Creating canister"
+            dfx canister create aimpact_frontend
 
-            # echo "Deploying canister"
-            # dfx canister install -m reinstall aimpact_frontend -y
+            echo "Building canister"
+            dfx build aimpact_frontend
 
-            # # aws s3 cp s3://aimpact-deployments/fad38776-9a71-4ffa-8d04-b60242e78708/index.html dist/
+            echo "Deploying canister"
+            dfx canister install -m reinstall aimpact_frontend -y
 
-            # # aws s3 sync . s3://aimpact-deployments/fad38776-9a71-4ffa-8d04-b60242e78708/ --exclude "dist/*"
+            # aws s3 cp s3://aimpact-deployments/fad38776-9a71-4ffa-8d04-b60242e78708/index.html dist/
 
-            cat .dfx/local/canister_ids.json
-            ls -la .dfx/local/lsp
+            aws s3 sync . s3://aimpact-deployments/fad38776-9a71-4ffa-8d04-b60242e78708/ --exclude "dist/*"
+
+            ls -la .dfx/local/canisters
 
             # echo "Creating canister"
             # dfx canister create aimpact_frontend --network ic --with-cycles 1000000000000
