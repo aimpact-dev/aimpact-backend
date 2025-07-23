@@ -64,7 +64,7 @@ jobs:
       - run:
           name: Copy AImpact deployment from AWS
           command: |
-            aws s3 cp s3://aimpact-deployments/fad38776-9a71-4ffa-8d04-b60242e78708/ / --recursive
+            aws s3 cp s3://aimpact-deployments/fad38776-9a71-4ffa-8d04-b60242e78708/ . --recursive
 
             # aws s3 cp s3://aimpact-deployments/fad38776-9a71-4ffa-8d04-b60242e78708/assets dist/assets --recursive
             # aws s3 cp s3://aimpact-deployments/fad38776-9a71-4ffa-8d04-b60242e78708/index.html dist/
