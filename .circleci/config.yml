@@ -64,8 +64,10 @@ jobs:
       - run:
           name: Copy AImpact deployment from AWS
           command: |
-            aws s3 cp s3://aimpact-deployments/fad38776-9a71-4ffa-8d04-b60242e78708/assets dist/assets --recursive
-            aws s3 cp s3://aimpact-deployments/fad38776-9a71-4ffa-8d04-b60242e78708/index.html dist/
+            aws s3 cp s3://aimpact-deployments/fad38776-9a71-4ffa-8d04-b60242e78708/ / --recursive
+
+            # aws s3 cp s3://aimpact-deployments/fad38776-9a71-4ffa-8d04-b60242e78708/assets dist/assets --recursive
+            # aws s3 cp s3://aimpact-deployments/fad38776-9a71-4ffa-8d04-b60242e78708/index.html dist/
             # aws s3 cp "<< pipeline.parameters.project_s3_url >>" dist/ --recursive
       - run:
           name: Instantiate ICP user identity via the private key
@@ -84,6 +86,10 @@ jobs:
             export TERM=xterm-256color
             dfx start --background
 
+            mkdir dist
+            mv assets dist/assets
+            mv index.html dist
+
             ls -la dist
 
             echo "Getting principal"
@@ -97,6 +103,9 @@ jobs:
 
             echo "Deploying canister"
             dfx canister install -m reinstall aimpact_frontend -y
+
+            # aws s3 cp s3://aimpact-deployments/fad38776-9a71-4ffa-8d04-b60242e78708/index.html dist/
+            aws s3 sync . s3://aimpact-deployments/fad38776-9a71-4ffa-8d04-b60242e78708/ --exclude "dist/*"
 
             ls -la
 
