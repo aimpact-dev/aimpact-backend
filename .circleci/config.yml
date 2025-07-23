@@ -106,7 +106,8 @@ jobs:
 
             # # aws s3 sync . s3://aimpact-deployments/fad38776-9a71-4ffa-8d04-b60242e78708/ --exclude "dist/*"
 
-            ls -la .dfx/local
+            cat .dfx/local/canister_ids.json
+            ls -la .dfx/local/lsp
 
             # echo "Creating canister"
             # dfx canister create aimpact_frontend --network ic --with-cycles 1000000000000
