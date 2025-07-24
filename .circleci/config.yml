@@ -64,11 +64,7 @@ jobs:
       - run:
           name: Copy AImpact deployment from AWS
           command: |
-            aws s3 cp s3://aimpact-deployments/fad38776-9a71-4ffa-8d04-b60242e78708/ . --recursive
-
-            # aws s3 cp s3://aimpact-deployments/fad38776-9a71-4ffa-8d04-b60242e78708/assets dist/assets --recursive
-            # aws s3 cp s3://aimpact-deployments/fad38776-9a71-4ffa-8d04-b60242e78708/index.html dist/
-            # aws s3 cp "<< pipeline.parameters.project_s3_url >>" dist/ --recursive
+            aws s3 cp "<< pipeline.parameters.project_s3_url >>" dist/ --recursive
       - run:
           name: Instantiate ICP user identity via the private key
           command: |
@@ -86,59 +82,38 @@ jobs:
             export TERM=xterm-256color
             dfx start --background
 
-            mkdir dist
-            mv assets dist/assets
-            mv index.html dist
-
-            ls -la dist
-
             echo "Getting principal"
             dfx identity get-principal
 
             echo "Creating canister"
-            dfx canister create aimpact_frontend
+            dfx canister create aimpact_frontend --network ic --with-cycles 1000000000000
 
             echo "Building canister"
-            dfx build aimpact_frontend
+            dfx build aimpact_frontend --network ic
 
             echo "Deploying canister"
-            dfx canister install -m reinstall aimpact_frontend -y
+            dfx canister install -m reinstall aimpact_frontend --network ic -y
+      - run:
+          name: Send deployment result to AImpact backend
+          command: |
+            CANISTER_ID=$(jq -r '.aimpact_frontend.ic' canister_ids.json)
+            echo Canister id is $CANISTER_ID
 
-            # aws s3 cp s3://aimpact-deployments/fad38776-9a71-4ffa-8d04-b60242e78708/index.html dist/
+            S3_PATH=<< pipeline.parameters.project_s3_url >>
 
-            aws s3 sync . s3://aimpact-deployments/fad38776-9a71-4ffa-8d04-b60242e78708/ --exclude "dist/*" --recursive
-
-            ls -la .dfx/local/canisters
-
-            # echo "Creating canister"
-            # dfx canister create aimpact_frontend --network ic --with-cycles 1000000000000
-
-            # echo "Building canister"
-            # dfx build aimpact_frontend --network ic
-
-            # echo "Deploying canister"
-            # dfx canister install -m reinstall aimpact_frontend --network ic -y
-      # - run:
-      #     name: Send deployment result to AImpact backend
-      #     command: |
-      #       CANISTER_ID=$(jq -r '.aimpact_frontend.ic' canister_ids.json)
-      #       echo Canister id is $CANISTER_ID
-
-      #       S3_PATH=<< pipeline.parameters.project_s3_url >>
-
-      #       EXTRACTED_UUID="${S3_PATH%//*}"
-      #       TEMP_PATH="${S3_PATH%/}"
-      #       export EXTRACTED_UUID="${TEMP_PATH##*/}"
-      #       echo "AImpact project UUID: $EXTRACTED_UUID"
+            EXTRACTED_UUID="${S3_PATH%//*}"
+            TEMP_PATH="${S3_PATH%/}"
+            export EXTRACTED_UUID="${TEMP_PATH##*/}"
+            echo "AImpact project UUID: $EXTRACTED_UUID"
             
-      #       curl -X POST \
-      #         -H "Content-Type: application/json" \
-      #         -H "INTERNAL_API_KEY: $INTERNAL_API_KEY" \
-      #         -d "{
-      #               \"finalUrl\": \"https://$CANISTER_ID.icp0.io\",
-      #               \"projectId\": \"$EXTRACTED_UUID\"
-      #             }" \
-      #         << pipeline.parameters.backend_url >>/icp-deployment/pipeline-webhook
+            curl -X POST \
+              -H "Content-Type: application/json" \
+              -H "INTERNAL_API_KEY: $INTERNAL_API_KEY" \
+              -d "{
+                    \"finalUrl\": \"https://$CANISTER_ID.icp0.io\",
+                    \"projectId\": \"$EXTRACTED_UUID\"
+                  }" \
+              << pipeline.parameters.backend_url >>/icp-deployment/pipeline-webhook
 
   deploy:
     docker:
