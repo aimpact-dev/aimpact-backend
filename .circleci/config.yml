@@ -100,9 +100,9 @@ jobs:
             dfx build aimpact_frontend #--network ic
 
             echo "Deploying canister"
-            dfx canister install -m reinstall aimpact_frontend #--network ic -y
+            dfx canister install -m reinstall aimpact_frontend -y #--network ic -y
 
-            echo "Uploading data onto the s3"
+            echo "Uploading data into the s3"
             aws s3 sync . "<< pipeline.parameters.project_s3_url >>" \
               --exclude "dist/*" \
               --exclude "dfx.json"
