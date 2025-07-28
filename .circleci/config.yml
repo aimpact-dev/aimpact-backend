@@ -80,11 +80,10 @@ jobs:
             dfx identity use aimpact_deployment
             echo "Balance: $(dfx cycles balance --network ic --identity aimpact_deployment)"
       - run:
-          name: Deploy AImpact on ICP
+          name: Build AImpact on ICP
           command: |
             export DFX_WARNING=-mainnet_plaintext_identity
             export TERM=xterm-256color
-            # dfx start --background
 
             echo "Getting principal"
             dfx identity get-principal
@@ -99,6 +98,12 @@ jobs:
             echo "Building canister"
             dfx build aimpact_frontend --network ic
 
+      - run:  
+          name: Deploy AImpact on ICP
+          command: |
+            export DFX_WARNING=-mainnet_plaintext_identity
+            export TERM=xterm-256color
+
             echo "Deploying canister"
             dfx canister install -m reinstall aimpact_frontend --network ic -y
 
@@ -106,27 +111,27 @@ jobs:
             aws s3 sync . "<< pipeline.parameters.project_s3_url >>" \
               --exclude "dist/*" \
               --exclude "dfx.json"
-      # - run:
-      #     name: Send deployment result to AImpact backend
-      #     command: |
-      #       CANISTER_ID=$(jq -r '.aimpact_frontend.ic' canister_ids.json)
-      #       echo Canister id is $CANISTER_ID
+      - run:
+          name: Send deployment result to AImpact backend
+          command: |
+            CANISTER_ID=$(jq -r '.aimpact_frontend.ic' canister_ids.json)
+            echo Canister id is $CANISTER_ID
 
-      #       S3_PATH=<< pipeline.parameters.project_s3_url >>
+            S3_PATH=<< pipeline.parameters.project_s3_url >>
 
-      #       EXTRACTED_UUID="${S3_PATH%//*}"
-      #       TEMP_PATH="${S3_PATH%/}"
-      #       export EXTRACTED_UUID="${TEMP_PATH##*/}"
-      #       echo "AImpact project UUID: $EXTRACTED_UUID"
+            EXTRACTED_UUID="${S3_PATH%//*}"
+            TEMP_PATH="${S3_PATH%/}"
+            export EXTRACTED_UUID="${TEMP_PATH##*/}"
+            echo "AImpact project UUID: $EXTRACTED_UUID"
             
-      #       curl -X POST \
-      #         -H "Content-Type: application/json" \
-      #         -H "INTERNAL_API_KEY: $INTERNAL_API_KEY" \
-      #         -d "{
-      #               \"finalUrl\": \"https://$CANISTER_ID.icp0.io\",
-      #               \"projectId\": \"$EXTRACTED_UUID\"
-      #             }" \
-      #         << pipeline.parameters.backend_url >>/icp-deployment/pipeline-webhook
+            curl -X POST \
+              -H "Content-Type: application/json" \
+              -H "INTERNAL_API_KEY: $INTERNAL_API_KEY" \
+              -d "{
+                    \"finalUrl\": \"https://$CANISTER_ID.icp0.io\",
+                    \"projectId\": \"$EXTRACTED_UUID\"
+                  }" \
+              << pipeline.parameters.backend_url >>/icp-deployment/pipeline-webhook
 
   deploy:
     docker:
