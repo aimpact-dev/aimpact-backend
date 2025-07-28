@@ -1,4 +1,4 @@
-import { Inject, Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+import { ForbiddenException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { RequestDeployAppDto } from './dto/requestDeployApp.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -13,6 +13,7 @@ import { DeployAppResponse } from './response/deploy-app.response';
 import { S3Deployment } from '../../entities/deploy-s3.entity';
 import { deploymentConfig } from '../../shared/config';
 import { S3DeploymentResponse } from './response/s3-deployment.response';
+import { CircleCiClient } from '../../shared/modules/circleci/circleciClient';
 
 @Injectable()
 export class DeployAppService {
@@ -21,6 +22,7 @@ export class DeployAppService {
     private readonly configService: ConfigService,
     private readonly s3Client: S3Service,
     @Inject(deploymentConfig.KEY) private readonly deploymentEnvironment: ConfigType<typeof deploymentConfig>,
+    private readonly circleCiClient: CircleCiClient,
     @InjectRepository(DeployAppRequest)
     private readonly deployAppRequestRepository: Repository<DeployAppRequest>,
     @InjectRepository(Project)
@@ -83,6 +85,7 @@ export class DeployAppService {
       status: createResponse.status,
       isDeployed: false,
       finalUrl: createResponse.url,
+      provider: 'Vercel',
     });
     await this.deployAppRequestRepository.save(deployRequest);
     return deployRequest;
@@ -181,8 +184,11 @@ export class DeployAppService {
   }
 
   async getS3DeploymentUrl(projectId: string) {
+    if (!projectId) {
+      throw new NotFoundException("Project ID is required");
+    }
     const s3Deployment = await this.s3DeploymentRepository.findOne(
-      { where: {projectId: projectId }}
+      { where: { projectId: projectId }}
     );
     if (!s3Deployment) {
       throw new NotFoundException("Project not found or is not deployed yet");
@@ -190,5 +196,92 @@ export class DeployAppService {
     return {
       url: s3Deployment.url
     };
+  }
+
+  async upsertIcpDeployment(projectId: string, userId: string, snapshot: object): Promise<DeployAppResponse> {
+    const project = await this.projectRepository.findOne({where: {id: projectId}})
+    if (!project) {
+      throw new NotFoundException('Project not found');
+    }
+    if (project.userId !== userId) {
+      throw new ForbiddenException('You are not allowed to deploy this project');
+    }
+
+    const files = deserializeDistSnapshot(snapshot as FileMap);
+    await this.s3Client.uploadProjectBuild(projectId, files.map((file) => ({
+      fileName: file.file, content: file.data
+    })));
+
+    const pipelineId = await this.circleCiClient.initICPDeploymentPipeline(
+      `s3://${this.s3Client.deploymentsBucketName}/${projectId}/`,
+    )
+
+    const insertResponse = await this.deployAppRequestRepository.upsert({
+      projectId: project.id,
+      deploymentId: pipelineId,
+      status: 'INITIALIZING',
+      isDeployed: false,
+      finalUrl: null,
+      provider: 'ICP',
+    }, {
+      conflictPaths: ['projectId'],
+    });
+    return {
+      projectId: project.id,
+      deploymentId: pipelineId,
+      status: 'INITIALIZING',
+      isDeployed: false,
+      finalUrl: null,
+      provider: insertResponse.identifiers[0].provider,
+      createdAt: insertResponse.identifiers[0].createdAt,
+    };
+  }
+
+  async getIcpDeployment(projectId: string, userId: string) {
+    if (!projectId) {
+      throw new NotFoundException("Project ID is required");
+    }
+    const project = await this.projectRepository.findOne({where: {id: projectId}})
+    if (!project) {
+      throw new NotFoundException("Project not found or is not deployed yet");
+    }
+    if (project.userId !== userId) {
+      throw new ForbiddenException('You are not allowed to deploy this project');
+    }
+
+    const deployAppReq = await this.deployAppRequestRepository.findOne({where: {projectId: projectId}})
+    if (!deployAppReq) {
+      throw new NotFoundException("Project not found or is not deployed yet");
+    }
+
+    if (deployAppReq.provider !== 'ICP') {
+      throw new ForbiddenException('This method if for ICP deployments only');
+    }
+
+    return DeployAppResponse.fromEntity(deployAppReq);
+  }
+
+  /**
+   * Updates final URL of ICP deployment once pipeline notifies webhook
+   */
+  async updateIcpDeploymentUrl(projectId: string, finalUrl: string): Promise<DeployAppResponse> {
+    if (!projectId) {
+      throw new NotFoundException('Project ID is required');
+    }
+
+    const deployReq = await this.deployAppRequestRepository.findOne({ where: { projectId } });
+
+    if (!deployReq) {
+      throw new NotFoundException('Deployment request not found');
+    }
+
+    // Update deployment data
+    deployReq.finalUrl = finalUrl;
+    deployReq.status = 'READY';
+    deployReq.isDeployed = true;
+
+    await this.deployAppRequestRepository.save(deployReq);
+
+    return DeployAppResponse.fromEntity(deployReq);
   }
 }

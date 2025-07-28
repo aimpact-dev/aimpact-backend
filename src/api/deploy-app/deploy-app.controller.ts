@@ -9,6 +9,8 @@ import { DeployAppResponse } from './response/deploy-app.response';
 import { DeployToS3Dto } from './dto/deployToS3.dto';
 import { S3DeploymentResponse } from './response/s3-deployment.response';
 import { Public } from '../auth/decorator/public.decorator';
+import { DeployToICPDto } from './dto/deployToICP.dto';
+import { Internal } from '../auth/decorator/internal.decorator';
 
 @Controller('deploy-app')
 @ApiBearerAuth()
@@ -62,5 +64,43 @@ export class DeployAppController {
   )
   getS3Deployment(@Query('projectId') projectId: string) {
     return this.deployAppService.getS3DeploymentUrl(projectId);
+  }
+
+  @Post('icp-deployment')
+  @ApiResponse(
+    {
+      status: 201,
+      description: 'Request to deploy app to ICP has been successfully created.',
+      type: DeployAppResponse, // Assuming the response is a DeployAppResponse object
+    },
+  )
+  upsertIcpDeployment(@ApiContext() user: User, @Body() dto: DeployToICPDto) {
+    return this.deployAppService.upsertIcpDeployment(dto.projectId, user.id, dto.snapshot);
+  }
+
+  @Get('icp-deployment')
+  @ApiResponse(
+    {
+      status: 200,
+      description: 'ICP deployment url retrieved successfully.',
+      type: DeployAppResponse, // Assuming the response is a DeployAppResponse object
+    },
+  )
+  getIcpDeployment(@ApiContext() user: User, @Query('projectId') projectId: string) {
+    return this.deployAppService.getIcpDeployment(projectId, user.id);
+  }
+
+
+  @Public()
+  @Post('icp-deployment/pipeline-webhook')
+  @ApiResponse(
+    {
+      status: 200,
+      description: 'ICP deployment url retrieved successfully.',
+      type: DeployAppResponse, // Assuming the response is a DeployAppResponse object
+    },
+  )
+  updateIcpDeploymentUrl(@Body() dto: {finalUrl: string, projectId: string}) {
+    return this.deployAppService.updateIcpDeploymentUrl(dto.projectId, dto.finalUrl);
   }
 }

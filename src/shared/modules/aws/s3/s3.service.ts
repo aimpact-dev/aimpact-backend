@@ -6,12 +6,15 @@ import { ConfigType } from '@nestjs/config';
 import { awsEnvConfig } from '../../../config';
 import { ObjectCannedACL } from '@aws-sdk/client-s3/dist-types/models/models_0';
 import mime from 'mime-types';
+import {
+  StreamingBlobPayloadInputTypes
+} from '@smithy/types/dist-types/streaming-payload/streaming-blob-payload-input-types';
 
 @Injectable()
 export class S3Service {
   private readonly s3Client: S3Client;
   private readonly bucketName: string;
-  private readonly deploymentsBucketName: string;
+  public readonly deploymentsBucketName: string;
 
   constructor(@Inject(awsEnvConfig.KEY) private readonly awsConfig: ConfigType<typeof awsEnvConfig>) {
     this.s3Client = new S3Client({
