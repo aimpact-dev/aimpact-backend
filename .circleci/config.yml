@@ -111,6 +111,8 @@ jobs:
             aws s3 sync . "<< pipeline.parameters.project_s3_url >>" \
               --exclude "dist/*" \
               --exclude "dfx.json"
+
+            echo "Balance after deployment: $(dfx cycles balance --network ic --identity aimpact_deployment)"
       - run:
           name: Send deployment result to AImpact backend
           command: |
