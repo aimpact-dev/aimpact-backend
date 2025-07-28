@@ -16,6 +16,7 @@ import { BillingModule } from './billing/billing.module';
 import { ProxyModule } from './proxy/proxy.module';
 import { AnalyticsModule } from './analytics/analytics.module';
 import { LoggerSharedModule } from 'src/shared/modules/logger/logger-shared.module';
+import { LeaderboardModule } from './leaderboard/leaderboard.module';
 const apiConfig = [baseEnvConfig];
 
 @Module({
@@ -39,6 +40,7 @@ const apiConfig = [baseEnvConfig];
     DeployAppModule,
     ProxyModule,
     AnalyticsModule,
+    LeaderboardModule,
   ],
   controllers: [AppController],
   providers: [
