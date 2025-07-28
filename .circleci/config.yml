@@ -64,7 +64,11 @@ jobs:
       - run:
           name: Copy AImpact deployment from AWS
           command: |
-            aws s3 cp "<< pipeline.parameters.project_s3_url >>" dist/ --recursive
+            aws s3 cp "<< pipeline.parameters.project_s3_url >>" . --recursive
+            mkdir dist
+            mv index.html dist/index.html
+            mv assets dist/assets
+
       - run:
           name: Instantiate ICP user identity via the private key
           command: |
@@ -85,35 +89,44 @@ jobs:
             echo "Getting principal"
             dfx identity get-principal
 
-            echo "Creating canister"
-            dfx canister create aimpact_frontend --network ic --with-cycles 1000000000000
+            if [ -f ".env" ]; then
+              echo "Canister exists"
+            else
+              echo "Creating canister"
+              dfx canister create aimpact_frontend #--network ic --with-cycles 1000000000000
+            fi
 
             echo "Building canister"
-            dfx build aimpact_frontend --network ic
+            dfx build aimpact_frontend #--network ic
 
             echo "Deploying canister"
-            dfx canister install -m reinstall aimpact_frontend --network ic -y
-      - run:
-          name: Send deployment result to AImpact backend
-          command: |
-            CANISTER_ID=$(jq -r '.aimpact_frontend.ic' canister_ids.json)
-            echo Canister id is $CANISTER_ID
+            dfx canister install -m reinstall aimpact_frontend #--network ic -y
 
-            S3_PATH=<< pipeline.parameters.project_s3_url >>
+            echo "Uploading data onto the s3"
+            aws s3 sync . "<< pipeline.parameters.project_s3_url >>" \
+              --exclude "dist/*" \
+              --exclude "dfx.json"
+      # - run:
+      #     name: Send deployment result to AImpact backend
+      #     command: |
+      #       CANISTER_ID=$(jq -r '.aimpact_frontend.ic' canister_ids.json)
+      #       echo Canister id is $CANISTER_ID
 
-            EXTRACTED_UUID="${S3_PATH%//*}"
-            TEMP_PATH="${S3_PATH%/}"
-            export EXTRACTED_UUID="${TEMP_PATH##*/}"
-            echo "AImpact project UUID: $EXTRACTED_UUID"
+      #       S3_PATH=<< pipeline.parameters.project_s3_url >>
+
+      #       EXTRACTED_UUID="${S3_PATH%//*}"
+      #       TEMP_PATH="${S3_PATH%/}"
+      #       export EXTRACTED_UUID="${TEMP_PATH##*/}"
+      #       echo "AImpact project UUID: $EXTRACTED_UUID"
             
-            curl -X POST \
-              -H "Content-Type: application/json" \
-              -H "INTERNAL_API_KEY: $INTERNAL_API_KEY" \
-              -d "{
-                    \"finalUrl\": \"https://$CANISTER_ID.icp0.io\",
-                    \"projectId\": \"$EXTRACTED_UUID\"
-                  }" \
-              << pipeline.parameters.backend_url >>/icp-deployment/pipeline-webhook
+      #       curl -X POST \
+      #         -H "Content-Type: application/json" \
+      #         -H "INTERNAL_API_KEY: $INTERNAL_API_KEY" \
+      #         -d "{
+      #               \"finalUrl\": \"https://$CANISTER_ID.icp0.io\",
+      #               \"projectId\": \"$EXTRACTED_UUID\"
+      #             }" \
+      #         << pipeline.parameters.backend_url >>/icp-deployment/pipeline-webhook
 
   deploy:
     docker:
