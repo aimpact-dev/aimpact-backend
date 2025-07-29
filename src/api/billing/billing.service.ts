@@ -133,6 +133,9 @@ export class BillingService {
   }
 
   async incrementPendingMessages(user: User): Promise<PendingMessagesResponse> {
+    if (user.pendingMessages >= user.messagesLeft){
+      throw new BadRequestException('Cannot increment pending messages, user has no messages left');
+    }
     user.pendingMessages += 1;
     await this.userRepository.save(user);
     return { pendingMessages: user.pendingMessages };
