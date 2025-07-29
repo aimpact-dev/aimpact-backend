@@ -61,6 +61,7 @@ export class AuthService {
       id: user.id,
       wallet: user.wallet,
       messagesLeft: user.messagesLeft,
+      pendingMessages: user.pendingMessages,
       inviteCode: user.inviteCode,
       discountPercent: user.discountPercent,
       referralsRewards: lamportsToSol(user.referralsRewards),
