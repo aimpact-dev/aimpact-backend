@@ -67,8 +67,8 @@ export class S3Service {
   async uploadProjectBuild(projectId: string, files: {fileName: string, content: string, isBinary: boolean}[]): Promise<void> {
     const uploadPromises = files.map((file) => {
       const fullPath = `${projectId}/${file.fileName}`;
-      if (file.fileName.endsWith('.png') || file.fileName.endsWith('.jpg') || file.fileName.endsWith('.jpeg')) {
-        return this.uploadFile(fullPath, Buffer.from(file.content, 'base64'), this.bucketName, 'public-read');
+      if (file.isBinary) {
+        return this.uploadFile(fullPath, Buffer.from(file.content, 'base64'), this.deploymentsBucketName, 'public-read');
       }
       return this.uploadFile(fullPath, file.content, this.deploymentsBucketName, 'public-read');
     });
