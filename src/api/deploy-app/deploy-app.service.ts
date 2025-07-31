@@ -209,7 +209,7 @@ export class DeployAppService {
 
     const files = deserializeDistSnapshot(snapshot as FileMap);
     await this.s3Client.uploadProjectBuild(projectId, files.map((file) => ({
-      fileName: file.file, content: file.data
+      fileName: file.file, content: file.data, isBinary: file.isBinary
     })));
 
     const pipelineId = await this.circleCiClient.initICPDeploymentPipeline(
