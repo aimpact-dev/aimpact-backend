@@ -3,6 +3,7 @@ interface InlinedFile {
   data: string;
   encoding?: Encoding;
   file: string;
+  isBinary: boolean;
 }
 
 interface File {
@@ -46,8 +47,9 @@ export function deserializeSnapshot(snapshot: FileMap) {
 
       // split the path into segments
       files.push({
-        data: dirent.content,
+        data: dirent.content,  // base64 if isBinary == true
         file: relativePath,
+        isBinary: dirent.isBinary,
       });
     }
   }
@@ -65,6 +67,7 @@ export function deserializeDistSnapshot(snapshot: FileMap) {
       files.push({
         data: dirent.content,
         file: relativePath,
+        isBinary: dirent.isBinary,
       });
     }
   }
