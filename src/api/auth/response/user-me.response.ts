@@ -21,6 +21,12 @@ export class UserMeResponse {
   messagesLeft: number;
 
   @ApiProperty({
+    description: 'Pending messages for the user',
+    example: 2,
+  })
+  pendingMessages: number;
+
+  @ApiProperty({
     description: 'User invite code for referrals. 6 characters long, alphanumeric (a-z, A-Z, 0-9)',
     example: 'abC123',
   })

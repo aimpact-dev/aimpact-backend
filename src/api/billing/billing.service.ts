@@ -22,6 +22,7 @@ import { Connection, Keypair, PublicKey, sendAndConfirmTransaction, SystemProgra
 import bs58 from 'bs58';
 import { WithdrawalReceiptResponse } from './response/withdrawal-reciept.response';
 import { FundReceiptResponse } from './response/fund-receipt.response';
+import { PendingMessagesResponse } from './response/pending-messages.response';
 
 @Injectable()
 export class BillingService {
@@ -120,6 +121,24 @@ export class BillingService {
     await this.userRepository.save(user);
 
     return { messagesLeft: user.messagesLeft };
+  }
+
+  async decrementPendingMessages(user: User): Promise<PendingMessagesResponse>{
+    user.pendingMessages -= 1;
+    if (user.pendingMessages < 0) {
+      throw new BadRequestException('Pending messages cannot be negative');
+    }
+    await this.userRepository.save(user);
+    return { pendingMessages: user.pendingMessages };
+  }
+
+  async incrementPendingMessages(user: User): Promise<PendingMessagesResponse> {
+    if (user.pendingMessages + 1 > user.messagesLeft){
+      throw new BadRequestException('Cannot increment pending messages, user has no messages left');
+    }
+    user.pendingMessages += 1;
+    await this.userRepository.save(user);
+    return { pendingMessages: user.pendingMessages };
   }
 
   private async updateUserMessagesLeft(userId: string, solAmountPaid: number) {

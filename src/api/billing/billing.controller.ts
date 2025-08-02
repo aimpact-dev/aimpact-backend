@@ -10,6 +10,7 @@ import { BuyForRewardsDto } from './dto/buyForRewards.dto';
 import { RewardsWithdrawalReceipt } from '../../entities/rewards-withdrawal-receipt.entity';
 import { WithdrawalReceiptResponse } from './response/withdrawal-reciept.response';
 import { FundReceiptResponse } from './response/fund-receipt.response';
+import { PendingMessagesResponse } from './response/pending-messages.response';
 
 
 // type WithdrawalReceiptResponse = Omit<RewardsWithdrawalReceipt, 'user' | 'userId'>;
@@ -33,6 +34,18 @@ export class BillingController {
   @ApiBearerAuth()
   async decrementMessagesLeft(@ApiContext() user: User): Promise<MessagesLeftResponse> {
     return this.billingService.decrementMessagesLeft(user);
+  }
+
+  @Post('decrement-pending-messages')
+  @ApiBearerAuth()
+  async decrementPendingMessages(@ApiContext() user: User): Promise<PendingMessagesResponse> {
+    return this.billingService.decrementPendingMessages(user);
+  }
+
+  @Post('increment-pending-messages')
+  @ApiBearerAuth()
+  async incrementPendingMessages(@ApiContext() user: User): Promise<PendingMessagesResponse> {
+    return this.billingService.incrementPendingMessages(user);
   }
 
   @Post('buy-for-rewards')

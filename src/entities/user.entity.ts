@@ -28,6 +28,9 @@ export class User {
   @Column({ type: 'integer', default: 2 })
   messagesLeft: number;
 
+  @Column({ type: 'integer', default: 0 })
+  pendingMessages: number;
+
   @Unique('uq_invite_code', ['inviteCode'])
   @Column({ type: 'varchar', length: 6, nullable: false, default: () => 'randomInviteCode()' })
   inviteCode: string;
