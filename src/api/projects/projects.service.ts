@@ -1,21 +1,23 @@
 import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Project } from 'src/entities/project.entity';
-import { CreateProjectDto } from './dto/CreateProjectDto';
-import { ProjectChat } from 'src/entities/project-chat.entity';
-import { ProjectChatResponse } from './response/project-chat.response';
-import { ProjectChatRequest } from './request/project-chat.request';
-import { cloneEntityWithNewProps } from 'src/shared/modules/database/clone-entity-with-new-props';
+import { Repository, LessThan } from 'typeorm';
+import { Project } from '@entities/project.entity';
+import { CreateProjectDto } from '@api/projects/dto/CreateProjectDto';
+import { ProjectChat } from '@entities/project-chat.entity';
+import { ProjectChatResponse } from '@api/projects/response/project-chat.response';
+import { ProjectChatRequest } from '@api/projects/request/project-chat.request';
+import { cloneEntityWithNewProps } from '@shared/modules/database/clone-entity-with-new-props';
 import { randomUUID } from 'crypto';
-import { ProjectSnapshotResponse } from './response/project-snapshot.response';
-import { ProjectSnapshotRequest } from './request/project-snapshot.request';
-import { ProjectSnapshot } from 'src/entities/project-snapshot.entity';
-import { ProjectResponse } from './response/project.response';
-import { S3Service } from '../../shared/modules/aws/s3/s3.service';
-import { ProjectsFiltersRequest } from './request/projects-filters.request';
-import { User } from '../../entities/user.entity';
-import { ProjectWithOwnerResponse } from './response/project-with-owner.response';
+import { ProjectSnapshotResponse } from '@api/projects/response/project-snapshot.response';
+import { ProjectSnapshotRequest } from '@api/projects/request/project-snapshot.request';
+import { ProjectSnapshot } from '@entities/project-snapshot.entity';
+import { ProjectResponse } from '@api/projects/response/project.response';
+import { S3Service } from '@shared/modules/aws/s3/s3.service';
+import { ProjectsFiltersRequest, ProjectOwnership } from '@api/projects/request/projects-filters.request';
+import { User } from '@entities/user.entity';
+import { ProjectWithOwnerResponse } from '@api/projects/response/project-with-owner.response';
+import { Paginated } from '@shared/rest/pagination/paginated.output';
+import { CursorPaginationParameters } from '@shared/rest/pagination/cursor-pagination.parameters';
 
 @Injectable()
 export class ProjectsService {
@@ -35,22 +37,44 @@ export class ProjectsService {
     return ProjectResponse.fromObject(savedProject);
   }
 
-  async findAll(filters: ProjectsFiltersRequest, user?: User): Promise<ProjectResponse[]> {
-    let projects;
-    const ormFilters = {
-      order: { [filters.sortBy || 'createdAt']: filters.sortOrder || 'DESC' },
-    }
-    if (user && filters.ownership === 'owned') {
-      ormFilters['where'] = { userId: user.id };
-    } else if (!user && filters.ownership === 'owned') {
+  async findAll(
+    filters: ProjectsFiltersRequest,
+    pagination: CursorPaginationParameters,
+    user?: User,
+  ): Promise<Paginated<ProjectResponse>> {
+    if (!user && filters.ownership === ProjectOwnership.OWNED) {
       throw new UnauthorizedException('User is required to filter by ownership');
     }
-    projects = await this.projectRepository.find(ormFilters);
-    return projects.map(ProjectResponse.fromObject);
+
+    const whereFilters = {
+      ...(filters.ownership === ProjectOwnership.OWNED ? { userId: user?.id } : {}),
+    };
+
+    let cursorProject: Project | null = null;
+    if (pagination.cursor && pagination.cursor.id) {
+      cursorProject = await this.projectRepository.findOne({
+        where: { id: pagination.cursor.id },
+        select: ['createdAt'],
+      });
+    }
+
+    const [projects, projectsCount] = await Promise.all([
+      this.projectRepository.find({
+        where: {
+          ...whereFilters,
+          ...(cursorProject ? { createdAt: LessThan(cursorProject.createdAt) } : {}),
+        },
+        take: pagination.take ?? undefined,
+        order: { createdAt: 'DESC' },
+      }),
+      this.projectRepository.count({ where: whereFilters }),
+    ]);
+
+    return Paginated.fromObject(projects.map(ProjectResponse.fromObject), ['id'], pagination, projectsCount);
   }
 
   async findOne(id: string): Promise<ProjectWithOwnerResponse> {
-    const project = await this.projectRepository.findOne({ where: {id} , relations: ['user']});
+    const project = await this.projectRepository.findOne({ where: { id }, relations: ['user'] });
     if (!project) {
       throw new NotFoundException(`Project with ID ${id} not found`);
     }
@@ -136,7 +160,10 @@ export class ProjectsService {
       throw new NotFoundException(`Project with ID ${projectId} has no snapshot`);
     }
 
-    return ProjectSnapshotResponse.fromObject({...(project.projectSnapshot as Omit<ProjectSnapshot, 'filesPath'>), files: files});
+    return ProjectSnapshotResponse.fromObject({
+      ...(project.projectSnapshot as Omit<ProjectSnapshot, 'filesPath'>),
+      files: files,
+    });
   }
 
   async upsertSnapshot(
@@ -172,7 +199,10 @@ export class ProjectsService {
         summary: dto.summary,
       });
 
-      return ProjectSnapshotResponse.fromObject({...(newSnapshot as Omit<ProjectSnapshot, 'filesPath'>), files: dto.files});
+      return ProjectSnapshotResponse.fromObject({
+        ...(newSnapshot as Omit<ProjectSnapshot, 'filesPath'>),
+        files: dto.files,
+      });
     }
 
     const snapshot = project.projectSnapshot;
@@ -190,6 +220,9 @@ export class ProjectsService {
 
     const updatedSnapshot = await this.projectSnapshotRepository.save(updatedSnapshotObject);
 
-    return ProjectSnapshotResponse.fromObject({...(updatedSnapshot as Omit<ProjectSnapshot, 'filesPath'>), files: dto.files});
+    return ProjectSnapshotResponse.fromObject({
+      ...(updatedSnapshot as Omit<ProjectSnapshot, 'filesPath'>),
+      files: dto.files,
+    });
   }
 }

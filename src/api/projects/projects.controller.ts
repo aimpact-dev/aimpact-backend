@@ -1,18 +1,22 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
-import { ProjectsService } from './projects.service';
-import { CreateProjectDto } from './dto/CreateProjectDto';
-import { ProjectChatResponse } from './response/project-chat.response';
-import { ProjectResponse } from './response/project.response';
-import { ProjectSnapshotResponse } from './response/project-snapshot.response';
-import { ProjectChatRequest } from './request/project-chat.request';
-import { ProjectSnapshotRequest } from './request/project-snapshot.request';
-import { AuthAllowed, Public } from '../auth/decorator/public.decorator';
-import { ApiContext } from '../auth/decorator/api-context.decorator';
-import { User } from 'src/entities/user.entity';
+import { Body, Controller, Get, Param, Post, Query, UseInterceptors } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { ProjectsFiltersRequest } from './request/projects-filters.request';
-import { WithdrawalReceiptResponse } from '../billing/response/withdrawal-reciept.response';
-import { ProjectWithOwnerResponse } from './response/project-with-owner.response';
+import { ProjectsService } from '@api/projects/projects.service';
+import { CreateProjectDto } from '@api/projects/dto/CreateProjectDto';
+import { ProjectChatResponse } from '@api/projects/response/project-chat.response';
+import { ProjectResponse } from '@api/projects/response/project.response';
+import { ProjectSnapshotResponse } from '@api/projects/response/project-snapshot.response';
+import { ProjectChatRequest } from '@api/projects/request/project-chat.request';
+import { ProjectSnapshotRequest } from '@api/projects/request/project-snapshot.request';
+import { AuthAllowed, Public } from '@api/auth/decorator/public.decorator';
+import { ApiContext } from '@api/auth/decorator/api-context.decorator';
+import { User } from '@entities/user.entity';
+import { ProjectsFiltersRequest } from '@api/projects/request/projects-filters.request';
+import { ProjectWithOwnerResponse } from '@api/projects/response/project-with-owner.response';
+import ApiResponseInterceptor from '@shared/rest/general/api-response.interceptor';
+import { Pagination } from '@shared/rest/pagination/pagination.decorator';
+import { CursorPaginationParameters } from '@shared/rest/pagination/cursor-pagination.parameters';
+import { PaginatedResponse } from '@shared/rest/pagination/paginated-response.decorator';
+import { Paginated } from '@shared/rest/pagination/paginated.output';
 
 @Controller('projects')
 export class ProjectsController {
@@ -29,8 +33,13 @@ export class ProjectsController {
   @Get()
   @ApiOperation({ summary: 'Get all projects' })
   @ApiBearerAuth()
-  async findAll(@Query() filters: ProjectsFiltersRequest, @ApiContext({ required: false }) user?: User): Promise<ProjectResponse[]> {
-    return this.projectService.findAll(filters, user);
+  @PaginatedResponse(ProjectResponse, 'cursor')
+  async findAll(
+    @Query() filters: ProjectsFiltersRequest,
+    @Pagination({ type: 'cursor' }) pagination: CursorPaginationParameters,
+    @ApiContext({ required: false }) user?: User,
+  ): Promise<Paginated<ProjectResponse>> {
+    return this.projectService.findAll(filters, pagination, user);
   }
 
   @Public()
@@ -58,7 +67,7 @@ export class ProjectsController {
   @Get(':id/snapshot')
   @ApiResponse({
     status: 200,
-    description: "Get project snapshot",
+    description: 'Get project snapshot',
     type: ProjectSnapshotResponse,
   })
   @ApiBearerAuth()
@@ -69,7 +78,7 @@ export class ProjectsController {
   @Post(':id/snapshot')
   @ApiResponse({
     status: 200,
-    description: "Upsert project snapshot",
+    description: 'Upsert project snapshot',
     type: ProjectSnapshotResponse,
   })
   @ApiBearerAuth()

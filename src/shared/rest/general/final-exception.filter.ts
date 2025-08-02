@@ -12,7 +12,9 @@ import * as Sentry from '@sentry/node';
 @Catch()
 export default class FinalExceptionFilter implements ExceptionFilter {
   private static parseError(exception: Error): HttpException {
-    return exception instanceof HttpException ? exception : new InternalServerErrorException(exception.message);
+    return exception instanceof HttpException
+      ? exception
+      : new InternalServerErrorException(exception.message, { cause: exception });
   }
 
   public catch(originException: Error, host: ArgumentsHost): void {

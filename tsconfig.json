@@ -15,7 +15,15 @@
     "strictNullChecks": true,
     "noImplicitAny": false,
     "strictBindCallApply": false,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "paths": {
+      "@shared": ["src/shared"],
+      "@shared/*": ["src/shared/*"],
+      "@api": ["src/api"],
+      "@api/*": ["src/api/*"],
+      "@entities": ["src/entities"],
+      "@entities/*": ["src/entities/*"]
+    }
   },
   "exclude": ["node_modules"]
 }
